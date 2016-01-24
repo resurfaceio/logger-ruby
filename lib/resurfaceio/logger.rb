@@ -1,4 +1,4 @@
-require "resurfaceio/logger/version"
+require 'resurfaceio/logger/version'
 
 module Resurfaceio
   module Logger
