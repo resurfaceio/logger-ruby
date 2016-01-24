@@ -1,0 +1,6 @@
+.idea/workspace.xml
+tmp/
+.DS_Store
+.*.swp
+/log/*.log
+/.bundle
