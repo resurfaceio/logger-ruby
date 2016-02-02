@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = 'resurfaceio-logger'
-  spec.version = '1.0.0'
+  spec.version = '1.0.1'
 
   spec.summary = 'Ruby library for logging to resurface.io'
   spec.description = spec.summary
@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.authors = ['RobDickinson']
   spec.email = ['resurfacelabs@gmail.com']
 
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features|bin|idea)/}) }
+  spec.files = `git ls-files -z ./lib`.split("\x0")
   spec.require_paths = ['lib']
 
   spec.required_ruby_version = '~> 2.2'
