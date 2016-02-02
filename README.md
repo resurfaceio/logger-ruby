@@ -1,5 +1,4 @@
 # resurfaceio-logger-ruby
-&copy; 2016 Resurface Labs LLC, All Rights Reserved
 
     git clone git@github.com:resurfaceio/resurfaceio-logger-ruby.git ~/resurfaceio-logger-ruby
     cd ~/resurfaceio-logger-ruby
@@ -21,3 +20,5 @@
 Add to your Gemfile:
 
     gem 'resurfaceio-logger', :git => 'https://github.com/resurfaceio/resurfaceio-logger-ruby.git'
+
+&copy; 2016 Resurface Labs LLC, All Rights Reserved
