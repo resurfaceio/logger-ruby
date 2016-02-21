@@ -5,19 +5,49 @@ require 'resurfaceio/loggers'
 
 describe HttpLogger do
 
+  class MockRequest
+    def url
+      'http://something.com/index.html'
+    end
+  end
+
+  class MockResponse
+    def status
+      201
+    end
+  end
+
   it 'uses module namespace' do
     expect(Resurfaceio::HttpLogger.version_lookup).to eql(HttpLogger.version_lookup)
   end
 
   it 'formats echo' do
-    message = HttpLogger.new.format_echo(1234)
+    message = HttpLogger.new.format_echo(String.new, 1234)
     expect(message).to be_kind_of String
     expect(message).not_to be nil
     expect(message.length).to be > 0
-    expect(message.include?("\"category\":\"echo\",")).to be true
+    expect(message.include?("{\"category\":\"echo\",")).to be true
     expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
     expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1234")).to be true
+    expect(message.include?("\"now\":1234}")).to be true
+  end
+
+  it 'formats request' do
+    message = HttpLogger.new.format_request(String.new, 1455908640173, MockRequest.new)
+    expect(message.include?("{\"category\":\"http_request\",")).to be true
+    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
+    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(message.include?("\"now\":1455908640173,")).to be true
+    expect(message.include?("\"url\":\"http://something.com/index.html\"}")).to be true
+  end
+
+  it 'formats response' do
+    message = HttpLogger.new.format_response(String.new, 1455908665227, MockResponse.new)
+    expect(message.include?("{\"category\":\"http_response\",")).to be true
+    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
+    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(message.include?("\"now\":1455908665227,")).to be true
+    expect(message.include?("\"code\":201}")).to be true
   end
 
   it 'logs echo' do

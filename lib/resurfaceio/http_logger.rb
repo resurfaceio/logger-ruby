@@ -4,6 +4,7 @@
 require 'uri'
 require 'net/http'
 require 'net/https'
+require 'resurfaceio/json_message'
 
 class HttpLogger
 
@@ -16,12 +17,33 @@ class HttpLogger
     @version = HttpLogger.version_lookup
   end
 
-  def format_echo(now)
-    "{\"category\":\"echo\",\"source\":\"#{SOURCE}\",\"version\":\"#{version}\",\"now\":#{now}}"
+  def format_echo(json, now)
+    JsonMessage.start(json, 'echo', SOURCE, version, now)
+    JsonMessage.finish(json)
+  end
+
+  def format_request(json, now, request)
+    JsonMessage.start(json, 'http_request', SOURCE, version, now) << ','
+    JsonMessage.append(json, 'url', request.url)
+    JsonMessage.finish(json)
+  end
+
+  def format_response(json, now, response)
+    JsonMessage.start(json, 'http_response', SOURCE, version, now) << ','
+    JsonMessage.append(json, 'code', response.status)
+    JsonMessage.finish(json)
   end
 
   def log_echo
-    post(format_echo(Time.now.to_i)).eql?(200)
+    post(format_echo(String.new, Time.now.to_i)).eql?(200)
+  end
+
+  def log_request(request)
+    post(format_request(String.new, Time.now.to_i, request)).eql?(200)
+  end
+
+  def log_response(response)
+    post(format_response(String.new, Time.now.to_i, response)).eql?(200)
   end
 
   def post(body)
