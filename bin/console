@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'resurfaceio/loggers'
+require 'resurfaceio/logger'
 require 'irb'
 IRB.start

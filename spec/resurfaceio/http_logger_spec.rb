@@ -1,7 +1,7 @@
 # coding: utf-8
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
-require 'resurfaceio/loggers'
+require 'resurfaceio/logger'
 
 describe HttpLogger do
 

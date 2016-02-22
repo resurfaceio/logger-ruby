@@ -9,14 +9,14 @@ Add this line to your Gemfile:
 
 ## Ruby API
 
-    require 'resurfaceio/loggers'
+    require 'resurfaceio/logger'
 
     logger = HttpLoggerFactory.get       # returns default cached logger
-    logger.disable                       # disable sending for automated tests
-    logger.enable                        # enable sending for dev/staging/production
-    logger.is_enabled?                   # intending to send messages?
     logger.log_request(request)          # log http request details
     logger.log_response(response)        # log http response details
+    logger.is_enabled?                   # intending to send messages?
+    logger.enable                        # enable sending for dev/staging/production
+    logger.disable                       # disable sending for automated tests
 
 ## Using with Rails
 
