@@ -5,6 +5,10 @@ require 'resurfaceio/loggers'
 
 describe JsonMessage do
 
+  it 'uses module namespace' do
+    expect(JsonMessage.class.equal?(Resurfaceio::JsonMessage.class)).to be true
+  end
+
   it 'appends to message' do
     expect(JsonMessage.append('', 'name1', 123)).to eql("\"name1\":123")
     expect(JsonMessage.append('', '1name1', 1455908665227)).to eql("\"1name1\":1455908665227")

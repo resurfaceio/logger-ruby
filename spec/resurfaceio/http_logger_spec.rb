@@ -18,6 +18,7 @@ describe HttpLogger do
   end
 
   it 'uses module namespace' do
+    expect(HttpLogger.class.equal?(Resurfaceio::HttpLogger.class)).to be true
     expect(Resurfaceio::HttpLogger.version_lookup).to eql(HttpLogger.version_lookup)
   end
 
