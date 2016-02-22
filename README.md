@@ -1,24 +1,56 @@
 # resurfaceio-logger-ruby
 &copy; 2016 Resurface Labs LLC, All Rights Reserved
 
-## Installing
+## Installing with Bundler
 
 Add this line to your Gemfile:
 
     gem 'resurfaceio-logger', :git => 'https://github.com/resurfaceio/resurfaceio-logger-ruby.git'
 
-## Git Workflow
+## Ruby API
 
-    git clone git@github.com:resurfaceio/resurfaceio-logger-ruby.git ~/resurfaceio-logger-ruby
-    cd ~/resurfaceio-logger-ruby
-    git pull
-    (make changes)
-    bundle exec rspec                         (run automated tests)
-    git status                                (review changes)
-    git add -A
-    git commit -m "#123 Updated readme"       (123 is the GitHub issue number)
-    git pull
-    git push origin master
+    require 'resurfaceio/loggers'
 
-    # when we're ready to push through public repos
-    gem build resurfaceio-logger.gemspec
+    logger = HttpLoggerFactory.get       # returns default cached logger
+    logger.version                       # returns release version string
+    logger.is_enabled?                   # controls if messages are sent
+    logger.disable                       # disable sending for automated tests
+    logger.enable                        # enable sending for dev/staging/production
+    logger.log_echo                      # log echo message for debugging
+    logger.log_request(request)          # log http request details
+    logger.log_response(response)        # log http response details
+
+## Using with Rails
+
+### Logging HTTP requests and responses
+
+    class WelcomeController < ApplicationController
+      around_action HttpLoggerFilter.new
+    end
+
+### Logging just HTTP requests
+
+    class WelcomeController < ApplicationController
+      before_action HttpLoggerFilter.new
+    end
+
+### Logging just HTTP responses
+
+    class WelcomeController < ApplicationController
+      after_action HttpLoggerFilter.new
+    end
+
+### Custom around_action
+
+    class WelcomeController < ApplicationController
+      around_action :custom_around_action
+      def custom_around_action
+        logger = HttpLoggerFactory.get
+        logger.log_request(request)
+        begin
+          yield
+        ensure
+          logger.log_response(response)
+        end
+      end
+    end
