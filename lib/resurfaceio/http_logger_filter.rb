@@ -5,11 +5,11 @@ require 'resurfaceio/http_logger_factory'
 
 class HttpLoggerFilter
 
-  def self.before(controller)
+  def before(controller)
     HttpLoggerFactory.get.log_request(controller.request)
   end
 
-  def self.after(controller)
+  def after(controller)
     HttpLoggerFactory.get.log_response(controller.response)
   end
 
