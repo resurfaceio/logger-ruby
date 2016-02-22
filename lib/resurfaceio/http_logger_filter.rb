@@ -13,4 +13,13 @@ class HttpLoggerFilter
     HttpLoggerFactory.get.log_response(controller.response)
   end
 
+  def around(controller)
+    before(controller)
+    begin
+      yield
+    ensure
+      after(controller)
+    end
+  end
+
 end
