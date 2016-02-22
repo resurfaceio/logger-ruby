@@ -58,6 +58,12 @@ describe HttpLogger do
     expect(HttpLogger.new('http://www.noway3is5this1valid2.com/').log_echo).to be false
   end
 
+  it 'skips logging when disabled' do
+    expect(HttpLogger.new("#{HttpLogger::URL}/noway3is5this1valid2", false).log_echo).to be true
+    expect(HttpLogger.new('https://www.noway3is5this1valid2.com/', false).log_echo).to be true
+    expect(HttpLogger.new('http://www.noway3is5this1valid2.com/', false).log_echo).to be true
+  end
+
   it 'uses source' do
     source = HttpLogger::SOURCE
     expect(source).to be_kind_of String

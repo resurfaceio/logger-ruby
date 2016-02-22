@@ -12,9 +12,18 @@ class HttpLogger
 
   URL = 'https://resurfaceio.herokuapp.com/messages'
 
-  def initialize(url = URL)
+  def initialize(url = URL, enabled = true)
+    @enabled = enabled
     @url = url
     @version = HttpLogger.version_lookup
+  end
+
+  def disable
+    @enabled = false
+  end
+
+  def enable
+    @enabled = true
   end
 
   def format_echo(json, now)
@@ -34,16 +43,20 @@ class HttpLogger
     JsonMessage.finish(json)
   end
 
+  def is_enabled?
+    @enabled
+  end
+
   def log_echo
-    post(format_echo(String.new, Time.now.to_i)).eql?(200)
+    @enabled ? post(format_echo(String.new, Time.now.to_i)).eql?(200) : true
   end
 
   def log_request(request)
-    post(format_request(String.new, Time.now.to_i, request)).eql?(200)
+    @enabled ? post(format_request(String.new, Time.now.to_i, request)).eql?(200) : true
   end
 
   def log_response(response)
-    post(format_response(String.new, Time.now.to_i, response)).eql?(200)
+    @enabled ? post(format_response(String.new, Time.now.to_i, response)).eql?(200) : true
   end
 
   def post(body)
