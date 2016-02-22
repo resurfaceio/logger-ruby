@@ -12,11 +12,9 @@ Add this line to your Gemfile:
     require 'resurfaceio/loggers'
 
     logger = HttpLoggerFactory.get       # returns default cached logger
-    logger.version                       # returns release version string
-    logger.is_enabled?                   # controls if messages are sent
     logger.disable                       # disable sending for automated tests
     logger.enable                        # enable sending for dev/staging/production
-    logger.log_echo                      # log echo message for debugging
+    logger.is_enabled?                   # intending to send messages?
     logger.log_request(request)          # log http request details
     logger.log_response(response)        # log http response details
 
