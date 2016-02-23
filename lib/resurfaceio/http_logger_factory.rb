@@ -5,10 +5,10 @@ require 'resurfaceio/http_logger'
 
 class HttpLoggerFactory
 
-  @@default = HttpLogger.new
+  @@default_logger = HttpLogger.new
 
   def self.get
-    @@default
+    @@default_logger
   end
 
 end
