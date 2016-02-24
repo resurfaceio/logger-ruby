@@ -1,6 +1,12 @@
 # resurfaceio-logger-ruby
 &copy; 2016 Resurface Labs LLC, All Rights Reserved
 
+This gem makes it easy to log server usage including HTTP request/response details.
+
+## Dependencies
+
+No runtime dependencies to conflict with your app. Requires Ruby 2.x.
+
 ## Installing with Bundler
 
 Add this line to your Gemfile:
@@ -20,19 +26,19 @@ Add this line to your Gemfile:
 
 ## Using with Rails
 
-### Logging HTTP requests and responses
+### Logging requests and responses
 
     class WelcomeController < ApplicationController
       around_action HttpLoggerFilter.new
     end
 
-### Logging just HTTP requests
+### Logging requests only
 
     class WelcomeController < ApplicationController
       before_action HttpLoggerFilter.new
     end
 
-### Logging just HTTP responses
+### Logging responses only
 
     class WelcomeController < ApplicationController
       after_action HttpLoggerFilter.new
