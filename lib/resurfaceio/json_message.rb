@@ -25,6 +25,16 @@ class JsonMessage
           json << "\\\""
         when '\\'
           json << "\\\\"
+        when "\b"
+          json << "\\b"
+        when "\f"
+          json << "\\f"
+        when "\n"
+          json << "\\n"
+        when "\r"
+          json << "\\r"
+        when "\t"
+          json << "\\t"
         else
           json << c
       end
