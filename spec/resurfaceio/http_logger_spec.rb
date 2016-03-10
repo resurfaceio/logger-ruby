@@ -12,8 +12,21 @@ describe HttpLogger do
   end
 
   class MockResponse
+    def body
+      nil
+    end
     def status
-      201
+      404
+    end
+  end
+
+  class MockResponseWithBody < MockResponse
+    BODY = '<html>Hello World!</html>'
+    def body
+      BODY
+    end
+    def status
+      200
     end
   end
 
@@ -48,7 +61,17 @@ describe HttpLogger do
     expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
     expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(message.include?("\"now\":1455908665227,")).to be true
-    expect(message.include?("\"code\":201}")).to be true
+    expect(message.include?("\"code\":404}")).to be true
+  end
+
+  it 'formats response with body' do
+    message = HttpLogger.new.format_response(String.new, 1455908665887, MockResponseWithBody.new)
+    expect(message.include?("{\"category\":\"http_response\",")).to be true
+    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
+    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(message.include?("\"now\":1455908665887,")).to be true
+    expect(message.include?("\"code\":200",)).to be true
+    expect(message.include?("\"body\":\"#{MockResponseWithBody::BODY}\"}")).to be true
   end
 
   it 'logs echo' do

@@ -40,6 +40,10 @@ class HttpLogger
   def format_response(json, now, response)
     JsonMessage.start(json, 'http_response', SOURCE, version, now) << ','
     JsonMessage.append(json, 'code', response.status)
+    unless response.body.nil?
+      json << ','
+      JsonMessage.append(json, 'body', response.body)
+    end
     JsonMessage.finish(json)
   end
 
