@@ -9,4 +9,6 @@ describe HttpLoggerFilter do
     expect(HttpLoggerFilter.class.equal?(Resurfaceio::HttpLoggerFilter.class)).to be true
   end
 
+  # todo missing test cases
+
 end
