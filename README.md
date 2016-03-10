@@ -26,11 +26,10 @@ Add this line to your Gemfile:
 
 ## Using Rails
 
-To enable logging for a controller, configure an action as shown here:
+Use an around_action to log input and output from any controller:
+
+    require 'resurfaceio/logger'
 
     class MyController < ApplicationController
-
-      # log all requests/responses to this controller
       around_action HttpLoggerFilter.new
-
     end
