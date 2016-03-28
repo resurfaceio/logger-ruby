@@ -10,8 +10,9 @@ class HttpLoggerFilter2
   end
 
   def call(env)
-    @app.call(env)
+    status, headers, body = @app.call(env)
     HttpLoggerFactory.get # do logging here
+    [status, headers, body]
   end
 
 end
