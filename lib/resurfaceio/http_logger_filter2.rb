@@ -11,11 +11,17 @@ class HttpLoggerFilter2
   end
 
   def call(env)
-    request = Rack::Request.new(env)
-    HttpLoggerFactory.get.log_request(request)
     status, headers, body = @app.call(env)
-    response = Rack::Response.new(body, status, headers)
-    HttpLoggerFactory.get.log_response(response)
+    if status != 304
+      response = Rack::Response.new(body, status, headers)
+      content_type = response.content_type
+      is_html = content_type.present? && (content_type.downcase.index('text/html') == 0)
+      if is_html
+        request = Rack::Request.new(env)
+        HttpLoggerFactory.get.log_request(request)
+        HttpLoggerFactory.get.log_response(response)
+      end
+    end
     [status, headers, body]
   end
 
