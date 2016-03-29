@@ -13,24 +13,6 @@ Add this line to your Gemfile:
 
     gem 'resurfaceio-logger', :git => 'https://github.com/resurfaceio/resurfaceio-logger-ruby.git'
 
-## Ruby API
-
-    require 'resurfaceio/logger'
-
-    logger = HttpLoggerFactory.get       # returns default cached HTTP logger
-    logger.log_request(request)          # log HTTP request details
-    logger.log_response(response)        # log HTTP response details
-    if logger.is_enabled? ...            # intending to log stuff?
-    logger.enable                        # enable logging for dev/staging/production
-    logger.disable                       # disable logging for automated tests
-
-## Using Rack Middleware
-
-Add to config.ru to log all usage of the app:
-
-    require 'resurfaceio/logger'
-    use HttpLoggerForRack
-
 ## Using Rails Controller
 
 Add an around_action to log use of one specific controller:
@@ -40,3 +22,21 @@ Add an around_action to log use of one specific controller:
     class MyController < ApplicationController
       around_action HttpLoggerForRails.new
     end
+
+## Using Rack Middleware
+
+Add to config.ru to log all usage of the app:
+
+    require 'resurfaceio/logger'
+    use HttpLoggerForRack
+
+## Using Ruby API
+
+    require 'resurfaceio/logger'
+
+    logger = HttpLoggerFactory.get       # returns default cached HTTP logger
+    logger.log_request(request)          # log HTTP request details
+    logger.log_response(response)        # log HTTP response details
+    if logger.is_enabled? ...            # intending to log stuff?
+    logger.enable                        # enable logging for dev/staging/production
+    logger.disable                       # disable logging for automated tests
