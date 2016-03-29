@@ -24,12 +24,19 @@ Add this line to your Gemfile:
     logger.enable                        # enable logging for dev/staging/production
     logger.disable                       # disable logging for automated tests
 
-## Using Rails
+## Using Rack Middleware
 
-Use an around_action to log input and output from any controller:
+Add to config.ru to log all usage of the app:
+
+    require 'resurfaceio/logger'
+    use HttpLoggerForRack
+
+## Using Rails Controller
+
+Add an around_action to log use of one specific controller:
 
     require 'resurfaceio/logger'
 
     class MyController < ApplicationController
-      around_action HttpLoggerFilter.new
+      around_action HttpLoggerForRails.new
     end

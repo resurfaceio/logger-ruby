@@ -3,10 +3,10 @@
 
 require 'resurfaceio/logger'
 
-describe HttpLoggerFilter do
+describe HttpLoggerForRails do
 
   it 'uses module namespace' do
-    expect(HttpLoggerFilter.class.equal?(Resurfaceio::HttpLoggerFilter.class)).to be true
+    expect(HttpLoggerForRails.class.equal?(Resurfaceio::HttpLoggerForRails.class)).to be true
   end
 
   # todo missing test cases

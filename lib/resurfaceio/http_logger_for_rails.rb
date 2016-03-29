@@ -3,7 +3,7 @@
 
 require 'resurfaceio/http_logger_factory'
 
-class HttpLoggerFilter
+class HttpLoggerForRails
 
   def before(controller)
     HttpLoggerFactory.get.log_request(controller.request)

@@ -4,7 +4,7 @@
 require 'rack'
 require 'resurfaceio/http_logger_factory'
 
-class HttpLoggerFilter2
+class HttpLoggerForRack
 
   def initialize(app)
     @app = app
