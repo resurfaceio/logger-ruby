@@ -30,7 +30,7 @@ Add to config.ru to log all usage of the app:
     require 'resurfaceio/logger'
     use HttpLoggerForRack
 
-## Using API
+## Using API Directly
 
     require 'resurfaceio/logger'
 
