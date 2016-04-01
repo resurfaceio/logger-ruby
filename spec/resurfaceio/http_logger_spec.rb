@@ -2,33 +2,9 @@
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
 require 'resurfaceio/logger'
+require_relative 'mocks'
 
 describe HttpLogger do
-
-  class MockRequest
-    def url
-      'http://something.com/index.html'
-    end
-  end
-
-  class MockResponse
-    def body
-      nil
-    end
-    def status
-      404
-    end
-  end
-
-  class MockResponseWithBody < MockResponse
-    BODY = '<html>Hello World!</html>'
-    def body
-      BODY
-    end
-    def status
-      200
-    end
-  end
 
   it 'uses module namespace' do
     expect(HttpLogger.class.equal?(Resurfaceio::HttpLogger.class)).to be true
@@ -74,17 +50,38 @@ describe HttpLogger do
     expect(message.include?("\"body\":\"#{MockResponseWithBody::BODY}\"}")).to be true
   end
 
-  it 'logs echo' do
-    expect(HttpLogger.new.log_echo).to be true
-    expect(HttpLogger.new("#{HttpLogger::URL}/noway3is5this1valid2").log_echo).to be false
-    expect(HttpLogger.new('https://www.noway3is5this1valid2.com/').log_echo).to be false
-    expect(HttpLogger.new('http://www.noway3is5this1valid2.com/').log_echo).to be false
+  it 'logs echo (to default url)' do
+    logger = HttpLogger.new
+    expect(logger.log_echo).to be true
+    expect(logger.tracing_history.length).to be 0
   end
 
-  it 'skips logging when disabled' do
-    expect(HttpLogger.new("#{HttpLogger::URL}/noway3is5this1valid2", false).log_echo).to be true
-    expect(HttpLogger.new('https://www.noway3is5this1valid2.com/', false).log_echo).to be true
-    expect(HttpLogger.new('http://www.noway3is5this1valid2.com/', false).log_echo).to be true
+  it 'logs echo (to invalid url)' do
+    logger = HttpLogger.new("#{HttpLogger::URL}/noway3is5this1valid2")
+    expect(logger.log_echo).to be false
+    expect(logger.tracing_history.length).to be 0
+
+    logger = HttpLogger.new('https://www.noway3is5this1valid2.com/')
+    expect(logger.log_echo).to be false
+    expect(logger.tracing_history.length).to be 0
+
+    logger = HttpLogger.new('http://www.noway3is5this1valid2.com/')
+    expect(logger.log_echo).to be false
+    expect(logger.tracing_history.length).to be 0
+  end
+
+  it 'skips logging and tracing when disabled' do
+    logger = HttpLogger.new("#{HttpLogger::URL}/noway3is5this1valid2", false)
+    expect(logger.log_echo).to be true
+    expect(logger.tracing_history.length).to be 0
+
+    logger = HttpLogger.new('https://www.noway3is5this1valid2.com/', false)
+    expect(logger.log_echo).to be true
+    expect(logger.tracing_history.length).to be 0
+
+    logger = HttpLogger.new('http://www.noway3is5this1valid2.com/', false)
+    expect(logger.log_echo).to be true
+    expect(logger.tracing_history.length).to be 0
   end
 
   it 'uses source' do
@@ -96,6 +93,29 @@ describe HttpLogger do
     expect(source.include?('\\')).to be false
     expect(source.include?('\"')).to be false
     expect(source.include?('\'')).to be false
+  end
+
+  it 'uses tracing' do
+    logger = HttpLogger.new.disable
+    expect(logger.enabled?).to be false
+    expect(logger.tracing?).to be false
+    expect(logger.tracing_history.length).to be 0
+    logger.tracing_start
+    begin
+      expect(logger.tracing?).to be true
+      expect(logger.tracing_history.length).to be 0
+      expect(logger.log_echo).to be true
+      expect(logger.tracing_history.length).to eql(1)
+      expect(logger.log_echo).to be true
+      expect(logger.tracing_history.length).to eql(2)
+      expect(logger.log_echo).to be true
+      expect(logger.tracing_history.length).to eql(3)
+    ensure
+      logger.tracing_stop.enable
+      expect(logger.enabled?).to be true
+      expect(logger.tracing?).to be false
+      expect(logger.tracing_history.length).to be 0
+    end
   end
 
   it 'uses url' do

@@ -14,16 +14,24 @@ class HttpLogger
 
   def initialize(url = URL, enabled = true)
     @enabled = enabled
+    @tracing = false
+    @tracing_history = []
     @url = url
     @version = HttpLogger.version_lookup
   end
 
   def disable
     @enabled = false
+    self
   end
 
   def enable
     @enabled = true
+    self
+  end
+
+  def enabled?
+    @enabled
   end
 
   def format_echo(json, now)
@@ -47,34 +55,80 @@ class HttpLogger
     JsonMessage.finish(json)
   end
 
-  def is_enabled?
-    @enabled
-  end
-
   def log_echo
-    @enabled ? post(format_echo(String.new, Time.now.to_i)).eql?(200) : true
+    if @enabled || @tracing
+      json = format_echo(String.new, Time.now.to_i)
+      if @tracing
+        @tracing_history << json
+        true
+      else
+        post(json).eql?(200)
+      end
+    else
+      true
+    end
   end
 
   def log_request(request)
-    @enabled ? post(format_request(String.new, Time.now.to_i, request)).eql?(200) : true
+    if @enabled || @tracing
+      json = format_request(String.new, Time.now.to_i, request)
+      if @tracing
+        @tracing_history << json
+        true
+      else
+        post(json).eql?(200)
+      end
+    else
+      true
+    end
   end
 
   def log_response(response)
-    @enabled ? post(format_response(String.new, Time.now.to_i, response)).eql?(200) : true
+    if @enabled || @tracing
+      json = format_response(String.new, Time.now.to_i, response)
+      if @tracing
+        @tracing_history << json
+        true
+      else
+        post(json).eql?(200)
+      end
+    else
+      true
+    end
   end
 
-  def post(body)
+  def post(json)
     begin
       uri = URI.parse(url)
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = true
       request = Net::HTTP::Post.new(uri.path)
-      request.body = body
+      request.body = json
       response = https.request(request)
       response.code.to_i
     rescue SocketError
       404
     end
+  end
+
+  def tracing?
+    @tracing
+  end
+
+  def tracing_history
+    @tracing_history
+  end
+
+  def tracing_start
+    @tracing = true
+    @tracing_history = []
+    self
+  end
+
+  def tracing_stop
+    @tracing = false
+    @tracing_history = []
+    self
   end
 
   def url

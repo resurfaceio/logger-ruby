@@ -37,6 +37,6 @@ Add to config.ru to log all usage of the app:
     logger = HttpLoggerFactory.get       # returns default cached HTTP logger
     logger.log_request(request)          # log HTTP request details
     logger.log_response(response)        # log HTTP response details
-    if logger.is_enabled? ...            # intending to log stuff?
+    if logger.enabled? ...               # intending to log stuff?
     logger.enable                        # enable logging for dev/staging/production
     logger.disable                       # disable logging for automated tests

@@ -13,9 +13,9 @@ describe HttpLoggerFactory do
   it 'uses default logger' do
     expect(HttpLoggerFactory.get.equal?(HttpLoggerFactory.get)).to be true
     HttpLoggerFactory.get.disable
-    expect(HttpLoggerFactory.get.is_enabled?).to be false
+    expect(HttpLoggerFactory.get.enabled?).to be false
     HttpLoggerFactory.get.enable
-    expect(HttpLoggerFactory.get.is_enabled?).to be true
+    expect(HttpLoggerFactory.get.enabled?).to be true
   end
 
 end
