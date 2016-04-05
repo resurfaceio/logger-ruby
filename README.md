@@ -15,7 +15,8 @@ Add this line to your Gemfile:
 
 ## Using Rails Controller
 
-Add an around_action to log use of one specific controller:
+Configure an around_action as shown below to log from any Rails controller. This can be applied selectively (just one or two controllers) or done in a superclass to
+apply logging across multiple controllers simultaneously.
 
     require 'resurfaceio/logger'
 
@@ -25,10 +26,14 @@ Add an around_action to log use of one specific controller:
 
 ## Using Rack Middleware
 
-Add to config.ru to log all usage of the app:
+This works for Sinatra and other Rack-based framework including Rails itself. This does usage logging without changing application controllers to use around_actions.
+Simply add a top-level use method as shown below. (for rails, this is config.ru)
 
     require 'resurfaceio/logger'
     use HttpLoggerForRack
+
+The Rack logger performs some basic filtering: it ignores redirects (304 response codes), and only logs responses for content types matching a predefined list
+(including 'text/html' and 'application/json').
 
 ## Using API Directly
 
