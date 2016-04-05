@@ -58,12 +58,7 @@ class HttpLogger
   def log_echo
     if @enabled || @tracing
       json = format_echo(String.new, Time.now.to_i)
-      if @tracing
-        @tracing_history << json
-        true
-      else
-        post(json).eql?(200)
-      end
+      post(json).eql?(200)
     else
       true
     end
@@ -72,12 +67,7 @@ class HttpLogger
   def log_request(request)
     if @enabled || @tracing
       json = format_request(String.new, Time.now.to_i, request)
-      if @tracing
-        @tracing_history << json
-        true
-      else
-        post(json).eql?(200)
-      end
+      post(json).eql?(200)
     else
       true
     end
@@ -86,28 +76,28 @@ class HttpLogger
   def log_response(response)
     if @enabled || @tracing
       json = format_response(String.new, Time.now.to_i, response)
-      if @tracing
-        @tracing_history << json
-        true
-      else
-        post(json).eql?(200)
-      end
+      post(json).eql?(200)
     else
       true
     end
   end
 
   def post(json)
-    begin
-      uri = URI.parse(url)
-      https = Net::HTTP.new(uri.host, uri.port)
-      https.use_ssl = true
-      request = Net::HTTP::Post.new(uri.path)
-      request.body = json
-      response = https.request(request)
-      response.code.to_i
-    rescue SocketError
-      404
+    if @tracing
+      @tracing_history << json
+      200
+    else
+      begin
+        uri = URI.parse(url)
+        https = Net::HTTP.new(uri.host, uri.port)
+        https.use_ssl = true
+        request = Net::HTTP::Post.new(uri.path)
+        request.body = json
+        response = https.request(request)
+        response.code.to_i
+      rescue SocketError
+        404
+      end
     end
   end
 
