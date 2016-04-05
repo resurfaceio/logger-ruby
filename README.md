@@ -7,13 +7,13 @@ This gem makes it easy to log server usage including HTTP request/response detai
 
 No runtime dependencies to conflict with your app. Requires Ruby 2.x.
 
-## Installing with Bundler
+## Installing With Bundler
 
 Add this line to your Gemfile:
 
     gem 'resurfaceio-logger', :git => 'https://github.com/resurfaceio/resurfaceio-logger-ruby.git'
 
-## Using Rails Controller
+## Logging From Rails Controller
 
 Configure an around_action as shown below to log from any Rails controller. This can be applied selectively (just one or two controllers) or done in a superclass to
 apply logging across multiple controllers simultaneously.
@@ -24,7 +24,7 @@ apply logging across multiple controllers simultaneously.
       around_action HttpLoggerForRails.new
     end
 
-## Using Rack Middleware
+## Logging From Rack Middleware
 
 This works for Sinatra and other Rack-based frameworks including Rails. This does usage logging without changing application controllers to use around_actions.
 Simply add a top-level use method as shown below. (For rails, this is config.ru)
