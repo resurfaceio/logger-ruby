@@ -30,6 +30,7 @@ This works for Sinatra and other Rack-based frameworks including Rails. This doe
 Simply add a top-level use method as shown below. (For rails, this is config.ru)
 
     require 'resurfaceio/logger'
+
     use HttpLoggerForRack
 
 The Rack logger performs some basic filtering: it ignores redirects (304 response codes), and only logs responses for content types matching a predefined list
