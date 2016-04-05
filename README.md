@@ -26,8 +26,8 @@ apply logging across multiple controllers simultaneously.
 
 ## Using Rack Middleware
 
-This works for Sinatra and other Rack-based framework including Rails itself. This does usage logging without changing application controllers to use around_actions.
-Simply add a top-level use method as shown below. (for rails, this is config.ru)
+This works for Sinatra and other Rack-based frameworks including Rails. This does usage logging without changing application controllers to use around_actions.
+Simply add a top-level use method as shown below. (For rails, this is config.ru)
 
     require 'resurfaceio/logger'
     use HttpLoggerForRack
