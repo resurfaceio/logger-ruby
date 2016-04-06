@@ -25,7 +25,7 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
         if is_html || is_json || is_soap || is_xml1 || is_xml2
           request = Rack::Request.new(env)
           HttpLoggerFactory.get.log_request(request)
-          HttpLoggerFactory.get.log_response(response)
+          HttpLoggerFactory.get.log_response(response, body)
         end
       end
     end

@@ -45,12 +45,12 @@ class HttpLogger
     JsonMessage.finish(json)
   end
 
-  def format_response(json, now, response)
+  def format_response(json, now, response, body=nil)
     JsonMessage.start(json, 'http_response', SOURCE, version, now) << ','
     JsonMessage.append(json, 'code', response.status)
-    unless response.body.nil?
+    unless body.nil? && response.body.nil?
       json << ','
-      JsonMessage.append(json, 'body', response.body)
+      JsonMessage.append(json, 'body', body.nil? ? response.body : body)
     end
     JsonMessage.finish(json)
   end
@@ -73,9 +73,9 @@ class HttpLogger
     end
   end
 
-  def log_response(response)
+  def log_response(response, body=nil)
     if @enabled || @tracing
-      json = format_response(String.new, Time.now.to_i, response)
+      json = format_response(String.new, Time.now.to_i, response, body)
       post(json).eql?(200)
     else
       true
