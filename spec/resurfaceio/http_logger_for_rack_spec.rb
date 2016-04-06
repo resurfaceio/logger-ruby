@@ -10,16 +10,25 @@ describe HttpLoggerForRack do
     expect(HttpLoggerForRack.class.equal?(Resurfaceio::HttpLoggerForRack.class)).to be true
   end
 
-  it 'logs rack calls' do
+  it 'logs rack call (html)' do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
-      filter = HttpLoggerForRack.new(MockHtmlApp.new)
-      filter.call(MOCK_ENV)
-      expect(logger.tracing_history.length).to eql(2) # todo check tracing history
+      HttpLoggerForRack.new(MockHtmlApp.new).call(MOCK_ENV)
+      expect(logger.tracing_history.length).to eql(2)
+      verify_mock_request logger.tracing_history[0]
+      verify_mock_response logger.tracing_history[1], MOCK_HTML_ESCAPED
+    ensure
+      logger.tracing_stop.enable
+    end
+  end
 
-      filter = HttpLoggerForRack.new(MockJsonApp.new)
-      filter.call(MOCK_ENV)
-      expect(logger.tracing_history.length).to eql(4) # todo check tracing history
+  it 'logs rack call (json)' do
+    logger = HttpLoggerFactory.get.disable.tracing_start
+    begin
+      HttpLoggerForRack.new(MockJsonApp.new).call(MOCK_ENV)
+      expect(logger.tracing_history.length).to eql(2)
+      verify_mock_request logger.tracing_history[0]
+      verify_mock_response logger.tracing_history[1], MOCK_JSON_ESCAPED
     ensure
       logger.tracing_stop.enable
     end
@@ -28,17 +37,11 @@ describe HttpLoggerForRack do
   it 'skips logging for redirects and unmatched content types' do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
-      filter = HttpLoggerForRack.new(MockCustomApp.new)
-      filter.call(MOCK_ENV)
-      expect(logger.tracing_history.length).to eql(0)
-
-      filter = HttpLoggerForRack.new(MockCustomRedirectingApp.new)
-      filter.call(MOCK_ENV)
-      expect(logger.tracing_history.length).to eql(0)
-
-      filter = HttpLoggerForRack.new(MockHtmlRedirectingApp.new)
-      filter.call(MOCK_ENV)
-      expect(logger.tracing_history.length).to eql(0)
+      apps = [MockCustomApp.new, MockCustomRedirectingApp.new, MockHtmlRedirectingApp.new]
+      apps.each do |app|
+        HttpLoggerForRack.new(app).call(MOCK_ENV)
+        expect(logger.tracing_history.length).to eql(0)
+      end
     ensure
       logger.tracing_stop.enable
     end

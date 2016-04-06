@@ -13,9 +13,10 @@ describe HttpLoggerForRails do
   it 'logs controller call' do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
-      filter = HttpLoggerForRails.new
-      filter.around(MockController.new) {}
-      expect(logger.tracing_history.length).to eql(2) # todo check tracing history
+      HttpLoggerForRails.new.around(MockController.new) {}
+      expect(logger.tracing_history.length).to eql(2)
+      verify_mock_request logger.tracing_history[0]
+      verify_mock_response logger.tracing_history[1], MOCK_HTML_ESCAPED
     ensure
       logger.tracing_stop.enable
     end

@@ -23,31 +23,19 @@ describe HttpLogger do
   end
 
   it 'formats request' do
-    message = HttpLogger.new.format_request(String.new, 1455908640173, MockRequest.new)
-    expect(message.include?("{\"category\":\"http_request\",")).to be true
-    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1455908640173,")).to be true
-    expect(message.include?("\"url\":\"http://something.com/index.html\"}")).to be true
+    verify_mock_request HttpLogger.new.format_request(String.new, 1455908640173, MockRequest.new)
   end
 
   it 'formats response' do
-    message = HttpLogger.new.format_response(String.new, 1455908665227, MockResponse.new)
-    expect(message.include?("{\"category\":\"http_response\",")).to be true
-    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1455908665227,")).to be true
-    expect(message.include?("\"code\":404}")).to be true
+    verify_mock_response HttpLogger.new.format_response(String.new, 1455908665227, MockResponse.new)
   end
 
   it 'formats response with body' do
-    message = HttpLogger.new.format_response(String.new, 1455908665887, MockResponseWithBody.new)
-    expect(message.include?("{\"category\":\"http_response\",")).to be true
-    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1455908665887,")).to be true
-    expect(message.include?("\"code\":200",)).to be true
-    expect(message.include?("\"body\":\"#{MockResponseWithBody::BODY}\"}")).to be true
+    verify_mock_response HttpLogger.new.format_response(String.new, 1455908665887, MockResponseWithBody.new), MOCK_HTML_ESCAPED
+  end
+
+  it 'formats response with alternate body' do
+    verify_mock_response HttpLogger.new.format_response(String.new, 1455908667777, MockResponseWithBody.new, MOCK_HTML_ALT), MOCK_HTML_ALT_ESCAPED
   end
 
   it 'logs echo (to default url)' do
@@ -56,32 +44,22 @@ describe HttpLogger do
     expect(logger.tracing_history.length).to be 0
   end
 
+  INVALID_URLS = ["#{HttpLogger::URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/', 'http://www.noway3is5this1valid2.com/']
+
   it 'logs echo (to invalid url)' do
-    logger = HttpLogger.new("#{HttpLogger::URL}/noway3is5this1valid2")
-    expect(logger.log_echo).to be false
-    expect(logger.tracing_history.length).to be 0
-
-    logger = HttpLogger.new('https://www.noway3is5this1valid2.com/')
-    expect(logger.log_echo).to be false
-    expect(logger.tracing_history.length).to be 0
-
-    logger = HttpLogger.new('http://www.noway3is5this1valid2.com/')
-    expect(logger.log_echo).to be false
-    expect(logger.tracing_history.length).to be 0
+    INVALID_URLS.each do |url|
+      logger = HttpLogger.new(url)
+      expect(logger.log_echo).to be false
+      expect(logger.tracing_history.length).to be 0
+    end
   end
 
   it 'skips logging and tracing when disabled' do
-    logger = HttpLogger.new("#{HttpLogger::URL}/noway3is5this1valid2", false)
-    expect(logger.log_echo).to be true
-    expect(logger.tracing_history.length).to be 0
-
-    logger = HttpLogger.new('https://www.noway3is5this1valid2.com/', false)
-    expect(logger.log_echo).to be true
-    expect(logger.tracing_history.length).to be 0
-
-    logger = HttpLogger.new('http://www.noway3is5this1valid2.com/', false)
-    expect(logger.log_echo).to be true
-    expect(logger.tracing_history.length).to be 0
+    INVALID_URLS.each do |url|
+      logger = HttpLogger.new(url, false)
+      expect(logger.log_echo).to be true
+      expect(logger.tracing_history.length).to be 0
+    end
   end
 
   it 'uses source' do
