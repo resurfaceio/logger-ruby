@@ -33,7 +33,7 @@ Simply add a top-level use method as shown below. (For rails, this is config.ru)
 
     use HttpLoggerForRack
 
-The Rack logger performs some basic filtering: it ignores redirects (304 response codes), and only logs responses for content types matching a predefined list
+HttpLoggerForRack performs some basic filtering: it ignores redirects (304 response codes), and only logs responses for content types matching a predefined list
 (including 'text/html' and 'application/json').
 
 ## Using API Directly
