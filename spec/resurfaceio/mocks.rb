@@ -60,13 +60,13 @@ class MockCustomApp
   def call(env)
     headers = {}
     headers[Rack::CONTENT_TYPE] = 'application/super-troopers'
-    [200, headers, 'do you know how fast you were going?']
+    [200, headers, ['do you know how fast you were going?']]
   end
 end
 
 class MockCustomRedirectingApp
   def call(env)
-    [304, {}, '']
+    [304, {}, ['']]
   end
 end
 
@@ -75,7 +75,7 @@ class MockHtmlApp
     headers = {}
     headers[Rack::CACHE_CONTROL] = 'private, max-age=0, no-cache'
     headers[Rack::CONTENT_TYPE] = 'text/html'
-    [200, headers, MOCK_HTML]
+    [200, headers, [MOCK_HTML]]
   end
 end
 
@@ -84,7 +84,7 @@ class MockHtmlRedirectingApp
     headers = {}
     headers[Rack::CACHE_CONTROL] = 'private, max-age=0, no-cache'
     headers[Rack::CONTENT_TYPE] = 'text/html'
-    [304, headers, MOCK_HTML]
+    [304, headers, [MOCK_HTML]]
   end
 end
 
@@ -93,7 +93,7 @@ class MockJsonApp
     headers = {}
     headers[Rack::CACHE_CONTROL] = 'private, max-age=0, no-cache'
     headers[Rack::CONTENT_TYPE] = 'application/json; charset=utf-8'
-    [200, headers, MOCK_JSON]
+    [200, headers, [MOCK_JSON]]
   end
 end
 
