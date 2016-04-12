@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = 'resurfaceio-logger'
-  spec.version = '1.0.23'
+  spec.version = '1.1.0'
 
   spec.summary = 'Ruby library for logging to resurface.io'
   spec.description = spec.summary
