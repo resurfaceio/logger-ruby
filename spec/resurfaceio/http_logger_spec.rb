@@ -44,10 +44,8 @@ describe HttpLogger do
     expect(logger.tracing_history.length).to be 0
   end
 
-  INVALID_URLS = ["#{HttpLogger::URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/', 'http://www.noway3is5this1valid2.com/']
-
   it 'logs echo (to invalid url)' do
-    INVALID_URLS.each do |url|
+    MOCK_INVALID_URLS.each do |url|
       logger = HttpLogger.new(url)
       expect(logger.log_echo).to be false
       expect(logger.tracing_history.length).to be 0
@@ -55,7 +53,7 @@ describe HttpLogger do
   end
 
   it 'skips logging and tracing when disabled' do
-    INVALID_URLS.each do |url|
+    MOCK_INVALID_URLS.each do |url|
       logger = HttpLogger.new(url, false)
       expect(logger.log_echo).to be true
       expect(logger.tracing_history.length).to be 0

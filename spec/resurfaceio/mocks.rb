@@ -46,6 +46,8 @@ MOCK_HTML_ALT = '<html><h1>We want the funk</h1><p>Gotta have that funk</p></htm
 
 MOCK_HTML_ALT_ESCAPED = JsonMessage.escape('', MOCK_HTML_ALT)
 
+MOCK_INVALID_URLS = ["#{HttpLogger::URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/', 'http://www.noway3is5this1valid2.com/']
+
 class MockController
   def request
     MockRequest.new
