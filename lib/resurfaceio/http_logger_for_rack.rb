@@ -16,7 +16,6 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
       response = Rack::Response.new(body, status, headers)
       content_type = response.content_type
       unless content_type.nil?
-        content_type = content_type.downcase
         is_html = content_type.include?('text/html')
         is_json = content_type.include?('application/json')
         is_soap = content_type.include?('application/soap+xml')
