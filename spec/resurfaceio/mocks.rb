@@ -124,22 +124,3 @@ class MockResponseWithBody
     200
   end
 end
-
-def verify_mock_request(message)
-  expect(message.include?("{\"category\":\"http_request\",")).to be true
-  expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
-  expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-  expect(message.include?("\"now\"")).to be true
-  expect(message.include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
-end
-
-def verify_mock_response(message, body=nil)
-  expect(message.include?("{\"category\":\"http_response\",")).to be true
-  expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
-  expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-  expect(message.include?("\"now\"")).to be true
-  expect(message.include?("\"code\":200",)).to be true
-  unless body.nil?
-    expect(message.include?("\"body\":\"#{body}\"}")).to be true
-  end
-end

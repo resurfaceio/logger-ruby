@@ -15,8 +15,11 @@ describe HttpLoggerForRack do
     begin
       HttpLoggerForRack.new(MockHtmlApp.new).call(MOCK_ENV)
       expect(logger.tracing_history.length).to eql(2)
-      verify_mock_request logger.tracing_history[0]
-      verify_mock_response logger.tracing_history[1], MOCK_HTML_ESCAPED
+      expect(logger.tracing_history[0].include?("{\"category\":\"http_request\",")).to be true
+      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
+      expect(logger.tracing_history[1].include?("{\"category\":\"http_response\",")).to be true
+      expect(logger.tracing_history[1].include?("\"code\":200",)).to be true
+      expect(logger.tracing_history[1].include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
     ensure
       logger.tracing_stop.enable
     end
@@ -27,8 +30,11 @@ describe HttpLoggerForRack do
     begin
       HttpLoggerForRack.new(MockJsonApp.new).call(MOCK_ENV)
       expect(logger.tracing_history.length).to eql(2)
-      verify_mock_request logger.tracing_history[0]
-      verify_mock_response logger.tracing_history[1], MOCK_JSON_ESCAPED
+      expect(logger.tracing_history[0].include?("{\"category\":\"http_request\",")).to be true
+      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
+      expect(logger.tracing_history[1].include?("{\"category\":\"http_response\",")).to be true
+      expect(logger.tracing_history[1].include?("\"code\":200",)).to be true
+      expect(logger.tracing_history[1].include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"}")).to be true
     ensure
       logger.tracing_stop.enable
     end

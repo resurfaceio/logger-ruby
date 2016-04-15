@@ -23,19 +23,42 @@ describe HttpLogger do
   end
 
   it 'formats request' do
-    verify_mock_request HttpLogger.new.format_request(String.new, 1455908640173, MockRequest.new)
+    message = HttpLogger.new.format_request(String.new, 1455908640173, MockRequest.new)
+    expect(message.include?("{\"category\":\"http_request\",")).to be true
+    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
+    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(message.include?("\"now\":1455908640173,")).to be true
+    expect(message.include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
   end
 
   it 'formats response' do
-    verify_mock_response HttpLogger.new.format_response(String.new, 1455908665227, MockResponse.new)
+    message = HttpLogger.new.format_response(String.new, 1455908665227, MockResponse.new)
+    expect(message.include?("{\"category\":\"http_response\",")).to be true
+    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
+    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(message.include?("\"now\":1455908665227,")).to be true
+    expect(message.include?("\"code\":200",)).to be true
+    expect(message.include?("\"body\"")).to be false
   end
 
   it 'formats response with body' do
-    verify_mock_response HttpLogger.new.format_response(String.new, 1455908665887, MockResponseWithBody.new), MOCK_HTML_ESCAPED
+    message = HttpLogger.new.format_response(String.new, 1455908665887, MockResponseWithBody.new)
+    expect(message.include?("{\"category\":\"http_response\",")).to be true
+    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
+    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(message.include?("\"now\":1455908665887,")).to be true
+    expect(message.include?("\"code\":200",)).to be true
+    expect(message.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
   end
 
   it 'formats response with alternate body' do
-    verify_mock_response HttpLogger.new.format_response(String.new, 1455908667777, MockResponseWithBody.new, MOCK_HTML_ALT), MOCK_HTML_ALT_ESCAPED
+    message = HttpLogger.new.format_response(String.new, 1455908667777, MockResponseWithBody.new, MOCK_HTML_ALT)
+    expect(message.include?("{\"category\":\"http_response\",")).to be true
+    expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
+    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(message.include?("\"now\":1455908667777,")).to be true
+    expect(message.include?("\"code\":200",)).to be true
+    expect(message.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"}")).to be true
   end
 
   it 'logs echo (to default url)' do
