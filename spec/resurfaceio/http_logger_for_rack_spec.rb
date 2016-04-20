@@ -16,7 +16,7 @@ describe HttpLoggerForRack do
       HttpLoggerForRack.new(MockHtmlApp.new).call(MOCK_ENV)
       expect(logger.tracing_history.length).to eql(2)
       expect(logger.tracing_history[0].include?("{\"category\":\"http_request\",")).to be true
-      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
+      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_URL}\"}")).to be true
       expect(logger.tracing_history[1].include?("{\"category\":\"http_response\",")).to be true
       expect(logger.tracing_history[1].include?("\"code\":200",)).to be true
       expect(logger.tracing_history[1].include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
@@ -31,7 +31,7 @@ describe HttpLoggerForRack do
       HttpLoggerForRack.new(MockJsonApp.new).call(MOCK_ENV)
       expect(logger.tracing_history.length).to eql(2)
       expect(logger.tracing_history[0].include?("{\"category\":\"http_request\",")).to be true
-      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
+      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_URL}\"}")).to be true
       expect(logger.tracing_history[1].include?("{\"category\":\"http_response\",")).to be true
       expect(logger.tracing_history[1].include?("\"code\":200",)).to be true
       expect(logger.tracing_history[1].include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"}")).to be true
@@ -43,7 +43,7 @@ describe HttpLoggerForRack do
   it 'skips logging for redirects and unmatched content types' do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
-      apps = [MockCustomApp.new, MockCustomRedirectingApp.new, MockHtmlRedirectingApp.new]
+      apps = [MockCustomApp.new, MockCustomRedirectApp.new, MockHtmlRedirectApp.new]
       apps.each do |app|
         HttpLoggerForRack.new(app).call(MOCK_ENV)
         expect(logger.tracing_history.length).to eql(0)

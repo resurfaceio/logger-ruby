@@ -16,7 +16,7 @@ describe HttpLoggerForRails do
       HttpLoggerForRails.new.around(MockController.new) {}
       expect(logger.tracing_history.length).to eql(2)
       expect(logger.tracing_history[0].include?("{\"category\":\"http_request\",")).to be true
-      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
+      expect(logger.tracing_history[0].include?("\"url\":\"#{MOCK_URL}\"}")).to be true
       expect(logger.tracing_history[1].include?("{\"category\":\"http_response\",")).to be true
       expect(logger.tracing_history[1].include?("\"code\":200",)).to be true
       expect(logger.tracing_history[1].include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true

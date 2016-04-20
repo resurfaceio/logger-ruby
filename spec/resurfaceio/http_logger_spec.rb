@@ -23,16 +23,16 @@ describe HttpLogger do
   end
 
   it 'formats request' do
-    message = HttpLogger.new.format_request(String.new, 1455908640173, MockRequest.new)
+    message = HttpLogger.new.format_request(String.new, 1455908640173, mock_request)
     expect(message.include?("{\"category\":\"http_request\",")).to be true
     expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
     expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(message.include?("\"now\":1455908640173,")).to be true
-    expect(message.include?("\"url\":\"#{MOCK_ENV_URL}\"}")).to be true
+    expect(message.include?("\"url\":\"#{MOCK_URL}\"}")).to be true
   end
 
   it 'formats response' do
-    message = HttpLogger.new.format_response(String.new, 1455908665227, MockResponse.new)
+    message = HttpLogger.new.format_response(String.new, 1455908665227, mock_response)
     expect(message.include?("{\"category\":\"http_response\",")).to be true
     expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
     expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
@@ -42,7 +42,7 @@ describe HttpLogger do
   end
 
   it 'formats response with body' do
-    message = HttpLogger.new.format_response(String.new, 1455908665887, MockResponseWithBody.new)
+    message = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body)
     expect(message.include?("{\"category\":\"http_response\",")).to be true
     expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
     expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
@@ -52,7 +52,7 @@ describe HttpLogger do
   end
 
   it 'formats response with alternate body' do
-    message = HttpLogger.new.format_response(String.new, 1455908667777, MockResponseWithBody.new, MOCK_HTML_ALT)
+    message = HttpLogger.new.format_response(String.new, 1455908667777, mock_response_with_body, MOCK_HTML_ALT)
     expect(message.include?("{\"category\":\"http_response\",")).to be true
     expect(message.include?("\"source\":\"#{HttpLogger::SOURCE}\",")).to be true
     expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true

@@ -32,8 +32,6 @@ MOCK_ENV = {
     'REQUEST_PATH' => '/index.html'
 }
 
-MOCK_ENV_URL = 'http://localhost:3000/index.html'
-
 MOCK_JSON = "{ \"hello\" : \"world\" }"
 
 MOCK_JSON_ESCAPED = JsonMessage.escape('', MOCK_JSON)
@@ -48,13 +46,15 @@ MOCK_HTML_ALT_ESCAPED = JsonMessage.escape('', MOCK_HTML_ALT)
 
 MOCK_INVALID_URLS = ["#{HttpLogger::URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/', 'http://www.noway3is5this1valid2.com/']
 
+MOCK_URL = 'http://localhost:3000/index.html'
+
 class MockController
   def request
-    MockRequest.new
+    mock_request
   end
 
   def response
-    MockResponseWithBody.new
+    mock_response_with_body
   end
 end
 
@@ -66,9 +66,27 @@ class MockCustomApp
   end
 end
 
-class MockCustomRedirectingApp
+class MockCustomRedirectApp
   def call(env)
-    [304, {}, ['']]
+    headers = {}
+    headers[Rack::CONTENT_TYPE] = 'application/super-troopers'
+    [304, headers, ['']]
+  end
+end
+
+class MockJsonApp
+  def call(env)
+    headers = {}
+    headers[Rack::CONTENT_TYPE] = 'application/json; charset=utf-8'
+    [200, headers, [MOCK_JSON]]
+  end
+end
+
+class MockJsonRedirectApp
+  def call(env)
+    headers = {}
+    headers[Rack::CONTENT_TYPE] = 'application/json'
+    [304, headers, ['']]
   end
 end
 
@@ -81,46 +99,40 @@ class MockHtmlApp
   end
 end
 
-class MockHtmlRedirectingApp
+class MockHtmlRedirectApp
   def call(env)
     headers = {}
     headers[Rack::CACHE_CONTROL] = 'private, max-age=0, no-cache'
-    headers[Rack::CONTENT_TYPE] = 'text/html'
+    headers[Rack::CONTENT_TYPE] = 'text/html; charset=utf-8'
     [304, headers, [MOCK_HTML]]
   end
 end
 
-class MockJsonApp
-  def call(env)
-    headers = {}
-    headers[Rack::CACHE_CONTROL] = 'private, max-age=0, no-cache'
-    headers[Rack::CONTENT_TYPE] = 'application/json; charset=utf-8'
-    [200, headers, [MOCK_JSON]]
-  end
+def mock_request
+  r = HttpRequestImpl.new
+  r.url = MOCK_URL
+  r
 end
 
-class MockRequest
-  def url
-    MOCK_ENV_URL
-  end
+def mock_response
+  r = HttpResponseImpl.new
+  r.status = 200
+  r
 end
 
-class MockResponse
-  def body
-    nil
-  end
-
-  def status
-    200
-  end
+def mock_response_with_body
+  r = HttpResponseImpl.new
+  r.body = MOCK_HTML
+  r.status = 200
+  r
 end
 
-class MockResponseWithBody
-  def body
-    MOCK_HTML
-  end
+# TEMPORARY DEFINITIONS, TO BE MADE PUBLIC CLASSES
 
-  def status
-    200
-  end
+class HttpRequestImpl
+  attr_accessor :url
+end
+
+class HttpResponseImpl
+  attr_accessor :body, :status
 end
