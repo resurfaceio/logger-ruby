@@ -40,9 +40,16 @@ HttpLoggerForRack performs some basic filtering: it ignores redirects (304 respo
 
     require 'resurfaceio/logger'
 
-    logger = HttpLoggerFactory.get       # returns default cached HTTP logger
-    logger.log_request(request)          # log HTTP request details
-    logger.log_response(response)        # log HTTP response details
-    if logger.enabled? ...               # intending to log stuff?
-    logger.enable                        # enable logging for dev/staging/production
-    logger.disable                       # disable logging for automated tests
+    # manage default logger
+    logger = HttpLoggerFactory.get              # returns cached HTTP logger
+    logger.disable                              # disable logging for automated tests
+    logger.enable                               # re-enable logging after being disabled
+    if logger.enabled? ...                      # branch on logging being enabled
+
+    # log a HTTP exchange
+    req = HttpRequestImpl.new                   # define request to log
+    req.url = 'http://google.com'
+    res = HttpResponseImpl.new                  # define response to log
+    res.status = 200
+    logger.log_request(req)                     # log the request
+    logger.log_response(res, '<html></html>')   # log the response
