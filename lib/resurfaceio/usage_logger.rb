@@ -19,6 +19,10 @@ class UsageLogger
     @version = HttpLogger.version_lookup
   end
 
+  def active?
+    @enabled || @tracing
+  end
+
   def disable
     @enabled = false
     self

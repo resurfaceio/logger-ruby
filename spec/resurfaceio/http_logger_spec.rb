@@ -96,11 +96,13 @@ describe HttpLogger do
 
   it 'uses tracing' do
     logger = HttpLogger.new.disable
+    expect(logger.active?).to be false
     expect(logger.enabled?).to be false
     expect(logger.tracing?).to be false
     expect(logger.tracing_history.length).to be 0
     logger.tracing_start
     begin
+      expect(logger.active?).to be true
       expect(logger.tracing?).to be true
       expect(logger.tracing_history.length).to be 0
       expect(logger.log_echo).to be true
@@ -111,6 +113,7 @@ describe HttpLogger do
       expect(logger.tracing_history.length).to eql(3)
     ensure
       logger.tracing_stop.enable
+      expect(logger.active?).to be true
       expect(logger.enabled?).to be true
       expect(logger.tracing?).to be false
       expect(logger.tracing_history.length).to be 0
