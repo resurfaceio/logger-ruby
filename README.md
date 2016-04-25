@@ -29,12 +29,11 @@ Configure an around_action as shown below to log from any Rails controller. This
 
 ## Logging From Rack Middleware
 
-This works for Sinatra and other Rack-based frameworks including Rails. This does usage logging without changing
-application controllers to use around_actions. Simply add a top-level use method as shown below.
-(For rails, this is config.ru)
+This works for Sinatra and other Rack-based frameworks including Rails. This requires no changes to your app
+except for adding a top-level use method as shown below.
 
+    # for rails, add to config.ru
     require 'resurfaceio/logger'
-
     use HttpLoggerForRack
 
 HttpLoggerForRack performs some basic filtering: it ignores redirects (304 response codes), and only logs responses
