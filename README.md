@@ -15,8 +15,11 @@ Add this line to your Gemfile:
 
 ## Logging From Rails Controller
 
-Configure an around_action as shown below to log from any Rails controller. This can be applied selectively (just one or two controllers) or done in a superclass to
-apply logging across multiple controllers simultaneously.
+Rails is the most popular Ruby framework, and is nicely introduced by the
+[Getting Started on Heroku with Ruby](https://devcenter.heroku.com/articles/getting-started-with-ruby) tutorial.
+
+Configure an around_action as shown below to log from any Rails controller. This can be applied selectively
+(just one or two controllers) or done in a superclass to apply logging across multiple controllers simultaneously.
 
     require 'resurfaceio/logger'
 
@@ -26,15 +29,16 @@ apply logging across multiple controllers simultaneously.
 
 ## Logging From Rack Middleware
 
-This works for Sinatra and other Rack-based frameworks including Rails. This does usage logging without changing application controllers to use around_actions.
-Simply add a top-level use method as shown below. (For rails, this is config.ru)
+This works for Sinatra and other Rack-based frameworks including Rails. This does usage logging without changing
+application controllers to use around_actions. Simply add a top-level use method as shown below.
+(For rails, this is config.ru)
 
     require 'resurfaceio/logger'
 
     use HttpLoggerForRack
 
-HttpLoggerForRack performs some basic filtering: it ignores redirects (304 response codes), and only logs responses for content types matching a predefined list
-(including 'text/html' and 'application/json').
+HttpLoggerForRack performs some basic filtering: it ignores redirects (304 response codes), and only logs responses
+for content types matching a predefined list (including 'text/html' and 'application/json').
 
 ## Using API Directly
 
