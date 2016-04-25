@@ -59,16 +59,16 @@ describe JsonMessage do
     expect(JsonMessage.escape('', "the cow says \tmoo")).to eql("the cow says \\tmoo")
   end
 
-  it 'finishes a message' do
-    expect(JsonMessage.finish('')).to eql('}')
-  end
-
   it 'starts a message' do
-    json = JsonMessage.start('', 'category1', 'source1', 'version1', 1455908589662)
+    json = JsonMessage.start('', 'category1', 'agent1', 'version1', 1455908589662)
     expect(json.include?("{\"category\":\"category1\",")).to be true
-    expect(json.include?("\"source\":\"source1\",")).to be true
+    expect(json.include?("\"agent\":\"agent1\",")).to be true
     expect(json.include?("\"version\":\"version1\",")).to be true
     expect(json.include?("\"now\":1455908589662")).to be true
+  end
+
+  it 'stops a message' do
+    expect(JsonMessage.stop('')).to eql('}')
   end
 
 end

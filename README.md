@@ -5,7 +5,7 @@ This gem makes it easy to log server usage including HTTP request/response detai
 
 ## Dependencies
 
-No runtime dependencies to conflict with your app. Requires Ruby 2.x.
+Requires Ruby 2.x. No other dependencies to conflict with your app.
 
 ## Installing With Bundler
 

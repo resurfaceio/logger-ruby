@@ -7,11 +7,9 @@ require 'net/https'
 
 class UsageLogger
 
-  SOURCE = 'resurfaceio-logger-ruby'
+  DEFAULT_URL = 'https://resurfaceio.herokuapp.com/messages'
 
-  URL = 'https://resurfaceio.herokuapp.com/messages'
-
-  def initialize(url = URL, enabled = true)
+  def initialize(url = DEFAULT_URL, enabled = true)
     @enabled = enabled
     @tracing = false
     @tracing_history = []
@@ -69,12 +67,12 @@ class UsageLogger
     Gem.loaded_specs['resurfaceio-logger'].version.to_s
   end
 
-  # TEMPORARY, THIS WILL BE CHANGING TO PROTECTED
+  protected
 
   def post(json)
     if @tracing
       @tracing_history << json
-      200
+      true
     else
       begin
         uri = URI.parse(url)
@@ -83,12 +81,11 @@ class UsageLogger
         request = Net::HTTP::Post.new(uri.path)
         request.body = json
         response = https.request(request)
-        response.code.to_i
+        response.code.to_i == 200
       rescue SocketError
-        404
+        false
       end
     end
   end
-
 
 end

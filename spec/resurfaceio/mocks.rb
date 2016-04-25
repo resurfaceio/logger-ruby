@@ -44,7 +44,8 @@ MOCK_HTML_ALT = '<html><h1>We want the funk</h1><p>Gotta have that funk</p></htm
 
 MOCK_HTML_ALT_ESCAPED = JsonMessage.escape('', MOCK_HTML_ALT)
 
-MOCK_INVALID_URLS = ["#{HttpLogger::URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/', 'http://www.noway3is5this1valid2.com/']
+MOCK_INVALID_URLS = ["#{HttpLogger::DEFAULT_URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/',
+                     'http://www.noway3is5this1valid2.com/']
 
 MOCK_URL = 'http://localhost:3000/index.html'
 
@@ -125,14 +126,4 @@ def mock_response_with_body
   r.body = MOCK_HTML
   r.status = 200
   r
-end
-
-# TEMPORARY DEFINITIONS, TO BE MADE PUBLIC CLASSES
-
-class HttpRequestImpl
-  attr_accessor :url
-end
-
-class HttpResponseImpl
-  attr_accessor :body, :status
 end

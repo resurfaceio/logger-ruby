@@ -42,20 +42,20 @@ class JsonMessage
     json
   end
 
-  def self.finish(json)
-    json << '}'
-    json
-  end
-
-  def self.start(json, category, source, version, now)
+  def self.start(json, category, agent, version, now)
     json << "{\"category\":\""
     json << category
-    json << "\",\"source\":\""
-    json << source
+    json << "\",\"agent\":\""
+    json << agent
     json << "\",\"version\":\""
     json << version
     json << "\",\"now\":"
     json << now.to_s
+    json
+  end
+
+  def self.stop(json)
+    json << '}'
     json
   end
 
