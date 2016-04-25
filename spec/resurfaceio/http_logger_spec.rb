@@ -138,7 +138,7 @@ describe HttpLogger do
     expect(version).to be_kind_of String
     expect(version).not_to be nil
     expect(version.length).to be > 0
-    expect(version.start_with?('1.1.')).to be true
+    expect(version.start_with?('1.2.')).to be true
     expect(version.include?('\\')).to be false
     expect(version.include?('\"')).to be false
     expect(version.include?('\'')).to be false
