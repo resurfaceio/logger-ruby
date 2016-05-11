@@ -10,7 +10,7 @@ describe HttpLoggerForRack do
     expect(HttpLoggerForRack.class.equal?(Resurfaceio::HttpLoggerForRack.class)).to be true
   end
 
-  it 'logs rack call (html)' do
+  it 'logs html' do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
       HttpLoggerForRack.new(MockHtmlApp.new).call(MOCK_ENV)
@@ -25,7 +25,7 @@ describe HttpLoggerForRack do
     end
   end
 
-  it 'logs rack call (json)' do
+  it 'logs json' do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
       HttpLoggerForRack.new(MockJsonApp.new).call(MOCK_ENV)

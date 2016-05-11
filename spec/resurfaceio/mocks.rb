@@ -32,6 +32,8 @@ MOCK_ENV = {
     'REQUEST_PATH' => '/index.html'
 }
 
+MOCK_ENV_POST = MOCK_ENV.clone.merge({'CONTENT_TYPE' => 'application/json'})
+
 MOCK_JSON = "{ \"hello\" : \"world\" }"
 
 MOCK_JSON_ESCAPED = JsonMessage.escape('', MOCK_JSON)
@@ -122,6 +124,7 @@ end
 def mock_post_request
   r = HttpRequestImpl.new
   r.body = MOCK_JSON
+  r.content_type = 'application/json'
   r.url = MOCK_URL
   r
 end
