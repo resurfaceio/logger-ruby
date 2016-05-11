@@ -23,53 +23,74 @@ describe HttpLogger do
   end
 
   it 'formats echo' do
-    message = HttpLogger.new.format_echo(String.new, 1234)
-    expect(message).to be_kind_of String
-    expect(message).not_to be nil
-    expect(message.length).to be > 0
-    expect(message.include?("{\"category\":\"echo\",")).to be true
-    expect(message.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1234}")).to be true
+    s = HttpLogger.new.format_echo(String.new, 1234)
+    expect(s).to be_kind_of String
+    expect(s).not_to be nil
+    expect(s.length).to be > 0
+    expect(s.include?("{\"category\":\"echo\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1234}")).to be true
   end
 
   it 'formats request' do
-    message = HttpLogger.new.format_request(String.new, 1455908640173, mock_request)
-    expect(message.include?("{\"category\":\"http_request\",")).to be true
-    expect(message.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1455908640173,")).to be true
-    expect(message.include?("\"url\":\"#{MOCK_URL}\"}")).to be true
+    s = HttpLogger.new.format_request(String.new, 1455908640173, mock_request)
+    expect(s.include?("{\"category\":\"http_request\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908640173,")).to be true
+    expect(s.include?("\"url\":\"#{MOCK_URL}\"}")).to be true
+    expect(s.include?("\"body\"")).to be false
+  end
+
+  it 'formats request with body' do
+    s = HttpLogger.new.format_request(String.new, 1455908640174, mock_post_request)
+    expect(s.include?("{\"category\":\"http_request\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908640174,")).to be true
+    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
+    expect(s.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"}")).to be true
+  end
+
+  it 'formats request with alternative body' do
+    s = HttpLogger.new.format_request(String.new, 1455908640175, mock_post_request, MOCK_JSON_ALT)
+    expect(s.include?("{\"category\":\"http_request\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908640175,")).to be true
+    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
+    expect(s.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"}")).to be true
   end
 
   it 'formats response' do
-    message = HttpLogger.new.format_response(String.new, 1455908665227, mock_response)
-    expect(message.include?("{\"category\":\"http_response\",")).to be true
-    expect(message.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1455908665227,")).to be true
-    expect(message.include?("\"code\":200",)).to be true
-    expect(message.include?("\"body\"")).to be false
+    s = HttpLogger.new.format_response(String.new, 1455908665227, mock_response)
+    expect(s.include?("{\"category\":\"http_response\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908665227,")).to be true
+    expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"body\"")).to be false
   end
 
   it 'formats response with body' do
-    message = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body)
-    expect(message.include?("{\"category\":\"http_response\",")).to be true
-    expect(message.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1455908665887,")).to be true
-    expect(message.include?("\"code\":200",)).to be true
-    expect(message.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
+    s = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body)
+    expect(s.include?("{\"category\":\"http_response\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908665887,")).to be true
+    expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
   end
 
   it 'formats response with alternate body' do
-    message = HttpLogger.new.format_response(String.new, 1455908667777, mock_response_with_body, MOCK_HTML_ALT)
-    expect(message.include?("{\"category\":\"http_response\",")).to be true
-    expect(message.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(message.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(message.include?("\"now\":1455908667777,")).to be true
-    expect(message.include?("\"code\":200",)).to be true
-    expect(message.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"}")).to be true
+    s = HttpLogger.new.format_response(String.new, 1455908667777, mock_response_with_body, MOCK_HTML_ALT)
+    expect(s.include?("{\"category\":\"http_response\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908667777,")).to be true
+    expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"}")).to be true
   end
 
   it 'logs echo (to default url)' do
@@ -90,6 +111,8 @@ describe HttpLogger do
     MOCK_INVALID_URLS.each do |url|
       logger = HttpLogger.new(url, false)
       expect(logger.log_echo).to be true
+      expect(logger.log_request(nil)).to be true
+      expect(logger.log_response(nil)).to be true
       expect(logger.tracing_history.length).to be 0
     end
   end

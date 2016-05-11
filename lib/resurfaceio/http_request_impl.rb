@@ -2,5 +2,5 @@
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
 class HttpRequestImpl
-  attr_accessor :url
+  attr_accessor :body, :url
 end

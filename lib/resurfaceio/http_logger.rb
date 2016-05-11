@@ -17,9 +17,13 @@ class HttpLogger < UsageLogger
     JsonMessage.stop(json)
   end
 
-  def format_request(json, now, request)
+  def format_request(json, now, request, body=nil)
     JsonMessage.start(json, 'http_request', agent, version, now) << ','
     JsonMessage.append(json, 'url', request.url)
+    unless body.nil? && request.body.nil?
+      json << ','
+      JsonMessage.append(json, 'body', body.nil? ? request.body : body)
+    end
     JsonMessage.stop(json)
   end
 
@@ -41,9 +45,9 @@ class HttpLogger < UsageLogger
     end
   end
 
-  def log_request(request)
+  def log_request(request, body=nil)
     if @enabled || @tracing
-      post format_request(String.new, Time.now.to_i, request)
+      post format_request(String.new, Time.now.to_i, request, body)
     else
       true
     end

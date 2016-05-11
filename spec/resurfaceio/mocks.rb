@@ -36,6 +36,10 @@ MOCK_JSON = "{ \"hello\" : \"world\" }"
 
 MOCK_JSON_ESCAPED = JsonMessage.escape('', MOCK_JSON)
 
+MOCK_JSON_ALT = "{ \"moonbeam\" : \"city\" }"
+
+MOCK_JSON_ALT_ESCAPED = JsonMessage.escape('', MOCK_JSON_ALT)
+
 MOCK_HTML = '<html>Hello World!</html>'
 
 MOCK_HTML_ESCAPED = JsonMessage.escape('', MOCK_HTML)
@@ -111,6 +115,13 @@ end
 
 def mock_request
   r = HttpRequestImpl.new
+  r.url = MOCK_URL
+  r
+end
+
+def mock_post_request
+  r = HttpRequestImpl.new
+  r.body = MOCK_JSON
   r.url = MOCK_URL
   r
 end
