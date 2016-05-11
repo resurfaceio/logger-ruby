@@ -55,16 +55,6 @@ MOCK_INVALID_URLS = ["#{HttpLogger::DEFAULT_URL}/noway3is5this1valid2", 'https:/
 
 MOCK_URL = 'http://localhost:3000/index.html'
 
-class MockController
-  def request
-    mock_request
-  end
-
-  def response
-    mock_response_with_body
-  end
-end
-
 class MockCustomApp
   def call(env)
     headers = {}
@@ -76,7 +66,7 @@ end
 class MockCustomRedirectApp
   def call(env)
     headers = {}
-    headers[Rack::CONTENT_TYPE] = 'application/super-troopers'
+    headers[Rack::CONTENT_TYPE] = 'application/crazy'
     [304, headers, ['']]
   end
 end
@@ -115,13 +105,29 @@ class MockHtmlRedirectApp
   end
 end
 
+class MockRailsHtmlController
+  def request
+    mock_request
+  end
+
+  def response
+    mock_response_with_body
+  end
+end
+
+class MockRailsJsonController < MockRailsHtmlController
+  def request
+    mock_request_with_body
+  end
+end
+
 def mock_request
   r = HttpRequestImpl.new
   r.url = MOCK_URL
   r
 end
 
-def mock_post_request
+def mock_request_with_body
   r = HttpRequestImpl.new
   r.body = MOCK_JSON
   r.content_type = 'application/json'

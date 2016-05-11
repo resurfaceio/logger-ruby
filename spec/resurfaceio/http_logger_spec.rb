@@ -44,7 +44,7 @@ describe HttpLogger do
   end
 
   it 'formats request with body' do
-    s = HttpLogger.new.format_request(String.new, 1455908640174, mock_post_request)
+    s = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body)
     expect(s.include?("{\"category\":\"http_request\",")).to be true
     expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
@@ -54,7 +54,7 @@ describe HttpLogger do
   end
 
   it 'formats request with alternative body' do
-    s = HttpLogger.new.format_request(String.new, 1455908640175, mock_post_request, MOCK_JSON_ALT)
+    s = HttpLogger.new.format_request(String.new, 1455908640175, mock_request_with_body, MOCK_JSON_ALT)
     expect(s.include?("{\"category\":\"http_request\",")).to be true
     expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
