@@ -55,5 +55,7 @@ for content types matching a predefined list (including 'text/html' and 'applica
     res = HttpResponseImpl.new                  # define response to log
     res.content_type('text/html')
     res.status = 200
-    logger.log_request(req)                     # log the request
-    logger.log_response(res, '<html></html>')   # log the response
+    logger.log_request(req)                     # log the request  (use content if present)
+    logger.log_request(req, '...')              # log the request  (with specified content)
+    logger.log_response(res)                    # log the response (use content if present)
+    logger.log_response(res, '...')             # log the response (with specified content)
