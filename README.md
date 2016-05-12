@@ -53,6 +53,7 @@ for content types matching a predefined list (including 'text/html' and 'applica
     req = HttpRequestImpl.new                   # define request to log
     req.url = 'http://google.com'
     res = HttpResponseImpl.new                  # define response to log
+    res.content_type('text/html')
     res.status = 200
     logger.log_request(req)                     # log the request
     logger.log_response(res, '<html></html>')   # log the response
