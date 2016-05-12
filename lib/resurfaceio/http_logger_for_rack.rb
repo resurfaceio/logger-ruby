@@ -15,21 +15,21 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
     status, headers, body = @app.call(env)
     if @logger.active? && status != 304
       response = Rack::Response.new(body, status, headers)
-      content_type = response.content_type
-      unless content_type.nil?
-        is_html = content_type.include?('text/html')
-        is_json = content_type.include?('application/json')
-        is_soap = content_type.include?('application/soap+xml')
-        is_xml1 = content_type.include?('application/xml')
-        is_xml2 = content_type.include?('text/xml')
-        if is_html || is_json || is_soap || is_xml1 || is_xml2
-          request = Rack::Request.new(env)
-          @logger.log_request(request)
-          @logger.log_response(response, body.join)
-        end
+      if string_content_type?(response.content_type)
+        request = Rack::Request.new(env)
+        @logger.log_request(request)
+        @logger.log_response(response, body.join)
       end
     end
     [status, headers, body]
+  end
+
+  protected
+
+  def string_content_type?(s)
+    !s.nil? && (s.include?('text/html') || s.include?('text/plain') || s.include?('text/xml') ||
+        s.include?('application/json') || s.include?('application/soap+xml') ||
+        s.include?('application/xml') || s.include?('application/x-www-form-urlencoded'))
   end
 
 end

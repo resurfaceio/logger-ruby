@@ -32,9 +32,9 @@ MOCK_ENV = {
     'REQUEST_PATH' => '/index.html'
 }
 
-MOCK_ENV_POST = MOCK_ENV.clone.merge({'CONTENT_TYPE' => 'application/json'})
-
 MOCK_JSON = "{ \"hello\" : \"world\" }"
+
+MOCK_JSON_ENV = MOCK_ENV.clone.merge({'CONTENT_TYPE' => 'application/json', 'rack.input' => MOCK_JSON})
 
 MOCK_JSON_ESCAPED = JsonMessage.escape('', MOCK_JSON)
 
