@@ -22,7 +22,7 @@ class HttpLogger < UsageLogger
     JsonMessage.append(json, 'url', request.url)
     unless body.nil? && request.body.nil?
       json << ','
-      JsonMessage.append(json, 'body', body.nil? ? request.body : body)
+      JsonMessage.append(json, 'body', body.nil? ? request.body.read : body)
     end
     JsonMessage.stop(json)
   end
@@ -32,7 +32,7 @@ class HttpLogger < UsageLogger
     JsonMessage.append(json, 'code', response.status)
     unless body.nil? && response.body.nil?
       json << ','
-      JsonMessage.append(json, 'body', body.nil? ? response.body : body)
+      JsonMessage.append(json, 'body', body.nil? ? response.body.join : body)
     end
     JsonMessage.stop(json)
   end

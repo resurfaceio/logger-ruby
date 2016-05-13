@@ -18,7 +18,7 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
       if string_content_type?(response.content_type)
         request = Rack::Request.new(env)
         @logger.log_request(request)
-        @logger.log_response(response, body.join)
+        @logger.log_response(response)
       end
     end
     [status, headers, body]

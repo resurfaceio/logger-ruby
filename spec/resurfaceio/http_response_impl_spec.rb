@@ -11,10 +11,12 @@ describe HttpResponseImpl do
   end
 
   it 'uses body' do
+    val = 'Conway Stern'
     r = HttpResponseImpl.new
     expect(r.body).to be nil
-    r.body = MOCK_HTML
-    expect(r.body).to eql(MOCK_HTML)
+    r.raw_body = val
+    expect(r.body.class.name).to eql('Array')
+    expect(r.body.join).to eql(val)
   end
 
   it 'uses content_type' do
@@ -23,6 +25,13 @@ describe HttpResponseImpl do
     expect(r.content_type).to be nil
     r.content_type = val
     expect(r.content_type).to eql(val)
+  end
+
+  it 'uses raw body' do
+    r = HttpResponseImpl.new
+    expect(r.raw_body).to be nil
+    r.raw_body = MOCK_HTML
+    expect(r.raw_body).to eql(MOCK_HTML)
   end
 
   it 'uses status' do
