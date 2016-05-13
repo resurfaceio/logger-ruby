@@ -53,6 +53,16 @@ describe HttpLogger do
     expect(s.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"}")).to be true
   end
 
+  it 'formats request with empty body' do
+    s = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body, '')
+    expect(s.include?("{\"category\":\"http_request\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908640174,")).to be true
+    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
+    expect(s.include?("\"body\":\"\"}")).to be true
+  end
+
   it 'formats request with alternative body' do
     s = HttpLogger.new.format_request(String.new, 1455908640175, mock_request_with_body, MOCK_JSON_ALT)
     expect(s.include?("{\"category\":\"http_request\",")).to be true
@@ -81,6 +91,16 @@ describe HttpLogger do
     expect(s.include?("\"now\":1455908665887,")).to be true
     expect(s.include?("\"code\":200",)).to be true
     expect(s.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
+  end
+
+  it 'formats response with empty body' do
+    s = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body, '')
+    expect(s.include?("{\"category\":\"http_response\",")).to be true
+    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
+    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
+    expect(s.include?("\"now\":1455908665887,")).to be true
+    expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"body\":\"\"}")).to be true
   end
 
   it 'formats response with alternate body' do
