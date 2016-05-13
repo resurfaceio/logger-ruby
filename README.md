@@ -13,13 +13,17 @@ Add this line to your Gemfile:
 
     gem 'resurfaceio-logger', :git => 'https://github.com/resurfaceio/resurfaceio-logger-ruby.git'
 
+Then update using Bundler:
+
+    bundle install
+
 ## Logging From Rails Controller
 
 Rails is the most popular Ruby framework, and is nicely introduced by the
 [Getting Started on Heroku with Ruby](https://devcenter.heroku.com/articles/getting-started-with-ruby) tutorial.
 
 Configure an around_action as shown below to log from any Rails controller. This can be applied selectively
-(just one or two controllers) or done in a superclass to apply logging across multiple controllers simultaneously.
+(just one or two controllers) or done in a superclass to apply logging across many controllers.
 
     require 'resurfaceio/logger'
 
@@ -30,11 +34,14 @@ Configure an around_action as shown below to log from any Rails controller. This
 ## Logging From Rack Middleware
 
 This works for Sinatra and other Rack-based frameworks including Rails. This requires no changes to your app
-except for adding a top-level use method as shown below.
+except for tweaking Rack middleware like the example below.
 
-    # for rails, add to config.ru
-    require 'resurfaceio/logger'
-    use HttpLoggerForRack
+    # config.ru
+    # This file is used by Rack-based servers to start the application.
+    require ::File.expand_path('../config/environment',  __FILE__)
+    require 'resurfaceio/logger'   # added!
+    use HttpLoggerForRack          # added!
+    run Rails.application
 
 HttpLoggerForRack performs some basic filtering: it ignores redirects (304 response codes), and only logs responses
 for content types matching a predefined list (including 'text/html' and 'application/json').
@@ -55,7 +62,7 @@ for content types matching a predefined list (including 'text/html' and 'applica
     res = HttpResponseImpl.new                  # define response to log
     res.content_type('text/html')
     res.status = 200
-    logger.log_request(req)                     # log the request  (use content if present)
-    logger.log_request(req, '...')              # log the request  (with specified content)
-    logger.log_response(res)                    # log the response (use content if present)
-    logger.log_response(res, '...')             # log the response (with specified content)
+    logger.log_request(req)                     # log the request  (use body if present)
+    logger.log_request(req, body)               # log the request  (with specified body)
+    logger.log_response(res)                    # log the response (use body if present)
+    logger.log_response(res, body)              # log the response (with specified body)
