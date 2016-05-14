@@ -8,12 +8,22 @@ class JsonMessage
     json << key.to_s
     json << "\":"
     case value
+      when Array
+        json << "\""
+        JsonMessage.escape(json, value.join)
+        json << "\""
       when String
         json << "\""
         JsonMessage.escape(json, value)
         json << "\""
       else
-        json << value.to_s
+        if value.respond_to?(:read)
+          json << "\""
+          JsonMessage.escape(json, value.read)
+          json << "\""
+        else
+          json << value.to_s
+        end
     end
     json
   end

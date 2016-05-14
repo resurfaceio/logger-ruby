@@ -9,22 +9,39 @@ describe JsonMessage do
     expect(JsonMessage.class.equal?(Resurfaceio::JsonMessage.class)).to be true
   end
 
-  it 'appends to message' do
+  it 'appends arrays to message' do
+    expect(JsonMessage.append('', 'a', %w(b))).to eql("\"a\":\"b\"")
+    expect(JsonMessage.append('', 'b', [1])).to eql("\"b\":\"1\"")
+    expect(JsonMessage.append('', 'c', ["can\"t"])).to eql("\"c\":\"can\\\"t\"")
+    expect(JsonMessage.append('X', 'd', %w(a b solute))).to eql("X\"d\":\"absolute\"")
+  end
+
+  it 'appends numbers to message' do
+    expect(JsonMessage.append('', 'name', -1)).to eql("\"name\":-1")
     expect(JsonMessage.append('', 'name1', 123)).to eql("\"name1\":123")
-    expect(JsonMessage.append('', '1name1', 1455908665227)).to eql("\"1name1\":1455908665227")
-    expect(JsonMessage.append('', 'name2', 'value1')).to eql("\"name2\":\"value1\"")
-    expect(JsonMessage.append('', 'sand_castle', "the cow says \"moo")).to eql("\"sand_castle\":\"the cow says \\\"moo\"")
-    expect(JsonMessage.append('', 'Sand-Castle', "the cow says \"moo\"")).to eql("\"Sand-Castle\":\"the cow says \\\"moo\\\"\"")
+    expect(JsonMessage.append('{', '1name1', 1455908665227)).to eql("{\"1name1\":1455908665227")
+  end
+
+  it 'appends objects to message' do
+    expect(JsonMessage.append('', 'io', StringIO.new('as'))).to eql("\"io\":\"as\"")
+    expect(JsonMessage.append('', 'io', StringIO.new('as if'))).to eql("\"io\":\"as if\"")
+    expect(JsonMessage.append('!', 'io', StringIO.new("as\"if"))).to eql("!\"io\":\"as\\\"if\"")
+  end
+
+  it 'appends strings to message' do
+    expect(JsonMessage.append('{', 'name2', 'value1')).to eql("{\"name2\":\"value1\"")
+    expect(JsonMessage.append('', 'b_2', "the cow says \"moo")).to eql("\"b_2\":\"the cow says \\\"moo\"")
+    expect(JsonMessage.append('', 's-c-2', "the cow says \"moo\"")).to eql("\"s-c-2\":\"the cow says \\\"moo\\\"\"")
   end
 
   it 'escapes backslashes' do
-    expect(JsonMessage.escape('', "\\the cow says moo")).to eql("\\\\the cow says moo")
+    expect(JsonMessage.escape('!', "\\the cow says moo")).to eql("!\\\\the cow says moo")
     expect(JsonMessage.escape('', "the cow says moo\\")).to eql("the cow says moo\\\\")
     expect(JsonMessage.escape('', "the cow says \\moo")).to eql("the cow says \\\\moo")
   end
 
   it 'escapes backspaces' do
-    expect(JsonMessage.escape('', "\bthe cow says moo")).to eql("\\bthe cow says moo")
+    expect(JsonMessage.escape('{', "\bthe cow says moo")).to eql("{\\bthe cow says moo")
     expect(JsonMessage.escape('', "the cow says moo\b")).to eql("the cow says moo\\b")
     expect(JsonMessage.escape('', "the cow says \bmoo")).to eql("the cow says \\bmoo")
   end
