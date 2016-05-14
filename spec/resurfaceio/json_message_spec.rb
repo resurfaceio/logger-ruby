@@ -29,6 +29,11 @@ describe JsonMessage do
   end
 
   it 'appends strings to message' do
+    expect(JsonMessage.append('', 'A', '')).to eql("\"A\":\"\"")
+    expect(JsonMessage.append('', 'B', ' ')).to eql("\"B\":\" \"")
+    expect(JsonMessage.append('', 'C', '   ')).to eql("\"C\":\"   \"")
+    expect(JsonMessage.append('', 'D', "\t")).to eql("\"D\":\"\\t\"")
+    expect(JsonMessage.append('', 'E', "\t\t ")).to eql("\"E\":\"\\t\\t \"")
     expect(JsonMessage.append('{', 'name2', 'value1')).to eql("{\"name2\":\"value1\"")
     expect(JsonMessage.append('', 'b_2', "the cow says \"moo")).to eql("\"b_2\":\"the cow says \\\"moo\"")
     expect(JsonMessage.append('', 's-c-2', "the cow says \"moo\"")).to eql("\"s-c-2\":\"the cow says \\\"moo\\\"\"")
