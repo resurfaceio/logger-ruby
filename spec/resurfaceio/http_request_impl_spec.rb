@@ -34,6 +34,14 @@ describe HttpRequestImpl do
     expect(r.raw_body).to eql(MOCK_HTML)
   end
 
+  it 'uses request method' do
+    val = '!METHOD!'
+    r = HttpRequestImpl.new
+    expect(r.request_method).to be nil
+    r.request_method = val
+    expect(r.request_method).to eql(val)
+  end
+
   it 'uses url' do
     val = 'http://goofball.com'
     r = HttpRequestImpl.new

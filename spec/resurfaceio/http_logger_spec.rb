@@ -39,6 +39,7 @@ describe HttpLogger do
     expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908640173,")).to be true
+    expect(s.include?("\"method\":\"GET\",")).to be true
     expect(s.include?("\"url\":\"#{MOCK_URL}\"}")).to be true
     expect(s.include?("\"body\"")).to be false
   end
@@ -49,6 +50,7 @@ describe HttpLogger do
     expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908640174,")).to be true
+    expect(s.include?("\"method\":\"POST\",")).to be true
     expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
     expect(s.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"}")).to be true
   end
@@ -59,6 +61,7 @@ describe HttpLogger do
     expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908640174,")).to be true
+    expect(s.include?("\"method\":\"POST\",")).to be true
     expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
     expect(s.include?("\"body\":\"\"}")).to be true
   end
@@ -69,6 +72,7 @@ describe HttpLogger do
     expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908640175,")).to be true
+    expect(s.include?("\"method\":\"POST\",")).to be true
     expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
     expect(s.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"}")).to be true
   end

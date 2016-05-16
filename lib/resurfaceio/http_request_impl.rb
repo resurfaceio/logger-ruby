@@ -9,6 +9,7 @@ class HttpRequestImpl
 
   attr_accessor :content_type
   attr_accessor :raw_body
+  attr_accessor :request_method
   attr_accessor :url
 
 end

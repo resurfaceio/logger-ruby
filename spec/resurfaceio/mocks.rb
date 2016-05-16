@@ -34,7 +34,9 @@ MOCK_ENV = {
 
 MOCK_JSON = "{ \"hello\" : \"world\" }"
 
-MOCK_JSON_ENV = MOCK_ENV.clone.merge({'CONTENT_TYPE' => 'application/json', 'rack.input' => StringIO.new(MOCK_JSON)})
+MOCK_JSON_ENV = MOCK_ENV.clone.merge ({
+    'CONTENT_TYPE' => 'application/json', 'rack.input' => StringIO.new(MOCK_JSON), 'REQUEST_METHOD' => 'POST'
+})
 
 MOCK_JSON_ESCAPED = JsonMessage.escape('', MOCK_JSON)
 
@@ -123,6 +125,7 @@ end
 
 def mock_request
   r = HttpRequestImpl.new
+  r.request_method = 'GET'
   r.url = MOCK_URL
   r
 end
@@ -130,6 +133,7 @@ end
 def mock_request_with_body
   r = HttpRequestImpl.new
   r.content_type = 'application/json'
+  r.request_method = 'POST'
   r.raw_body = MOCK_JSON
   r.url = MOCK_URL
   r
