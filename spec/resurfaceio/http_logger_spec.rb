@@ -40,7 +40,8 @@ describe HttpLogger do
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908640173,")).to be true
     expect(s.include?("\"method\":\"GET\",")).to be true
-    expect(s.include?("\"url\":\"#{MOCK_URL}\"}")).to be true
+    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
+    expect(s.include?("\"headers\":[]}")).to be true
     expect(s.include?("\"body\"")).to be false
   end
 
@@ -52,6 +53,7 @@ describe HttpLogger do
     expect(s.include?("\"now\":1455908640174,")).to be true
     expect(s.include?("\"method\":\"POST\",")).to be true
     expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
+    expect(s.include?("\"headers\":[],")).to be true
     expect(s.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"}")).to be true
   end
 
@@ -63,6 +65,7 @@ describe HttpLogger do
     expect(s.include?("\"now\":1455908640174,")).to be true
     expect(s.include?("\"method\":\"POST\",")).to be true
     expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
+    expect(s.include?("\"headers\":[],")).to be true
     expect(s.include?("\"body\":\"\"}")).to be true
   end
 
@@ -74,6 +77,7 @@ describe HttpLogger do
     expect(s.include?("\"now\":1455908640175,")).to be true
     expect(s.include?("\"method\":\"POST\",")).to be true
     expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
+    expect(s.include?("\"headers\":[],")).to be true
     expect(s.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"}")).to be true
   end
 
@@ -84,6 +88,7 @@ describe HttpLogger do
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908665227,")).to be true
     expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"headers\":[]}")).to be true
     expect(s.include?("\"body\"")).to be false
   end
 
@@ -94,6 +99,7 @@ describe HttpLogger do
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908665887,")).to be true
     expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"headers\":[],")).to be true
     expect(s.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
   end
 
@@ -104,6 +110,7 @@ describe HttpLogger do
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908665887,")).to be true
     expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"headers\":[],")).to be true
     expect(s.include?("\"body\":\"\"}")).to be true
   end
 
@@ -114,6 +121,7 @@ describe HttpLogger do
     expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
     expect(s.include?("\"now\":1455908667777,")).to be true
     expect(s.include?("\"code\":200",)).to be true
+    expect(s.include?("\"headers\":[],")).to be true
     expect(s.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"}")).to be true
   end
 

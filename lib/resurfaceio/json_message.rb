@@ -3,27 +3,30 @@
 
 class JsonMessage
 
-  def self.append(json, key, value)
+  def self.append(json, key, value=nil)
     json << "\""
     json << key.to_s
-    json << "\":"
-    case value
-      when Array
-        json << "\""
-        JsonMessage.escape(json, value.join)
-        json << "\""
-      when String
-        json << "\""
-        JsonMessage.escape(json, value)
-        json << "\""
-      else
-        if value.respond_to?(:read)
+    json << "\""
+    unless value.nil?
+      json << ':'
+      case value
+        when Array
           json << "\""
-          JsonMessage.escape(json, value.read)
+          JsonMessage.escape(json, value.join)
+          json << "\""
+        when String
+          json << "\""
+          JsonMessage.escape(json, value)
           json << "\""
         else
-          json << value.to_s
-        end
+          if value.respond_to?(:read)
+            json << "\""
+            JsonMessage.escape(json, value.read)
+            json << "\""
+          else
+            json << value.to_s
+          end
+      end
     end
     json
   end

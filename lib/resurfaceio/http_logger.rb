@@ -20,7 +20,10 @@ class HttpLogger < UsageLogger
   def format_request(json, now, request, body=nil)
     JsonMessage.start(json, 'http_request', agent, version, now) << ','
     JsonMessage.append(json, 'method', request.request_method) << ','
-    JsonMessage.append(json, 'url', request.url)
+    JsonMessage.append(json, 'url', request.url) << ','
+    JsonMessage.append(json, 'headers') << ':['
+    # add the headers here
+    json << ']'
     unless body.nil? && request.body.nil?
       json << ','
       JsonMessage.append(json, 'body', body.nil? ? request.body : body)
@@ -30,7 +33,10 @@ class HttpLogger < UsageLogger
 
   def format_response(json, now, response, body=nil)
     JsonMessage.start(json, 'http_response', agent, version, now) << ','
-    JsonMessage.append(json, 'code', response.status)
+    JsonMessage.append(json, 'code', response.status) << ','
+    JsonMessage.append(json, 'headers') << ':['
+    # add the headers here
+    json << ']'
     unless body.nil? && response.body.nil?
       json << ','
       JsonMessage.append(json, 'body', body.nil? ? response.body : body)
