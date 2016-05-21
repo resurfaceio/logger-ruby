@@ -2,7 +2,7 @@
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
 require 'resurfaceio/logger'
-require_relative 'mocks'
+require_relative 'helper'
 
 describe HttpLogger do
 
@@ -23,106 +23,112 @@ describe HttpLogger do
   end
 
   it 'formats echo' do
-    s = HttpLogger.new.format_echo(String.new, 1234)
-    expect(s).to be_kind_of String
-    expect(s).not_to be nil
-    expect(s.length).to be > 0
-    expect(s.include?("{\"category\":\"echo\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1234}")).to be true
+    json = HttpLogger.new.format_echo(String.new, 1234)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"category\":\"echo\"")).to be true
+    expect(json.include?("\"now\":1234")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats request' do
-    s = HttpLogger.new.format_request(String.new, 1455908640173, mock_request)
-    expect(s.include?("{\"category\":\"http_request\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908640173,")).to be true
-    expect(s.include?("\"method\":\"GET\",")).to be true
-    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
-    expect(s.include?("\"headers\":[]}")).to be true
-    expect(s.include?("\"body\"")).to be false
+    json = HttpLogger.new.format_request(String.new, 1455908640173, mock_request)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\"")).to be false
+    expect(json.include?("\"category\":\"http_request\"")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"method\":\"GET\"")).to be true
+    expect(json.include?("\"now\":1455908640173")).to be true
+    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats request with body' do
-    s = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body)
-    expect(s.include?("{\"category\":\"http_request\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908640174,")).to be true
-    expect(s.include?("\"method\":\"POST\",")).to be true
-    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
-    expect(s.include?("\"headers\":[],")).to be true
-    expect(s.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"}")).to be true
+    json = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
+    expect(json.include?("\"category\":\"http_request\"")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"method\":\"POST\"")).to be true
+    expect(json.include?("\"now\":1455908640174")).to be true
+    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats request with empty body' do
-    s = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body, '')
-    expect(s.include?("{\"category\":\"http_request\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908640174,")).to be true
-    expect(s.include?("\"method\":\"POST\",")).to be true
-    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
-    expect(s.include?("\"headers\":[],")).to be true
-    expect(s.include?("\"body\":\"\"}")).to be true
+    json = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body, '')
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\":\"\"")).to be true
+    expect(json.include?("\"category\":\"http_request\"")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"method\":\"POST\"")).to be true
+    expect(json.include?("\"now\":1455908640174")).to be true
+    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats request with alternative body' do
-    s = HttpLogger.new.format_request(String.new, 1455908640175, mock_request_with_body, MOCK_JSON_ALT)
-    expect(s.include?("{\"category\":\"http_request\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908640175,")).to be true
-    expect(s.include?("\"method\":\"POST\",")).to be true
-    expect(s.include?("\"url\":\"#{MOCK_URL}\",")).to be true
-    expect(s.include?("\"headers\":[],")).to be true
-    expect(s.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"}")).to be true
+    json = HttpLogger.new.format_request(String.new, 1455908640175, mock_request_with_body, MOCK_JSON_ALT)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"")).to be true
+    expect(json.include?("\"category\":\"http_request\"")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"method\":\"POST\"")).to be true
+    expect(json.include?("\"now\":1455908640175")).to be true
+    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats response' do
-    s = HttpLogger.new.format_response(String.new, 1455908665227, mock_response)
-    expect(s.include?("{\"category\":\"http_response\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908665227,")).to be true
-    expect(s.include?("\"code\":200",)).to be true
-    expect(s.include?("\"headers\":[]}")).to be true
-    expect(s.include?("\"body\"")).to be false
+    json = HttpLogger.new.format_response(String.new, 1455908665227, mock_response)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\"")).to be false
+    expect(json.include?("\"category\":\"http_response\"")).to be true
+    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"now\":1455908665227")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats response with body' do
-    s = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body)
-    expect(s.include?("{\"category\":\"http_response\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908665887,")).to be true
-    expect(s.include?("\"code\":200",)).to be true
-    expect(s.include?("\"headers\":[],")).to be true
-    expect(s.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"}")).to be true
+    json = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
+    expect(json.include?("\"category\":\"http_response\"")).to be true
+    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"now\":1455908665887")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats response with empty body' do
-    s = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body, '')
-    expect(s.include?("{\"category\":\"http_response\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908665887,")).to be true
-    expect(s.include?("\"code\":200",)).to be true
-    expect(s.include?("\"headers\":[],")).to be true
-    expect(s.include?("\"body\":\"\"}")).to be true
+    json = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body, '')
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\":\"\"")).to be true
+    expect(json.include?("\"category\":\"http_response\"")).to be true
+    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"now\":1455908665887")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'formats response with alternate body' do
-    s = HttpLogger.new.format_response(String.new, 1455908667777, mock_response_with_body, MOCK_HTML_ALT)
-    expect(s.include?("{\"category\":\"http_response\",")).to be true
-    expect(s.include?("\"agent\":\"#{HttpLogger::AGENT}\",")).to be true
-    expect(s.include?("\"version\":\"#{HttpLogger.version_lookup}\",")).to be true
-    expect(s.include?("\"now\":1455908667777,")).to be true
-    expect(s.include?("\"code\":200",)).to be true
-    expect(s.include?("\"headers\":[],")).to be true
-    expect(s.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"}")).to be true
+    json = HttpLogger.new.format_response(String.new, 1455908667777, mock_response_with_body, MOCK_HTML_ALT)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
+    expect(json.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"")).to be true
+    expect(json.include?("\"category\":\"http_response\"")).to be true
+    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"now\":1455908667777")).to be true
+    expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
   it 'logs echo (to default url)' do

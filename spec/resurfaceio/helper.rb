@@ -1,7 +1,9 @@
 # coding: utf-8
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
+require 'json'
 require 'rack'
+require 'resurfaceio/logger'
 
 MOCK_ENV = {
     'GATEWAY_INTERFACE' => 'CGI/1.1',
@@ -150,4 +152,14 @@ def mock_response_with_body
   r.raw_body = MOCK_HTML
   r.status = 200
   r
+end
+
+def parseable?(json)
+  return false if json.nil? || !json.chars.first == '{' || !json.chars.last == '}'
+  begin
+    JSON.parse(json)
+    return true
+  rescue JSON::ParserError => e
+    return false
+  end
 end

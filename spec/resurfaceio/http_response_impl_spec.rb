@@ -2,7 +2,7 @@
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
 require 'resurfaceio/logger'
-require_relative 'mocks'
+require_relative 'helper'
 
 describe HttpResponseImpl do
 
