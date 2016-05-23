@@ -21,6 +21,7 @@ class JsonMessage
         else
           puts "!!!!!!!!!! #{value.class}"
           if value.respond_to?(:read)
+            value.rewind
             json << "\""
             JsonMessage.escape(json, value.read)
             json << "\""
