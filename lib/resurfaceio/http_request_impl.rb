@@ -3,11 +3,27 @@
 
 class HttpRequestImpl
 
+  def initialize
+    @headers = Hash.new
+    @raw_body = nil
+  end
+
   def body
     @raw_body ? StringIO.new(@raw_body) : nil
   end
 
-  attr_accessor :content_type
+  def content_type
+    @headers['Content-Type']
+  end
+
+  def content_type=(content_type)
+    @headers['Content-Type'] = content_type
+  end
+
+  def headers
+    @headers
+  end
+
   attr_accessor :raw_body
   attr_accessor :request_method
   attr_accessor :url

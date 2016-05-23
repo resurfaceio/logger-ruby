@@ -50,7 +50,7 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"headers\":[{\"Content-Type\":\"application/json\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":1455908640174")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
@@ -58,12 +58,12 @@ describe HttpLogger do
   end
 
   it 'formats request with empty body' do
-    json = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body, '')
+    json = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body2, '')
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"headers\":[{\"Content-Type\":\"application/json\"},{\"ABC\":\"123\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":1455908640174")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
@@ -71,12 +71,12 @@ describe HttpLogger do
   end
 
   it 'formats request with alternative body' do
-    json = HttpLogger.new.format_request(String.new, 1455908640175, mock_request_with_body, MOCK_JSON_ALT)
+    json = HttpLogger.new.format_request(String.new, 1455908640175, mock_request_with_body2, MOCK_JSON_ALT)
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
+    expect(json.include?("\"headers\":[{\"Content-Type\":\"application/json\"},{\"ABC\":\"123\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":1455908640175")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true

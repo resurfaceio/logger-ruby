@@ -21,9 +21,27 @@ class HttpLogger < UsageLogger
     JsonMessage.start(json, 'http_request', agent, version, now) << ','
     JsonMessage.append(json, 'method', request.request_method) << ','
     JsonMessage.append(json, 'url', request.url) << ','
+
     JsonMessage.append(json, 'headers') << ':['
-    # add the headers here
+    if request.respond_to?(:headers)
+      request.headers.each_with_index do |(name, value), index|
+        JsonMessage.append(json << (index == 0 ? '{' : ',{'), name, value) << '}'
+      end
+    elsif request.respond_to?(:env)
+      first = true
+      request.env.each do |name, value|
+        if name =~ /^CONTENT_TYPE/
+          JsonMessage.append(json << (first ? '{' : ',{'), 'Content-Type', value) << '}'
+          first = false
+        end
+        if name =~ /^HTTP_/
+          JsonMessage.append(json << (first ? '{' : ',{'), name[5..-1].downcase.tr('_', '-'), value) << '}'
+          first = false
+        end
+      end
+    end
     json << ']'
+
     unless body.nil? && request.body.nil?
       json << ','
       JsonMessage.append(json, 'body', body.nil? ? request.body : body)
@@ -34,9 +52,11 @@ class HttpLogger < UsageLogger
   def format_response(json, now, response, body=nil)
     JsonMessage.start(json, 'http_response', agent, version, now) << ','
     JsonMessage.append(json, 'code', response.status) << ','
+
     JsonMessage.append(json, 'headers') << ':['
     # add the headers here
     json << ']'
+
     unless body.nil? && response.body.nil?
       json << ','
       JsonMessage.append(json, 'body', body.nil? ? response.body : body)
