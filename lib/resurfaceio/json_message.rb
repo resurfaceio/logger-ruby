@@ -19,6 +19,7 @@ class JsonMessage
           JsonMessage.escape(json, value)
           json << "\""
         else
+          puts "!!!!!!!!!! #{value.class}"
           if value.respond_to?(:read)
             json << "\""
             JsonMessage.escape(json, value.read)
