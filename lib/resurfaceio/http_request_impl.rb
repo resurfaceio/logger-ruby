@@ -13,11 +13,11 @@ class HttpRequestImpl
   end
 
   def content_type
-    @headers['Content-Type']
+    @headers['CONTENT_TYPE']
   end
 
   def content_type=(content_type)
-    @headers['Content-Type'] = content_type
+    @headers['CONTENT_TYPE'] = content_type
   end
 
   def headers

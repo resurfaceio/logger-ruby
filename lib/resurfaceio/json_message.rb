@@ -31,6 +31,21 @@ class JsonMessage
     json
   end
 
+  def self.append_headers(json, headers)
+    first = true
+    headers.each do |name, value|
+      if name =~ /^CONTENT_TYPE/
+        append(json << (first ? '{' : ',{'), 'content-type', value) << '}'
+        first = false
+      end
+      if name =~ /^HTTP_/
+        append(json << (first ? '{' : ',{'), name[5..-1].downcase.tr('_', '-'), value) << '}'
+        first = false
+      end
+    end
+    json
+  end
+
   def self.escape(json, value)
     value.to_s.each_char do |c|
       case c

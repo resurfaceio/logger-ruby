@@ -40,7 +40,7 @@ MOCK_JSON_ENV = MOCK_ENV.clone.merge ({
     'CONTENT_TYPE' => 'application/json', 'rack.input' => StringIO.new(MOCK_JSON), 'REQUEST_METHOD' => 'POST'
 })
 
-MOCK_JSON_ENV_ESCAPED = "#{MOCK_ENV_ESCAPED},{\"Content-Type\":\"application/json\"}"
+MOCK_JSON_ENV_ESCAPED = "#{MOCK_ENV_ESCAPED},{\"content-type\":\"application/json\"}"
 
 MOCK_JSON_ESCAPED = JsonMessage.escape('', MOCK_JSON)
 
@@ -146,7 +146,7 @@ end
 def mock_request_with_body2
   r = HttpRequestImpl.new
   r.content_type = 'application/json'
-  r.headers['ABC'] = '123'
+  r.headers['HTTP_ABC'] = '123'
   r.request_method = 'POST'
   r.raw_body = MOCK_JSON
   r.url = MOCK_URL

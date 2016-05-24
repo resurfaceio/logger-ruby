@@ -50,7 +50,7 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    # expect(json.include?("\"headers\":[{\"Content-Type\":\"application/json\"}]")).to be true
+    expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":1455908640174")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
@@ -63,7 +63,7 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    # expect(json.include?("\"headers\":[{\"Content-Type\":\"application/json\"},{\"ABC\":\"123\"}]")).to be true
+    expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":1455908640174")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
@@ -76,7 +76,7 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    # expect(json.include?("\"headers\":[{\"Content-Type\":\"application/json\"},{\"ABC\":\"123\"}]")).to be true
+    expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":1455908640175")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true

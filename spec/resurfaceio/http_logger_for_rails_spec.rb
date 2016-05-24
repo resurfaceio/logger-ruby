@@ -42,7 +42,7 @@ describe HttpLoggerForRails do
       expect(parseable?(json)).to be true
       expect(json.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
       expect(json.include?("\"category\":\"http_request\"")).to be true
-      # expect(json.include?("\"headers\":[{\"Content-Type\":\"application/json\"}]")).to be true
+      expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"}]")).to be true
       expect(json.include?("\"method\":\"POST\"")).to be true
       expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
       json = logger.tracing_history[1]

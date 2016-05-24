@@ -24,23 +24,9 @@ class HttpLogger < UsageLogger
 
     JsonMessage.append(json, 'headers') << ':['
     if request.respond_to?(:headers)
-      puts "!!!!!!!!!!!!!!!!!!!!!!!! reading headers"
-      request.headers.each_with_index do |(name, value), index|
-        puts "!!!!!!!!!! #{name} --> #{value.class}"
-        # JsonMessage.append(json << (index == 0 ? '{' : ',{'), name, 'value') << '}'
-      end
+      JsonMessage.append_headers(json, request.headers)
     elsif request.respond_to?(:env)
-      first = true
-      request.env.each do |name, value|
-        if name =~ /^CONTENT_TYPE/
-          JsonMessage.append(json << (first ? '{' : ',{'), 'Content-Type', value) << '}'
-          first = false
-        end
-        if name =~ /^HTTP_/
-          JsonMessage.append(json << (first ? '{' : ',{'), name[5..-1].downcase.tr('_', '-'), value) << '}'
-          first = false
-        end
-      end
+      JsonMessage.append_headers(json, request.env)
     end
     json << ']'
 
