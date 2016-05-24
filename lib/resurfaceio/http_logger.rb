@@ -27,7 +27,7 @@ class HttpLogger < UsageLogger
       puts "!!!!!!!!!!!!!!!!!!!!!!!! reading headers"
       request.headers.each_with_index do |(name, value), index|
         puts "!!!!!!!!!! #{name} --> #{value.class}"
-        JsonMessage.append(json << (index == 0 ? '{' : ',{'), name, value) << '}'
+        # JsonMessage.append(json << (index == 0 ? '{' : ',{'), name, 'value') << '}'
       end
     elsif request.respond_to?(:env)
       first = true
