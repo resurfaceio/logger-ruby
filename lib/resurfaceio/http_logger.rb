@@ -23,10 +23,21 @@ class HttpLogger < UsageLogger
     JsonMessage.append(json, 'url', request.url) << ','
 
     JsonMessage.append(json, 'headers') << ':['
-    if request.respond_to?(:headers)
-      JsonMessage.append_headers(json, request.headers)
-    elsif request.respond_to?(:env)
-      JsonMessage.append_headers(json, request.env)
+    respond_to_env = request.respond_to?(:env)
+    respond_to_headers = request.respond_to?(:headers)
+    if respond_to_env || respond_to_headers
+      first = true
+      headers = respond_to_env ? request.env : request.headers
+      headers.each do |name, value|
+        if name =~ /^CONTENT_TYPE/
+          JsonMessage.append(json << (first ? '{' : ',{'), 'content-type', value) << '}'
+          first = false
+        end
+        if name =~ /^HTTP_/
+          JsonMessage.append(json << (first ? '{' : ',{'), name[5..-1].downcase.tr('_', '-'), value) << '}'
+          first = false
+        end
+      end
     end
     json << ']'
 
