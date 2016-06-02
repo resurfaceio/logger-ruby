@@ -19,7 +19,7 @@ describe HttpLoggerForRack do
       expect(parseable?(json)).to be true
       expect(json.include?("\"body\"")).to be false
       expect(json.include?("\"category\":\"http_request\"")).to be true
-      expect(json.include?("\"headers\":[#{MOCK_ENV_ESCAPED}]")).to be true
+      expect(json.include?("\"headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
       expect(json.include?("\"method\":\"GET\"")).to be true
       expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
       json = logger.tracing_history[1]
@@ -42,7 +42,7 @@ describe HttpLoggerForRack do
       expect(parseable?(json)).to be true
       expect(json.include?("\"body\"")).to be false
       expect(json.include?("\"category\":\"http_request\"")).to be true
-      expect(json.include?("\"headers\":[#{MOCK_ENV_ESCAPED}]")).to be true
+      expect(json.include?("\"headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
       expect(json.include?("\"method\":\"GET\"")).to be true
       expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
       json = logger.tracing_history[1]
