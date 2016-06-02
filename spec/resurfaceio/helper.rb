@@ -12,7 +12,7 @@ MOCK_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:26.0) Gecko/2
 MOCK_ENV = {
     'GATEWAY_INTERFACE' => 'CGI/1.1',
     'PATH_INFO' => '/index.html',
-    'QUERY_STRING' => '',
+    'QUERY_STRING' => 'foo=bar',
     'REMOTE_ADDR' => '::1',
     'REMOTE_HOST' => 'localhost',
     'REQUEST_METHOD' => 'GET',
@@ -59,7 +59,7 @@ MOCK_HTML_ALT_ESCAPED = JsonMessage.escape('', MOCK_HTML_ALT)
 MOCK_INVALID_URLS = ["#{HttpLogger::DEFAULT_URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/',
                      'http://www.noway3is5this1valid2.com/']
 
-MOCK_URL = 'http://localhost:3000/index.html'
+MOCK_URL = 'http://localhost:3000/index.html?foo=bar'
 
 class MockCustomApp
   def call(env)
