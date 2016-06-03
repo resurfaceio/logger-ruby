@@ -27,6 +27,25 @@ describe HttpResponseImpl do
     expect(r.content_type).to eql(val)
   end
 
+  it 'uses headers' do
+    key = '2345789'
+    key2 = 'jane fred'
+    val = 'bob'
+    val2 = 'swoosh'
+    r = HttpResponseImpl.new
+    expect(r.headers.length).to be 0
+    expect(r.headers[key]).to be nil
+    r.headers[key] = val
+    expect(r.headers.length).to be 1
+    expect(r.headers[key]).to eql(val)
+    r.headers[key] = val2
+    expect(r.headers.length).to be 1
+    expect(r.headers[key]).to eql(val2)
+    r.headers[key2] = val2
+    expect(r.headers.length).to be 2
+    expect(r.headers[key2]).to eql(val2)
+  end
+
   it 'uses raw body' do
     r = HttpResponseImpl.new
     expect(r.raw_body).to be nil
