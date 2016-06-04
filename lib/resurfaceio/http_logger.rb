@@ -55,13 +55,20 @@ class HttpLogger < UsageLogger
     JsonMessage.append(json, 'code', response.status) << ','
 
     # add headers to json
+    first = true
+    found_content_type = false
     JsonMessage.append(json, 'headers') << ':['
     if response.respond_to?(:headers)
-      first = true
       response.headers.each do |name, value|
-        JsonMessage.append(json << (first ? '{' : ',{'), name.downcase, value) << '}'
+        name = name.downcase
+        found_content_type = true if name =~ /^content\-type/
+        JsonMessage.append(json << (first ? '{' : ',{'), name, value) << '}'
         first = false
       end
+    end
+    unless found_content_type || response.content_type.nil?
+      # for whatever reason, content_type is present but isn't reflected by headers
+      JsonMessage.append(json << (first ? '{' : ',{'), 'content-type-MISSINGHEADER', response.content_type) << '}'
     end
     json << ']'
 

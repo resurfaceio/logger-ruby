@@ -16,7 +16,6 @@ class HttpLoggerForRails
       if @logger.active?
         @logger.log_request(controller.request)
         @logger.log_response(controller.response)
-        puts "!!!!!!!!!!!!!! response.content_type=#{controller.response.content_type}"
       end
     end
   end
