@@ -26,7 +26,7 @@ describe HttpLoggerForRack do
       expect(parseable?(json)).to be true
       expect(json.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
       expect(json.include?("\"category\":\"http_response\"")).to be true
-      expect(json.include?("\"code\":200")).to be true
+      expect(json.include?("\"code\":\"200\"")).to be true
       expect(json.include?("\"headers\":[{\"content-type\":\"text/html\"},{\"a\":\"1\"},{\"content-length\":\"25\"}]")).to be true
     ensure
       logger.tracing_stop.enable
@@ -49,7 +49,7 @@ describe HttpLoggerForRack do
       expect(parseable?(json)).to be true
       expect(json.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
       expect(json.include?("\"category\":\"http_response\"")).to be true
-      expect(json.include?("\"code\":200")).to be true
+      expect(json.include?("\"code\":\"200\"")).to be true
       expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
     ensure
       logger.tracing_stop.enable
@@ -72,7 +72,7 @@ describe HttpLoggerForRack do
       expect(parseable?(json)).to be true
       expect(json.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
       expect(json.include?("\"category\":\"http_response\"")).to be true
-      expect(json.include?("\"code\":200")).to be true
+      expect(json.include?("\"code\":\"200\"")).to be true
       expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
     ensure
       logger.tracing_stop.enable

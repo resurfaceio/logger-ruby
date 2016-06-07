@@ -17,9 +17,9 @@ describe JsonMessage do
   end
 
   it 'appends numbers to message' do
-    expect(JsonMessage.append('', 'name', -1)).to eql("\"name\":-1")
-    expect(JsonMessage.append('', 'name1', 123)).to eql("\"name1\":123")
-    expect(JsonMessage.append('{', '1name1', 1455908665227)).to eql("{\"1name1\":1455908665227")
+    expect(JsonMessage.append('', 'name', -1)).to eql("\"name\":\"-1\"")
+    expect(JsonMessage.append('', 'name1', 123)).to eql("\"name1\":\"123\"")
+    expect(JsonMessage.append('{', '1name1', 1455908665227)).to eql("{\"1name1\":\"1455908665227\"")
   end
 
   it 'appends objects to message' do
@@ -86,7 +86,7 @@ describe JsonMessage do
     expect(json.include?("{\"category\":\"category1\",")).to be true
     expect(json.include?("\"agent\":\"agent1\",")).to be true
     expect(json.include?("\"version\":\"version1\",")).to be true
-    expect(json.include?("\"now\":1455908589662")).to be true
+    expect(json.include?("\"now\":\"1455908589662\"")).to be true
   end
 
   it 'stops a message' do

@@ -4,29 +4,22 @@
 class JsonMessage
 
   def self.append(json, key, value=nil)
-    json << "\""
-    json << key.to_s
-    json << "\""
+    json << "\"" << key.to_s << "\""
     unless value.nil?
-      json << ':'
+      json << ":\""
       case value
         when Array
-          json << "\""
           JsonMessage.escape(json, value.join)
-          json << "\""
         when String
-          json << "\""
           JsonMessage.escape(json, value)
-          json << "\""
         else
           if value.respond_to?(:read)
-            json << "\""
             JsonMessage.escape(json, value.read)
-            json << "\""
           else
             json << value.to_s
           end
       end
+      json << "\""
     end
     json
   end
@@ -56,14 +49,10 @@ class JsonMessage
   end
 
   def self.start(json, category, agent, version, now)
-    json << "{\"category\":\""
-    json << category
-    json << "\",\"agent\":\""
-    json << agent
-    json << "\",\"version\":\""
-    json << version
-    json << "\",\"now\":"
-    json << now.to_s
+    json << "{\"category\":\"" << category
+    json << "\",\"agent\":\"" << agent
+    json << "\",\"version\":\"" << version
+    json << "\",\"now\":\"" << now.to_s << "\""
     json
   end
 

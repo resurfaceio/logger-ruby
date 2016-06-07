@@ -27,7 +27,7 @@ describe HttpLogger do
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"category\":\"echo\"")).to be true
-    expect(json.include?("\"now\":1234")).to be true
+    expect(json.include?("\"now\":\"1234\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -39,7 +39,7 @@ describe HttpLogger do
     expect(json.include?("\"category\":\"http_request\"")).to be true
     expect(json.include?("\"headers\":[]")).to be true
     expect(json.include?("\"method\":\"GET\"")).to be true
-    expect(json.include?("\"now\":1455908640173")).to be true
+    expect(json.include?("\"now\":\"1455908640173\"")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
@@ -52,7 +52,7 @@ describe HttpLogger do
     expect(json.include?("\"category\":\"http_request\"")).to be true
     expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
-    expect(json.include?("\"now\":1455908640174")).to be true
+    expect(json.include?("\"now\":\"1455908640174\"")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
@@ -65,7 +65,7 @@ describe HttpLogger do
     expect(json.include?("\"category\":\"http_request\"")).to be true
     expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
-    expect(json.include?("\"now\":1455908640174")).to be true
+    expect(json.include?("\"now\":\"1455908640174\"")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
@@ -78,7 +78,7 @@ describe HttpLogger do
     expect(json.include?("\"category\":\"http_request\"")).to be true
     expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
     expect(json.include?("\"method\":\"POST\"")).to be true
-    expect(json.include?("\"now\":1455908640175")).to be true
+    expect(json.include?("\"now\":\"1455908640175\"")).to be true
     expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
@@ -89,9 +89,9 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\"")).to be false
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"code\":\"200\"")).to be true
     expect(json.include?("\"headers\":[]")).to be true
-    expect(json.include?("\"now\":1455908665227")).to be true
+    expect(json.include?("\"now\":\"1455908665227\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -101,9 +101,9 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"code\":\"200\"")).to be true
     expect(json.include?("\"headers\":[]")).to be true
-    expect(json.include?("\"now\":1455908665887")).to be true
+    expect(json.include?("\"now\":\"1455908665887\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -113,9 +113,9 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"\"")).to be true
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"code\":\"200\"")).to be true
     expect(json.include?("\"headers\":[]")).to be true
-    expect(json.include?("\"now\":1455908665887")).to be true
+    expect(json.include?("\"now\":\"1455908665887\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -125,9 +125,9 @@ describe HttpLogger do
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
     expect(json.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":200")).to be true
+    expect(json.include?("\"code\":\"200\"")).to be true
     expect(json.include?("\"headers\":[]")).to be true
-    expect(json.include?("\"now\":1455908667777")).to be true
+    expect(json.include?("\"now\":\"1455908667777\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
