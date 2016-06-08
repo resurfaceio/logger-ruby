@@ -14,7 +14,7 @@ class BaseLogger
     @tracing = false
     @tracing_history = []
     @url = url
-    @version = HttpLogger.version_lookup
+    @version = BaseLogger.version_lookup
   end
 
   def active?
