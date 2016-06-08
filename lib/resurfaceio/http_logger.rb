@@ -1,10 +1,10 @@
 # coding: utf-8
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
+require 'resurfaceio/base_logger'
 require 'resurfaceio/json_message'
-require 'resurfaceio/usage_logger'
 
-class HttpLogger < UsageLogger
+class HttpLogger < BaseLogger
 
   AGENT = 'http_logger.rb'
 

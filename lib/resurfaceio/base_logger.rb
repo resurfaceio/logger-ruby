@@ -5,7 +5,7 @@ require 'uri'
 require 'net/http'
 require 'net/https'
 
-class UsageLogger
+class BaseLogger
 
   DEFAULT_URL = 'https://resurfaceio.herokuapp.com/messages'
 
