@@ -25,7 +25,7 @@ Rails is the most popular Ruby framework, and is nicely introduced by the
 Configure an around_action as shown below to log from any Rails controller. This can be applied selectively
 (just one or two controllers) or done in a superclass to apply logging across many controllers.
 
-    require 'resurfaceio/logger'
+    require 'resurfaceio/all'
 
     class MyController < ApplicationController
       around_action HttpLoggerForRails.new
@@ -39,7 +39,7 @@ except for tweaking Rack middleware like the example below.
     # config.ru
     # This file is used by Rack-based servers to start the application.
     require ::File.expand_path('../config/environment',  __FILE__)
-    require 'resurfaceio/logger'   # added!
+    require 'resurfaceio/all'      # added!
     use HttpLoggerForRack          # added!
     run Rails.application
 
@@ -48,7 +48,7 @@ for content types matching a predefined list (including 'text/html' and 'applica
 
 ## Using API Directly
 
-    require 'resurfaceio/logger'
+    require 'resurfaceio/all'
 
     # manage default logger
     logger = HttpLoggerFactory.get              # returns cached HTTP logger

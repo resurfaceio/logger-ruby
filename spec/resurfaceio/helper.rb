@@ -3,7 +3,7 @@
 
 require 'json'
 require 'rack'
-require 'resurfaceio/logger'
+require 'resurfaceio/all'
 
 MOCK_COOKIE = 'jsonrpc.session=3iqp3ydRwFyqjcfO0GT2bzUh.bacc2786c7a81df0d0e950bec8fa1a9b1ba0bb61'
 
