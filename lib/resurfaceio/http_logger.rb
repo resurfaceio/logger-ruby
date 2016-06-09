@@ -35,7 +35,7 @@ class HttpLogger < BaseLogger
   end
 
   def log_echo
-    if @enabled || @tracing
+    if active?
       post format_echo(String.new, Time.now.to_i)
     else
       true
@@ -43,7 +43,7 @@ class HttpLogger < BaseLogger
   end
 
   def log_request(request, body=nil)
-    if @enabled || @tracing
+    if active?
       post format_request(String.new, Time.now.to_i, request, body)
     else
       true
@@ -51,7 +51,7 @@ class HttpLogger < BaseLogger
   end
 
   def log_response(response, body=nil)
-    if @enabled || @tracing
+    if active?
       post format_response(String.new, Time.now.to_i, response, body)
     else
       true
