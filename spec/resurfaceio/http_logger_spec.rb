@@ -35,12 +35,12 @@ describe HttpLogger do
     json = HttpLogger.new.format_request(String.new, 1455908640173, mock_request)
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\"")).to be false
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
-    expect(json.include?("\"method\":\"GET\"")).to be true
     expect(json.include?("\"now\":\"1455908640173\"")).to be true
-    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"request_body\"")).to be false
+    expect(json.include?("\"request_headers\":[]")).to be true
+    expect(json.include?("\"request_method\":\"GET\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -48,12 +48,12 @@ describe HttpLogger do
     json = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body)
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"}]")).to be true
-    expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":\"1455908640174\"")).to be true
-    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
+    expect(json.include?("\"request_headers\":[{\"content-type\":\"application/json\"}]")).to be true
+    expect(json.include?("\"request_method\":\"POST\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -61,12 +61,12 @@ describe HttpLogger do
     json = HttpLogger.new.format_request(String.new, 1455908640174, mock_request_with_body2, '')
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\":\"\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
-    expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":\"1455908640174\"")).to be true
-    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"request_body\":\"\"")).to be true
+    expect(json.include?("\"request_headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
+    expect(json.include?("\"request_method\":\"POST\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -74,12 +74,12 @@ describe HttpLogger do
     json = HttpLogger.new.format_request(String.new, 1455908640175, mock_request_with_body2, MOCK_JSON_ALT)
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\":\"#{MOCK_JSON_ALT_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_request\"")).to be true
-    expect(json.include?("\"headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
-    expect(json.include?("\"method\":\"POST\"")).to be true
     expect(json.include?("\"now\":\"1455908640175\"")).to be true
-    expect(json.include?("\"url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"request_body\":\"#{MOCK_JSON_ALT_ESCAPED}\"")).to be true
+    expect(json.include?("\"request_headers\":[{\"content-type\":\"application/json\"},{\"abc\":\"123\"}]")).to be true
+    expect(json.include?("\"request_method\":\"POST\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -87,11 +87,11 @@ describe HttpLogger do
     json = HttpLogger.new.format_response(String.new, 1455908665227, mock_response)
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\"")).to be false
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":\"200\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
     expect(json.include?("\"now\":\"1455908665227\"")).to be true
+    expect(json.include?("\"response_body\"")).to be false
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[]")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -99,11 +99,11 @@ describe HttpLogger do
     json = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body)
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":\"200\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
     expect(json.include?("\"now\":\"1455908665887\"")).to be true
+    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[]")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -111,11 +111,11 @@ describe HttpLogger do
     json = HttpLogger.new.format_response(String.new, 1455908665887, mock_response_with_body, '')
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\":\"\"")).to be true
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":\"200\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
     expect(json.include?("\"now\":\"1455908665887\"")).to be true
+    expect(json.include?("\"response_body\":\"\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[]")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
@@ -123,11 +123,11 @@ describe HttpLogger do
     json = HttpLogger.new.format_response(String.new, 1455908667777, mock_response_with_body, MOCK_HTML_ALT)
     expect(parseable?(json)).to be true
     expect(json.include?("\"agent\":\"#{HttpLogger::AGENT}\"")).to be true
-    expect(json.include?("\"body\":\"#{MOCK_HTML_ALT_ESCAPED}\"")).to be true
     expect(json.include?("\"category\":\"http_response\"")).to be true
-    expect(json.include?("\"code\":\"200\"")).to be true
-    expect(json.include?("\"headers\":[]")).to be true
     expect(json.include?("\"now\":\"1455908667777\"")).to be true
+    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ALT_ESCAPED}\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[]")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 

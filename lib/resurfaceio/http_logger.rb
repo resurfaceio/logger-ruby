@@ -19,18 +19,18 @@ class HttpLogger < BaseLogger
 
   def format_request(json, now, request, body=nil)
     JsonMessage.start(json, 'http_request', agent, version, now) << ','
-    JsonMessage.append(json, 'method', request.request_method) << ','
-    JsonMessage.append(json, 'url', request.url) << ','
+    JsonMessage.append(json, 'request_method', request.request_method) << ','
+    JsonMessage.append(json, 'request_url', request.url) << ','
     append_request_headers(json, request)
-    JsonMessage.append(json << ',', 'body', body.nil? ? request.body : body) unless body.nil? && request.body.nil?
+    JsonMessage.append(json << ',', 'request_body', body.nil? ? request.body : body) unless body.nil? && request.body.nil?
     JsonMessage.stop(json)
   end
 
   def format_response(json, now, response, body=nil)
     JsonMessage.start(json, 'http_response', agent, version, now) << ','
-    JsonMessage.append(json, 'code', response.status) << ','
+    JsonMessage.append(json, 'response_code', response.status) << ','
     append_response_headers(json, response)
-    JsonMessage.append(json << ',', 'body', body.nil? ? response.body : body) unless body.nil? && response.body.nil?
+    JsonMessage.append(json << ',', 'response_body', body.nil? ? response.body : body) unless body.nil? && response.body.nil?
     JsonMessage.stop(json)
   end
 
@@ -61,7 +61,7 @@ class HttpLogger < BaseLogger
   protected
 
   def append_request_headers(json, request)
-    JsonMessage.append(json, 'headers') << ':['
+    JsonMessage.append(json, 'request_headers') << ':['
     first = true
     respond_to_env = request.respond_to?(:env)
     if respond_to_env || request.respond_to?(:headers)
@@ -81,7 +81,7 @@ class HttpLogger < BaseLogger
   end
 
   def append_response_headers(json, response)
-    JsonMessage.append(json, 'headers') << ':['
+    JsonMessage.append(json, 'response_headers') << ':['
     first = true
     found_content_type = false
     if response.respond_to?(:headers)
