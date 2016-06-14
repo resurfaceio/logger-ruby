@@ -51,18 +51,31 @@ for content types matching a predefined list (including 'text/html' and 'applica
     require 'resurfaceio/all'
 
     # manage default logger
-    logger = HttpLoggerFactory.get              # returns cached HTTP logger
-    logger.disable                              # disable logging for automated tests
-    logger.enable                               # re-enable logging after being disabled
-    if logger.enabled? ...                      # branch on logging being enabled
+    logger = HttpLoggerFactory.get                                # returns cached HTTP logger
+    logger.disable                                                # disable logging for tests
+    logger.enable                                                 # enable logging again
+    if logger.enabled? ...                                        # test if logging is enabled
 
-    # log a HTTP exchange
-    req = HttpRequestImpl.new                   # define request to log
-    req.url = 'http://google.com'
-    res = HttpResponseImpl.new                  # define response to log
-    res.content_type('text/html')
-    res.status = 200
-    logger.log_request(req)                     # log the request  (use body if present)
-    logger.log_request(req, body)               # log the request  (with specified body)
-    logger.log_response(res)                    # log the response (use body if present)
-    logger.log_response(res, body)              # log the response (with specified body)
+    # define request to log
+    request = HttpRequestImpl.new
+    request.body = 'some json'
+    request.content_type = 'application/json'
+    request.headers['A'] = '123'
+    request.request_method = 'GET'
+    request.url = 'http://google.com'
+
+    # define response to log
+    response = HttpResponseImpl.new
+    response.body = 'some html'
+    response.content_type = 'text/html'
+    response.headers['B'] = '234'
+    response.status = 200
+
+    # log objects defined above
+    logger.log(request, nil, response, nil)
+
+    # log with overriden request/response bodies
+    logger.log(request, 'my-request', response, 'my-response')
+
+    # submit a custom message (destination may accept or not)
+    logger.submit('...')

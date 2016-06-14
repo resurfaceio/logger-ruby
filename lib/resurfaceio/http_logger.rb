@@ -8,54 +8,32 @@ class HttpLogger < BaseLogger
 
   AGENT = 'http_logger.rb'
 
-  def agent
-    AGENT
+  def initialize(url = DEFAULT_URL, enabled = true)
+    super(AGENT, url, enabled)
   end
 
-  def format_echo(json, now)
-    JsonMessage.start(json, 'echo', agent, version, now)
+  def append_to_buffer(json, now, request, request_body, response, response_body)
+    JsonMessage.start(json, 'http', agent, version, now)
+    JsonMessage.append(json << ',', 'request_method', request.request_method)
+    JsonMessage.append(json << ',', 'request_url', request.url)
+    append_request_headers(json << ',', request)
+    unless request_body.nil? && request.body.nil?
+      JsonMessage.append(json << ',', 'request_body', request_body.nil? ? request.body : request_body)
+    end
+    JsonMessage.append(json << ',', 'response_code', response.status)
+    append_response_headers(json << ',', response)
+    unless response_body.nil? && response.body.nil?
+      JsonMessage.append(json << ',', 'response_body', response_body.nil? ? response.body : response_body)
+    end
     JsonMessage.stop(json)
   end
 
-  def format_request(json, now, request, body=nil)
-    JsonMessage.start(json, 'http_request', agent, version, now) << ','
-    JsonMessage.append(json, 'request_method', request.request_method) << ','
-    JsonMessage.append(json, 'request_url', request.url) << ','
-    append_request_headers(json, request)
-    JsonMessage.append(json << ',', 'request_body', body.nil? ? request.body : body) unless body.nil? && request.body.nil?
-    JsonMessage.stop(json)
+  def format(request, request_body, response, response_body)
+    append_to_buffer(String.new, Time.now.to_i, request, request_body, response, response_body)
   end
 
-  def format_response(json, now, response, body=nil)
-    JsonMessage.start(json, 'http_response', agent, version, now) << ','
-    JsonMessage.append(json, 'response_code', response.status) << ','
-    append_response_headers(json, response)
-    JsonMessage.append(json << ',', 'response_body', body.nil? ? response.body : body) unless body.nil? && response.body.nil?
-    JsonMessage.stop(json)
-  end
-
-  def log_echo
-    if active?
-      post format_echo(String.new, Time.now.to_i)
-    else
-      true
-    end
-  end
-
-  def log_request(request, body=nil)
-    if active?
-      post format_request(String.new, Time.now.to_i, request, body)
-    else
-      true
-    end
-  end
-
-  def log_response(response, body=nil)
-    if active?
-      post format_response(String.new, Time.now.to_i, response, body)
-    else
-      true
-    end
+  def log(request, request_body, response, response_body)
+    !active? || submit(format(request, request_body, response, response_body))
   end
 
   protected

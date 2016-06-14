@@ -14,17 +14,14 @@ describe HttpLoggerForRails do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
       HttpLoggerForRails.new.around(MockRailsHtmlController.new) {}
-      expect(logger.tracing_history.length).to eql(2)
+      expect(logger.tracing_history.length).to eql(1)
       json = logger.tracing_history[0]
       expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http_request\"")).to be true
+      expect(json.include?("\"category\":\"http\"")).to be true
       expect(json.include?("\"request_body\"")).to be false
       expect(json.include?("\"request_headers\":[]")).to be true
       expect(json.include?("\"request_method\":\"GET\"")).to be true
       expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-      json = logger.tracing_history[1]
-      expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http_response\"")).to be true
       expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
       expect(json.include?("\"response_code\":\"200\"")).to be true
       expect(json.include?("\"response_headers\":[]")).to be true
@@ -37,17 +34,14 @@ describe HttpLoggerForRails do
     logger = HttpLoggerFactory.get.disable.tracing_start
     begin
       HttpLoggerForRails.new.around(MockRailsJsonController.new) {}
-      expect(logger.tracing_history.length).to eql(2)
+      expect(logger.tracing_history.length).to eql(1)
       json = logger.tracing_history[0]
       expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http_request\"")).to be true
+      expect(json.include?("\"category\":\"http\"")).to be true
       expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
       expect(json.include?("\"request_headers\":[{\"content-type\":\"application/json\"}]")).to be true
       expect(json.include?("\"request_method\":\"POST\"")).to be true
       expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-      json = logger.tracing_history[1]
-      expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http_response\"")).to be true
       expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
       expect(json.include?("\"response_code\":\"200\"")).to be true
       expect(json.include?("\"response_headers\":[]")).to be true

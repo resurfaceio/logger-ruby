@@ -13,10 +13,7 @@ class HttpLoggerForRails
     begin
       yield
     ensure
-      if @logger.active?
-        @logger.log_request(controller.request)
-        @logger.log_response(controller.response)
-      end
+      @logger.log(controller.request, nil, controller.response, nil)
     end
   end
 

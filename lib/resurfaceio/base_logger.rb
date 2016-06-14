@@ -9,7 +9,8 @@ class BaseLogger
 
   DEFAULT_URL = 'https://resurfaceio.herokuapp.com/messages'
 
-  def initialize(url = DEFAULT_URL, enabled = true)
+  def initialize(agent, url = DEFAULT_URL, enabled = true)
+    @agent = agent
     @enabled = enabled
     @tracing = false
     @tracing_history = []
@@ -19,6 +20,10 @@ class BaseLogger
 
   def active?
     @enabled || @tracing
+  end
+
+  def agent
+    @agent
   end
 
   def disable
@@ -33,6 +38,27 @@ class BaseLogger
 
   def enabled?
     @enabled
+  end
+
+  def submit(json)
+    if @tracing
+      @tracing_history << json
+      true
+    elsif @enabled
+      begin
+        uri = URI.parse(url)
+        https = Net::HTTP.new(uri.host, uri.port)
+        https.use_ssl = true
+        request = Net::HTTP::Post.new(uri.path)
+        request.body = json
+        response = https.request(request)
+        response.code.to_i == 200
+      rescue SocketError
+        false
+      end
+    else
+      true
+    end
   end
 
   def tracing?
@@ -65,27 +91,6 @@ class BaseLogger
 
   def self.version_lookup
     Gem.loaded_specs['resurfaceio-logger'].version.to_s
-  end
-
-  protected
-
-  def post(json)
-    if @tracing
-      @tracing_history << json
-      true
-    else
-      begin
-        uri = URI.parse(url)
-        https = Net::HTTP.new(uri.host, uri.port)
-        https.use_ssl = true
-        request = Net::HTTP::Post.new(uri.path)
-        request.body = json
-        response = https.request(request)
-        response.code.to_i == 200
-      rescue SocketError
-        false
-      end
-    end
   end
 
 end
