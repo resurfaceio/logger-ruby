@@ -6,9 +6,10 @@ require 'resurfaceio/http_logger_factory'
 
 class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
 
-  def initialize(app)
+  def initialize(app, options={})
     @app = app
     @logger = HttpLoggerFactory.get
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}"
   end
 
   def call(env)
