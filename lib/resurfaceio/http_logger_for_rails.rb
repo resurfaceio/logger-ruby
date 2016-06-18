@@ -5,9 +5,9 @@ require 'resurfaceio/http_logger_factory'
 
 class HttpLoggerForRails
 
-  def initialize(url=nil)
+  def initialize(options={})
     @logger = HttpLoggerFactory.get
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! url=#{url}"
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}"
   end
 
   def around(controller)
