@@ -9,7 +9,7 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
   def initialize(app, options={})
     @app = app
     @logger = HttpLoggerFactory.get
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}"
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}, ENV['HTTP_LOGGER_URL']=#{ENV['HTTP_LOGGER_URL']}"
   end
 
   def call(env)

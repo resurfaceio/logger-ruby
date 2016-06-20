@@ -7,7 +7,7 @@ class HttpLoggerForRails
 
   def initialize(options={})
     @logger = HttpLoggerFactory.get
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}"
+    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}, ENV['HTTP_LOGGER_URL']=#{ENV['HTTP_LOGGER_URL']}"
   end
 
   def around(controller)
