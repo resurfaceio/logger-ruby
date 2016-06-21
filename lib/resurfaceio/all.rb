@@ -8,8 +8,12 @@ require 'resurfaceio/http_logger_for_rails'
 require 'resurfaceio/http_request_impl'
 require 'resurfaceio/http_response_impl'
 require 'resurfaceio/json_message'
+require 'resurfaceio/usage_loggers'
 
 module Resurfaceio
+
+  class HttpLogger < HttpLogger
+  end
 
   class HttpLoggerFactory < HttpLoggerFactory
   end
@@ -20,9 +24,6 @@ module Resurfaceio
   class HttpLoggerForRails < HttpLoggerForRails
   end
 
-  class HttpLogger < HttpLogger
-  end
-
   class HttpRequestImpl < HttpRequestImpl
   end
 
@@ -30,6 +31,9 @@ module Resurfaceio
   end
 
   class JsonMessage < JsonMessage
+  end
+
+  class UsageLoggers < UsageLoggers
   end
 
 end

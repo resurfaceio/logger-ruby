@@ -4,6 +4,7 @@
 require 'uri'
 require 'net/http'
 require 'net/https'
+require 'resurfaceio/usage_loggers'
 
 class BaseLogger
 
@@ -19,7 +20,7 @@ class BaseLogger
   end
 
   def active?
-    @enabled || @tracing
+    (@enabled && UsageLoggers.enabled?) || @tracing
   end
 
   def agent
@@ -44,7 +45,7 @@ class BaseLogger
     if @tracing
       @tracing_history << json
       true
-    elsif @enabled
+    elsif @enabled && UsageLoggers.enabled?
       begin
         uri = URI.parse(url)
         https = Net::HTTP.new(uri.host, uri.port)
