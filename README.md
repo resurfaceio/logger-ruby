@@ -13,7 +13,7 @@ Contents
 <li><a href="#logging_from_rack_middleware">Logging From Rack Middleware</a></li>
 <li><a href="#logging_to_different_urls">Logging To Different URLs</a></li>
 <li><a href="#advanced_topics">Advanced Topics</a><ul>
-<li><a href="#defaulting_to_custom_url">Defaulting To Custom URL</a></li>
+<li><a href="#setting_default_url">Setting Default URL</a></li>
 <li><a href="#disabling_all_logging">Disabling All Logging</a></li>
 <li><a href="#using_api_directly">Using API Directly</a></li>
 </ul></li>
@@ -51,7 +51,7 @@ shown below.
     require 'resurfaceio/all'                                  # add at top of file
 
     class MyController < ApplicationController
-      around_action HttpLoggerForRails.new(url: '$DEMO')       # add inside controller
+      around_action HttpLoggerForRails.new(url: 'DEMO')        # add inside controller
     end
 
 Usage data will now be logged here:
@@ -75,8 +75,8 @@ After <a href="#installing_with_bundler">installing the logger gem</a>, add thes
 'run' statement.
 
     require 'resurfaceio/all'                   # add this line
-    use HttpLoggerForRack, url: '$DEMO'         # add this line
-    run <...>                                   # this was already there
+    use HttpLoggerForRack, url: 'DEMO'          # add this line
+    run <...>                                   # this was already there, no changes
 
 Usage data will now be logged here:
 [https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
@@ -107,9 +107,9 @@ As shown in the fake example above, an app can have separate loggers that send u
 
 ## Advanced Topics
 
-<a name="defaulting_to_custom_url"/>
+<a name="setting_default_url"/>
 
-### Defaulting to Custom URL
+### Setting Default URL
 
 Set the USAGE_LOGGER_URL variable to provide a default value whenever the URL is not specified. This is most useful when you
 intend to have multiple loggers using a single backend service.
