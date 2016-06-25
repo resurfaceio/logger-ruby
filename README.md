@@ -111,14 +111,14 @@ As shown in the fake example above, an app can have separate loggers that send u
 
 ### Setting Default URL
 
-Set the USAGE_LOGGER_URL variable to provide a default value whenever the URL is not specified. This is most useful when you
+Set the USAGE_LOGGERS_URL variable to provide a default value whenever the URL is not specified. This is most useful when you
 intend to have multiple loggers using a single backend service.
 
     # using Heroku cli
-    heroku config:set USAGE_LOGGER_URL=https://my-destination-url
+    heroku config:set USAGE_LOGGERS_URL=https://my-destination-url
 
     # from within config.ru or rails configuration file
-    ENV['USAGE_LOGGER_URL']='https://my-destination-url'
+    ENV['USAGE_LOGGERS_URL']='https://my-destination-url'
 
 Loggers look for this environment variable when no other options are set, as in these examples.
 
@@ -140,10 +140,10 @@ running automated tests. All loggers can also be disabled at runtime, either by 
 programmatically.
 
     # for Heroku app
-    heroku config:set USAGE_LOGGER_DISABLED=true
+    heroku config:set USAGE_LOGGERS_DISABLE=true
 
     # from within Rails config
-    ENV['USAGE_LOGGER_DISABLED']='true'
+    ENV['USAGE_LOGGERS_DISABLE']='true'
 
     # at runtime
     UsageLoggers.disable

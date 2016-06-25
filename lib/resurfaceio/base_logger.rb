@@ -19,8 +19,8 @@ class BaseLogger
     elsif options.has_key?(:url)
       @url = options[:url]
       @url = UsageLoggers.demo_url if @url.eql?('DEMO')
-    elsif ENV.has_key?('USAGE_LOGGER_URL')
-      @url = ENV['USAGE_LOGGER_URL']
+    elsif ENV.has_key?('USAGE_LOGGERS_URL')
+      @url = ENV['USAGE_LOGGERS_URL']
     else
       @enabled = false
     end
