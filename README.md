@@ -11,8 +11,8 @@ Contents
 <li><a href="#installing_with_bundler">Installing With Bundler</a></li>
 <li><a href="#logging_from_rails_controller">Logging From Rails Controller</a></li>
 <li><a href="#logging_from_rack_middleware">Logging From Rack Middleware</a></li>
+<li><a href="#logging_to_different_urls">Logging To Different URLs</a></li>
 <li><a href="#advanced_topics">Advanced Topics</a><ul>
-<li><a href="#logging_to_custom_urls">Logging To Custom URLs</a></li>
 <li><a href="#defaulting_to_custom_url">Defaulting To Custom URL</a></li>
 <li><a href="#disabling_all_logging">Disabling All Logging</a></li>
 <li><a href="#using_api_directly">Using API Directly</a></li>
@@ -48,17 +48,17 @@ Rails is the most popular Ruby framework, and is featured by Heroku's
 After <a href="#installing_with_bundler">installing the logger gem</a>, add an around_action to any Rails controller as
 shown below.
 
-    require 'resurfaceio/all'                              # add at top of file
+    require 'resurfaceio/all'                                  # add at top of file
 
     class MyController < ApplicationController
-      around_action HttpLoggerForRails.new(url: '$DEMO')   # add inside controller
+      around_action HttpLoggerForRails.new(url: '$DEMO')       # add inside controller
     end
 
 Usage data will now be logged here:
 [https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
 
-*Resurface Labs provides this free demo environment in good faith, just to make our stuff easy to try. Data sent to this demo
-environment is held in volatile memory for less than 24 hours, and is never retransmitted to any third parties.
+*Resurface Labs provides this free demo environment just to make our stuff easy to try. Data sent to this demo
+environment is held in volatile memory for less than 24 hours, and is never shared with third parties.
 (<a href="">Privacy and Terms of Service</a>)*
 
 <a name="logging_from_rack_middleware"/>
@@ -81,17 +81,13 @@ After <a href="#installing_with_bundler">installing the logger gem</a>, add thes
 Usage data will now be logged here:
 [https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
 
-*Resurface Labs provides this free demo environment in good faith, just to make our stuff easy to try. Data sent to this demo
-environment is held in volatile memory for less than 24 hours, and is never retransmitted to any third parties.
+*Resurface Labs provides this free demo environment just to make our stuff easy to try. Data sent to this demo
+environment is held in volatile memory for less than 24 hours, and is never shared with third parties.
 (<a href="">Privacy and Terms of Service</a>)*
 
-<a name="advanced_topics"/>
+<a name="logging_to_different_urls"/>
 
-## Advanced Topics
-
-<a name="logging_to_custom_urls"/>
-
-### Logging to Custom URLs
+## Logging to Different URLs
 
 Our loggers don't lock you into using any particular backend service. Loggers can send data to any URL that accepts JSON
 messages as a standard HTTPS POST.
@@ -106,6 +102,10 @@ messages as a standard HTTPS POST.
     around_action HttpLoggerForRails.new(url: 'https://my-url-3')
 
 As shown in the fake example above, an app can have separate loggers that send usage data to different URLs at once.
+
+<a name="advanced_topics"/>
+
+## Advanced Topics
 
 <a name="defaulting_to_custom_url"/>
 
