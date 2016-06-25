@@ -8,19 +8,30 @@ require 'resurfaceio/usage_loggers'
 
 class BaseLogger
 
-  DEFAULT_URL = 'https://resurfaceio.herokuapp.com/messages'
-
-  def initialize(agent, url = DEFAULT_URL, enabled = true)
+  def initialize(agent, options={})
     @agent = agent
-    @enabled = enabled
-    @tracing = false
-    @tracing_history = []
-    @url = url
     @version = BaseLogger.version_lookup
-  end
 
-  def active?
-    (@enabled && UsageLoggers.enabled?) || @tracing
+    # detect options in priority order
+    @enabled = options.fetch(:enabled, true)
+    if options.has_key?(:queue)
+      @queue = options[:queue]
+    elsif options.has_key?(:url)
+      @url = options[:url]
+      @url = UsageLoggers.demo_url if @url.eql?('DEMO')
+    elsif ENV.has_key?('USAGE_LOGGER_URL')
+      @url = ENV['USAGE_LOGGER_URL']
+    else
+      @enabled = false
+    end
+
+    # validate url when present
+    begin
+      raise Exception unless @url.nil? || URI.parse(@url).scheme.eql?('https')
+    rescue Exception
+      @url = nil
+      @enabled = false
+    end
   end
 
   def agent
@@ -33,53 +44,34 @@ class BaseLogger
   end
 
   def enable
-    @enabled = true
+    @enabled = true unless @queue.nil? && @url.nil?
     self
   end
 
   def enabled?
-    @enabled
+    @enabled && UsageLoggers.enabled?
   end
 
   def submit(json)
-    if @tracing
-      @tracing_history << json
+    if !enabled?
       true
-    elsif @enabled && UsageLoggers.enabled?
+    elsif @queue
+      @queue << json
+      true
+    else
       begin
-        uri = URI.parse(url)
-        https = Net::HTTP.new(uri.host, uri.port)
-        https.use_ssl = true
-        request = Net::HTTP::Post.new(uri.path)
+        @uri ||= URI.parse(@url)
+        @connection ||= Net::HTTP.new(@uri.host, @uri.port)
+        @connection.use_ssl = true
+        request = Net::HTTP::Post.new(@uri.path)
         request.body = json
-        response = https.request(request)
+        response = @connection.request(request)
         response.code.to_i == 200
       rescue SocketError
+        @connection = nil
         false
       end
-    else
-      true
     end
-  end
-
-  def tracing?
-    @tracing
-  end
-
-  def tracing_history
-    @tracing_history
-  end
-
-  def tracing_start
-    @tracing = true
-    @tracing_history = []
-    self
-  end
-
-  def tracing_stop
-    @tracing = false
-    @tracing_history = []
-    self
   end
 
   def url

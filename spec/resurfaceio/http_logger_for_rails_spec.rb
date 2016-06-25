@@ -11,43 +11,35 @@ describe HttpLoggerForRails do
   end
 
   it 'logs html response' do
-    logger = HttpLoggerFactory.get.disable.tracing_start
-    begin
-      HttpLoggerForRails.new.around(MockRailsHtmlController.new) {}
-      expect(logger.tracing_history.length).to eql(1)
-      json = logger.tracing_history[0]
-      expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http\"")).to be true
-      expect(json.include?("\"request_body\"")).to be false
-      expect(json.include?("\"request_headers\":[]")).to be true
-      expect(json.include?("\"request_method\":\"GET\"")).to be true
-      expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-      expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
-      expect(json.include?("\"response_code\":\"200\"")).to be true
-      expect(json.include?("\"response_headers\":[]")).to be true
-    ensure
-      logger.tracing_stop.enable
-    end
+    queue = []
+    HttpLoggerForRails.new(queue: queue).around(MockRailsHtmlController.new) {}
+    expect(queue.length).to eql(1)
+    json = queue[0]
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"category\":\"http\"")).to be true
+    expect(json.include?("\"request_body\"")).to be false
+    expect(json.include?("\"request_headers\":[]")).to be true
+    expect(json.include?("\"request_method\":\"GET\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[]")).to be true
   end
 
   it 'logs html response to json request' do
-    logger = HttpLoggerFactory.get.disable.tracing_start
-    begin
-      HttpLoggerForRails.new.around(MockRailsJsonController.new) {}
-      expect(logger.tracing_history.length).to eql(1)
-      json = logger.tracing_history[0]
-      expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http\"")).to be true
-      expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-      expect(json.include?("\"request_headers\":[{\"content-type\":\"application/json\"}]")).to be true
-      expect(json.include?("\"request_method\":\"POST\"")).to be true
-      expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-      expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
-      expect(json.include?("\"response_code\":\"200\"")).to be true
-      expect(json.include?("\"response_headers\":[]")).to be true
-    ensure
-      logger.tracing_stop.enable
-    end
+    queue = []
+    HttpLoggerForRails.new(queue: queue).around(MockRailsJsonController.new) {}
+    expect(queue.length).to eql(1)
+    json = queue[0]
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"category\":\"http\"")).to be true
+    expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
+    expect(json.include?("\"request_headers\":[{\"content-type\":\"application/json\"}]")).to be true
+    expect(json.include?("\"request_method\":\"POST\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[]")).to be true
   end
 
 end

@@ -11,75 +11,59 @@ describe HttpLoggerForRack do
   end
 
   it 'logs html' do
-    logger = HttpLoggerFactory.get.disable.tracing_start
-    begin
-      HttpLoggerForRack.new(MockHtmlApp.new).call(MOCK_ENV)
-      expect(logger.tracing_history.length).to eql(1)
-      json = logger.tracing_history[0]
-      expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http\"")).to be true
-      expect(json.include?("\"request_body\"")).to be false
-      expect(json.include?("\"request_headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
-      expect(json.include?("\"request_method\":\"GET\"")).to be true
-      expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-      expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
-      expect(json.include?("\"response_code\":\"200\"")).to be true
-      expect(json.include?("\"response_headers\":[{\"content-type\":\"text/html\"},{\"a\":\"1\"},{\"content-length\":\"25\"}]")).to be true
-    ensure
-      logger.tracing_stop.enable
-    end
+    queue = []
+    HttpLoggerForRack.new(MockHtmlApp.new, queue: queue).call(MOCK_ENV)
+    expect(queue.length).to eql(1)
+    json = queue[0]
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"category\":\"http\"")).to be true
+    expect(json.include?("\"request_body\"")).to be false
+    expect(json.include?("\"request_headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
+    expect(json.include?("\"request_method\":\"GET\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[{\"content-type\":\"text/html\"},{\"a\":\"1\"},{\"content-length\":\"25\"}]")).to be true
   end
 
   it 'logs json' do
-    logger = HttpLoggerFactory.get.disable.tracing_start
-    begin
-      HttpLoggerForRack.new(MockJsonApp.new).call(MOCK_ENV)
-      expect(logger.tracing_history.length).to eql(1)
-      json = logger.tracing_history[0]
-      expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http\"")).to be true
-      expect(json.include?("\"request_body\"")).to be false
-      expect(json.include?("\"request_headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
-      expect(json.include?("\"request_method\":\"GET\"")).to be true
-      expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-      expect(json.include?("\"response_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-      expect(json.include?("\"response_code\":\"200\"")).to be true
-      expect(json.include?("\"response_headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
-    ensure
-      logger.tracing_stop.enable
-    end
+    queue = []
+    HttpLoggerForRack.new(MockJsonApp.new, queue: queue).call(MOCK_ENV)
+    expect(queue.length).to eql(1)
+    json = queue[0]
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"category\":\"http\"")).to be true
+    expect(json.include?("\"request_body\"")).to be false
+    expect(json.include?("\"request_headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
+    expect(json.include?("\"request_method\":\"GET\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"response_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
   end
 
   it 'logs json post' do
-    logger = HttpLoggerFactory.get.disable.tracing_start
-    begin
-      HttpLoggerForRack.new(MockJsonApp.new).call(MOCK_JSON_ENV)
-      expect(logger.tracing_history.length).to eql(1)
-      json = logger.tracing_history[0]
-      expect(parseable?(json)).to be true
-      expect(json.include?("\"category\":\"http\"")).to be true
-      expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-      expect(json.include?("\"request_headers\":[#{MOCK_JSON_ENV_ESCAPED}]")).to be true
-      expect(json.include?("\"request_method\":\"POST\"")).to be true
-      expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-      expect(json.include?("\"response_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-      expect(json.include?("\"response_code\":\"200\"")).to be true
-      expect(json.include?("\"response_headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
-    ensure
-      logger.tracing_stop.enable
-    end
+    queue = []
+    HttpLoggerForRack.new(MockJsonApp.new, queue: queue).call(MOCK_JSON_ENV)
+    expect(queue.length).to eql(1)
+    json = queue[0]
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"category\":\"http\"")).to be true
+    expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
+    expect(json.include?("\"request_headers\":[#{MOCK_JSON_ENV_ESCAPED}]")).to be true
+    expect(json.include?("\"request_method\":\"POST\"")).to be true
+    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
+    expect(json.include?("\"response_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
+    expect(json.include?("\"response_code\":\"200\"")).to be true
+    expect(json.include?("\"response_headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
   end
 
   it 'skips logging for redirects and unmatched content types' do
-    logger = HttpLoggerFactory.get.disable.tracing_start
-    begin
-      apps = [MockCustomApp.new, MockCustomRedirectApp.new, MockHtmlRedirectApp.new]
-      apps.each do |app|
-        HttpLoggerForRack.new(app).call(MOCK_ENV)
-        expect(logger.tracing_history.length).to eql(0)
-      end
-    ensure
-      logger.tracing_stop.enable
+    apps = [MockCustomApp.new, MockCustomRedirectApp.new, MockHtmlRedirectApp.new]
+    apps.each do |app|
+      queue = []
+      HttpLoggerForRack.new(app, queue: queue).call(MOCK_ENV)
+      expect(queue.length).to eql(0)
     end
   end
 

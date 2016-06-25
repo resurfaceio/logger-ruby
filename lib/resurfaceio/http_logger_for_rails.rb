@@ -1,13 +1,12 @@
 # coding: utf-8
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
-require 'resurfaceio/http_logger_factory'
+require 'resurfaceio/http_logger'
 
 class HttpLoggerForRails
 
   def initialize(options={})
-    @logger = HttpLoggerFactory.get
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}, ENV['HTTP_LOGGER_URL']=#{ENV['HTTP_LOGGER_URL']}"
+    @logger = HttpLogger.new(options)
   end
 
   def around(controller)

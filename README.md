@@ -87,7 +87,7 @@ environment is held in volatile memory for less than 24 hours, and is never shar
 
 <a name="logging_to_different_urls"/>
 
-## Logging to Different URLs
+## Logging To Different URLs
 
 Our loggers don't lock you into using any particular backend service. Loggers can send data to any URL that accepts JSON
 messages as a standard HTTPS POST.

@@ -115,69 +115,72 @@ describe HttpLogger do
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
-  it 'skips logging when disabled' do
-    MOCK_INVALID_URLS.each do |url|
-      logger = HttpLogger.new(url, false)
-      expect(logger.log(nil, nil, nil, nil)).to be true
-      expect(logger.submit(nil)).to be true
-      expect(logger.tracing_history.length).to be 0
+  it 'performs enabling when expected' do
+    logger = HttpLogger.new(url: 'DEMO', enabled: false)
+    expect(logger.enabled?).to be false
+    logger.enable
+    expect(logger.enabled?).to be true
+
+    logger = HttpLogger.new(queue: [], enabled: false)
+    expect(logger.enabled?).to be false
+    logger.enable.disable.enable
+    expect(logger.enabled?).to be true
+
+    logger = HttpLogger.new(url: UsageLoggers.demo_url, enabled: false)
+    expect(logger.enabled?).to be false
+    logger.enable.disable.enable.disable.disable.disable.enable
+    expect(logger.enabled?).to be true
+  end
+
+  it 'skips enabling for invalid urls' do
+    URLS_INVALID.each do |url|
+      logger = HttpLogger.new(url: url)
+      expect(logger.enabled?).to be false
+      logger.enable
+      expect(logger.enabled?).to be false
     end
   end
 
-  it 'submits to good url' do
+  it 'skips enabling for missing url' do
     logger = HttpLogger.new
+    expect(logger.enabled?).to be false
+    logger.enable
+    expect(logger.enabled?).to be false
+  end
+
+  it 'skips logging when disabled' do
+    URLS_UNRESOLVABLE.each do |url|
+      logger = HttpLogger.new(url: url).disable
+      expect(logger.log(nil, nil, nil, nil)).to be true
+    end
+  end
+
+  it 'submits to demo url' do
+    logger = HttpLogger.new(url: 'DEMO')
+    expect(logger.url).to eql(UsageLoggers.demo_url)
     json = String.new
     JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
     JsonMessage.stop(json)
     expect(logger.submit(json)).to be true
-    expect(logger.tracing_history.length).to be 0
   end
 
-  it 'submits to invalid url' do
-    MOCK_INVALID_URLS.each do |url|
-      logger = HttpLogger.new(url)
+  it 'submits to invalid url and fails' do
+    URLS_UNRESOLVABLE.each do |url|
+      logger = HttpLogger.new(url: url)
       expect(logger.submit('TEST-ABC')).to be false
-      expect(logger.tracing_history.length).to be 0
     end
   end
 
-  it 'uses tracing' do
-    logger = HttpLogger.new.disable
-    expect(logger.active?).to be false
-    expect(logger.enabled?).to be false
-    expect(logger.tracing?).to be false
-    expect(logger.tracing_history.length).to be 0
-    logger.tracing_start
-    begin
-      expect(logger.active?).to be true
-      expect(logger.tracing?).to be true
-      expect(logger.tracing_history.length).to be 0
-      expect(logger.submit('TEST-123')).to be true
-      expect(logger.tracing_history.length).to eql(1)
-      expect(logger.submit('TEST-234')).to be true
-      expect(logger.tracing_history.length).to eql(2)
-      expect(logger.submit('TEST-345')).to be true
-      expect(logger.tracing_history.length).to eql(3)
-    ensure
-      logger.tracing_stop.enable
-      expect(logger.active?).to be true
-      expect(logger.enabled?).to be true
-      expect(logger.tracing?).to be false
-      expect(logger.tracing_history.length).to be 0
-    end
-  end
-
-  it 'uses url' do
-    url = HttpLogger::DEFAULT_URL
-    expect(url).to be_kind_of String
-    expect(url).not_to be nil
-    expect(url.length).to be > 0
-    expect(url.start_with?('https://')).to be true
-    expect(url.include?('\\')).to be false
-    expect(url.include?('\"')).to be false
-    expect(url.include?('\'')).to be false
-    expect(HttpLogger.new.url).to eql(HttpLogger::DEFAULT_URL)
-    expect(HttpLogger.new('https://foobar.com').url).to eql('https://foobar.com')
+  it 'submits to queue' do
+    queue = []
+    logger = HttpLogger.new(queue: queue, url: URLS_UNRESOLVABLE[0])
+    expect(logger.url).to be nil
+    expect(logger.enabled?).to be true
+    expect(queue.length).to be 0
+    expect(logger.submit('TEST-123')).to be true
+    expect(queue.length).to eql(1)
+    expect(logger.submit('TEST-234')).to be true
+    expect(queue.length).to eql(2)
   end
 
   it 'uses version' do

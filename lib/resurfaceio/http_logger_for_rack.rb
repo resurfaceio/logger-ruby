@@ -2,19 +2,18 @@
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
 require 'rack'
-require 'resurfaceio/http_logger_factory'
+require 'resurfaceio/http_logger'
 
 class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
 
   def initialize(app, options={})
     @app = app
-    @logger = HttpLoggerFactory.get
-    puts "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! options[:url]=#{options[:url]}, ENV['HTTP_LOGGER_URL']=#{ENV['HTTP_LOGGER_URL']}"
+    @logger = HttpLogger.new(options)
   end
 
   def call(env)
     status, headers, body = @app.call(env)
-    if @logger.active? && status != 304
+    if @logger.enabled? && status != 304
       response = Rack::Response.new(body, status, headers)
       if string_content_type?(response.content_type)
         request = Rack::Request.new(env)

@@ -8,8 +8,8 @@ class HttpLogger < BaseLogger
 
   AGENT = 'http_logger.rb'
 
-  def initialize(url = DEFAULT_URL, enabled = true)
-    super(AGENT, url, enabled)
+  def initialize(options={})
+    super(AGENT, options)
   end
 
   def append_to_buffer(json, now, request, request_body, response, response_body)
@@ -33,7 +33,7 @@ class HttpLogger < BaseLogger
   end
 
   def log(request, request_body, response, response_body)
-    !active? || submit(format(request, request_body, response, response_body))
+    !enabled? || submit(format(request, request_body, response, response_body))
   end
 
   protected

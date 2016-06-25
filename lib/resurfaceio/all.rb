@@ -2,7 +2,6 @@
 # Copyright (c) 2016 Resurface Labs LLC, All Rights Reserved
 
 require 'resurfaceio/http_logger'
-require 'resurfaceio/http_logger_factory'
 require 'resurfaceio/http_logger_for_rack'
 require 'resurfaceio/http_logger_for_rails'
 require 'resurfaceio/http_request_impl'
@@ -13,9 +12,6 @@ require 'resurfaceio/usage_loggers'
 module Resurfaceio
 
   class HttpLogger < HttpLogger
-  end
-
-  class HttpLoggerFactory < HttpLoggerFactory
   end
 
   class HttpLoggerForRack < HttpLoggerForRack
