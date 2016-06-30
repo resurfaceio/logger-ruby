@@ -66,15 +66,12 @@ environment is held in volatile memory for less than 24 hours, and is never shar
 This logs usage of apps on Sinatra and other Rack-based frameworks, including Rails. Unlike the example for Rails
 above, this requires no changes to your controllers, and logs response headers that are not seen by Rails controllers.
 
-This logger performs some basic filtering: it ignores redirects (304 response codes), and only logs responses for content
-types matching a predefined list (including 'text/html' and 'application/json').
-
 After <a href="#installing_with_bundler">installing the gem</a>, add these lines below to config.ru, before the final
 'run' statement.
 
     require 'resurfaceio/all'                   # add this line
     use HttpLoggerForRack, url: 'DEMO'          # add this line
-    run <...>                                   # this was already there, no changes
+    run <...>
 
 Usage data will now be logged here:
 [https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
