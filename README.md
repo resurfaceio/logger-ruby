@@ -52,7 +52,7 @@ shown below.
       around_action HttpLoggerForRails.new(url: 'DEMO')        # add inside controller
     end
 
-Usage data will now be logged here:
+Usage data will be logged here:
 [https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
 
 *Resurface Labs provides this free demo environment just to make our stuff easy to try. Data sent to this demo
@@ -73,7 +73,7 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
     use HttpLoggerForRack, url: 'DEMO'          # add this line
     run <...>
 
-Usage data will now be logged here:
+Usage data will be logged here:
 [https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
 
 *Resurface Labs provides this free demo environment just to make our stuff easy to try. Data sent to this demo
