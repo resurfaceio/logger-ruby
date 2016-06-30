@@ -46,10 +46,10 @@ Rails is the most popular Ruby framework, and is featured by Heroku's
 After <a href="#installing_with_bundler">installing the gem</a>, add an around_action to any Rails controller as
 shown below.
 
-    require 'resurfaceio/all'                                  # add at top of file
+    require 'resurfaceio/all'                                        # add at top of file
 
     class MyController < ApplicationController
-      around_action HttpLoggerForRails.new(url: 'DEMO')        # add inside controller
+      around_action HttpLoggerForRails.new(url: 'DEMO')              # add inside controller
     end
 
 Usage data will be logged here:
@@ -69,8 +69,8 @@ above, this requires no changes to your controllers, and logs response headers t
 After <a href="#installing_with_bundler">installing the gem</a>, add these lines below to config.ru, before the final
 'run' statement.
 
-    require 'resurfaceio/all'                   # add this line
-    use HttpLoggerForRack, url: 'DEMO'          # add this line
+    require 'resurfaceio/all'                                        # add this line
+    use HttpLoggerForRack, url: 'DEMO'                               # add this line
     run <...>
 
 Usage data will be logged here:
@@ -106,8 +106,7 @@ As implied in the fake example above, a single app can have several loggers that
 
 ### Setting Default URL
 
-Set the USAGE_LOGGERS_URL variable to provide a default value whenever the URL is not specified. This is most useful when you
-intend to have multiple loggers using a single backend service.
+Set the USAGE_LOGGERS_URL variable to provide a default value whenever the URL is not specified.
 
     # using Heroku cli
     heroku config:set USAGE_LOGGERS_URL=https://my-https-url
@@ -153,17 +152,17 @@ yields complete control over what details are logged, and where logged data is s
     require 'resurfaceio/all'
 
     # manage all loggers (even those not created yet)
-    UsageLoggers.disable                                         # disable all loggers
-    UsageLoggers.enable                                          # enable all loggers
+    UsageLoggers.disable                                             # disable all loggers
+    UsageLoggers.enable                                              # enable all loggers
 
     # create and configure logger
-    logger = HttpLogger.new(queue: my_queue)                     # log to appendable list
-    logger = HttpLogger.new(queue: my_queue, enabled: false)     # (initially disabled)
-    logger = HttpLogger.new(url: my_https_url)                   # log to https url
-    logger = HttpLogger.new(url: my_https_url, enabled: false)   # (initially disabled)
-    logger.disable                                               # disable this logger
-    logger.enable                                                # enable this logger
-    if logger.enabled? ...                                       # test if this enabled
+    logger = HttpLogger.new(queue: my_queue)                         # log to appendable list
+    logger = HttpLogger.new(queue: my_queue, enabled: false)         # (initially disabled)
+    logger = HttpLogger.new(url: my_https_url)                       # log to https url
+    logger = HttpLogger.new(url: my_https_url, enabled: false)       # (initially disabled)
+    logger.disable                                                   # disable this logger
+    logger.enable                                                    # enable this logger
+    if logger.enabled? ...                                           # test if this enabled
 
     # define request to log
     request = HttpRequestImpl.new
