@@ -3,22 +3,26 @@
 
 class UsageLoggers
 
-  @@enabled = !ENV['USAGE_LOGGERS_DISABLE'].eql?('true')
-
-  def self.demo_url
-    'https://demo-resurfaceio.herokuapp.com/messages'
-  end
+  @@disabled = 'true'.eql?(ENV['USAGE_LOGGERS_DISABLE'])
 
   def self.disable
-    @@enabled = false
+    @@disabled = true
   end
 
   def self.enable
-    @@enabled = true unless ENV['USAGE_LOGGERS_DISABLE'].eql?('true')
+    @@disabled = false unless 'true'.eql?(ENV['USAGE_LOGGERS_DISABLE'])
   end
 
   def self.enabled?
-    @@enabled
+    !@@disabled
+  end
+
+  def self.url_by_default
+    ENV['USAGE_LOGGERS_URL']
+  end
+
+  def self.url_for_demo
+    'https://demo-resurfaceio.herokuapp.com/messages'
   end
 
 end

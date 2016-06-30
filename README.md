@@ -1,10 +1,9 @@
 # resurfaceio-logger-ruby
 &copy; 2016 Resurface Labs LLC, All Rights Reserved
 
-This gem makes it easy to log usage of Rails/Rack apps, including HTTP request/response details.
+This gem makes it easy to log actual usage of Ruby web/json apps.
 
-Contents
---------
+## Contents
 
 <ul>
 <li><a href="#dependencies">Dependencies</a></li>
@@ -43,9 +42,8 @@ Then update using Bundler:
 
 Rails is the most popular Ruby framework, and is featured by Heroku's
 [Getting Started with Ruby](https://devcenter.heroku.com/articles/getting-started-with-ruby) tutorial.
-(If you've never used Rails or Heroku before, this tutorial is a great walkthrough)
 
-After <a href="#installing_with_bundler">installing the logger gem</a>, add an around_action to any Rails controller as
+After <a href="#installing_with_bundler">installing the gem</a>, add an around_action to any Rails controller as
 shown below.
 
     require 'resurfaceio/all'                                  # add at top of file
@@ -71,7 +69,7 @@ above, this requires no changes to your controllers, and logs response headers t
 This logger performs some basic filtering: it ignores redirects (304 response codes), and only logs responses for content
 types matching a predefined list (including 'text/html' and 'application/json').
 
-After <a href="#installing_with_bundler">installing the logger gem</a>, add these lines below to config.ru, before the final
+After <a href="#installing_with_bundler">installing the gem</a>, add these lines below to config.ru, before the final
 'run' statement.
 
     require 'resurfaceio/all'                   # add this line
@@ -92,16 +90,16 @@ environment is held in volatile memory for less than 24 hours, and is never shar
 Our loggers don't lock you into using any particular backend service. Loggers can send data to any URL that accepts JSON
 messages as a standard HTTPS POST.
 
+    # for basic logger
+    logger = HttpLogger.new(url: 'https://my-https-url')
+
     # for rack middleware
-    use HttpLoggerForRack, url: 'https://my-url-1'
+    use HttpLoggerForRack, url: 'https://my-https-url'
 
     # for rails controller
-    around_action HttpLoggerForRails.new(url: 'https://my-url-2?session-token')
+    around_action HttpLoggerForRails.new(url: 'https://my-other-url?session-token')
 
-    # for another rails controller
-    around_action HttpLoggerForRails.new(url: 'https://my-url-3')
-
-As shown in the fake example above, an app can have separate loggers that send usage data to different URLs at once.
+As implied in the fake example above, a single app can have several loggers that send usage data to different URLs at once.
 
 <a name="advanced_topics"/>
 
@@ -115,10 +113,10 @@ Set the USAGE_LOGGERS_URL variable to provide a default value whenever the URL i
 intend to have multiple loggers using a single backend service.
 
     # using Heroku cli
-    heroku config:set USAGE_LOGGERS_URL=https://my-destination-url
+    heroku config:set USAGE_LOGGERS_URL=https://my-https-url
 
     # from within config.ru or rails configuration file
-    ENV['USAGE_LOGGERS_URL']='https://my-destination-url'
+    ENV['USAGE_LOGGERS_URL']='https://my-https-url'
 
 Loggers look for this environment variable when no other options are set, as in these examples.
 
@@ -152,15 +150,19 @@ programmatically.
 
 ### Using API Directly
 
-Loggers can be directly integrated into your application if Rails/Rack instrumentation don't fit. This requires the most effort,
-but yields complete control over what details are logged, and where the data is sent.
+Loggers can be directly integrated into your application if other options don't fit. This requires the most effort, but
+yields complete control over what details are logged, and where logged data is sent.
 
     require 'resurfaceio/all'
 
-    # create and manage logger
+    # manage all loggers (even those not created yet)
+    UsageLoggers.disable                                         # disable all loggers
+    UsageLoggers.enable                                          # enable all loggers
+
+    # create and configure logger
     logger = HttpLogger.new(queue: my_queue)                     # log to appendable list
     logger = HttpLogger.new(queue: my_queue, enabled: false)     # (initially disabled)
-    logger = HttpLogger.new(url: my_https_url)                   # custom destination
+    logger = HttpLogger.new(url: my_https_url)                   # log to https url
     logger = HttpLogger.new(url: my_https_url, enabled: false)   # (initially disabled)
     logger.disable                                               # disable this logger
     logger.enable                                                # enable this logger

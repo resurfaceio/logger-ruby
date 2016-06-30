@@ -12,25 +12,33 @@ class BaseLogger
     @agent = agent
     @version = BaseLogger.version_lookup
 
-    # detect options in priority order
+    # set options in priority order
     @enabled = options.fetch(:enabled, true)
     if options.has_key?(:queue)
       @queue = options[:queue]
     elsif options.has_key?(:url)
-      @url = options[:url]
-      @url = UsageLoggers.demo_url if @url.eql?('DEMO')
-    elsif ENV.has_key?('USAGE_LOGGERS_URL')
-      @url = ENV['USAGE_LOGGERS_URL']
+      url = options[:url]
+      if url.nil?
+        @url = UsageLoggers.url_by_default
+        @enabled = false if @url.nil?
+      elsif url.eql?('DEMO')
+        @url = UsageLoggers.url_for_demo
+      else
+        @url = url
+      end
     else
-      @enabled = false
+      @url = UsageLoggers.url_by_default
+      @enabled = false if @url.nil?
     end
 
     # validate url when present
-    begin
-      raise Exception unless @url.nil? || URI.parse(@url).scheme.eql?('https')
-    rescue Exception
-      @url = nil
-      @enabled = false
+    unless @url.nil?
+      begin
+        raise Exception unless URI.parse(@url).scheme.eql?('https')
+      rescue Exception
+        @url = nil
+        @enabled = false
+      end
     end
   end
 
@@ -60,15 +68,16 @@ class BaseLogger
       true
     else
       begin
-        @uri ||= URI.parse(@url)
-        @connection ||= Net::HTTP.new(@uri.host, @uri.port)
-        @connection.use_ssl = true
-        request = Net::HTTP::Post.new(@uri.path)
+        @url_parsed ||= URI.parse(@url)
+        @url_connection ||= Net::HTTP.new(@url_parsed.host, @url_parsed.port)
+        @url_connection.use_ssl = true
+        request = Net::HTTP::Post.new(@url_parsed.path)
         request.body = json
-        response = @connection.request(request)
+        response = @url_connection.request(request)
         response.code.to_i == 200
       rescue SocketError
-        @connection = nil
+        # todo retry?
+        @url_connection = nil
         false
       end
     end
