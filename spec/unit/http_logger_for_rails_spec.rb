@@ -42,4 +42,13 @@ describe HttpLoggerForRails do
     expect(json.include?("\"response_headers\":[]")).to be true
   end
 
+  it 'skips logging for exceptions' do
+    queue = []
+    begin
+      HttpLoggerForRails.new(queue: queue).around(MockRailsHtmlController.new) { raise ZeroDivisionError }
+    rescue ZeroDivisionError
+      expect(queue.length).to eql(0)
+    end
+  end
+
 end

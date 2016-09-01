@@ -65,6 +65,12 @@ class MockCustomRedirectApp
   end
 end
 
+class MockExceptionApp
+  def call(env)
+    raise ZeroDivisionError
+  end
+end
+
 class MockJsonApp
   def call(env)
     headers = {}

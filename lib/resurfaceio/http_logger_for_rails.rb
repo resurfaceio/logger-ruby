@@ -10,11 +10,8 @@ class HttpLoggerForRails
   end
 
   def around(controller)
-    begin
-      yield
-    ensure
-      @logger.log(controller.request, nil, controller.response, nil)
-    end
+    yield
+    @logger.log(controller.request, nil, controller.response, nil)
   end
 
 end

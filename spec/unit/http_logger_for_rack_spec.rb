@@ -58,6 +58,15 @@ describe HttpLoggerForRack do
     expect(json.include?("\"response_headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
   end
 
+  it 'skips logging for exceptions' do
+    queue = []
+    begin
+      HttpLoggerForRack.new(MockExceptionApp.new, queue: queue).call(MOCK_ENV)
+    rescue ZeroDivisionError
+      expect(queue.length).to eql(0)
+    end
+  end
+
   it 'skips logging for redirects and unmatched content types' do
     apps = [MockCustomApp.new, MockCustomRedirectApp.new, MockHtmlRedirectApp.new]
     apps.each do |app|
