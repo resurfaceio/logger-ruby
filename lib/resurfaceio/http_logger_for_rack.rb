@@ -26,9 +26,7 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
   protected
 
   def string_content_type?(s)
-    !s.nil? && (s.include?('text/html') || s.include?('text/plain') || s.include?('text/xml') ||
-        s.include?('application/json') || s.include?('application/soap+xml') ||
-        s.include?('application/xml') || s.include?('application/x-www-form-urlencoded'))
+    !s.nil? && s =~ /^(text\/(html|plain|xml))|(application\/(json|soap|xml|x-www-form-urlencoded))/i
   end
 
 end

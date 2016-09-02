@@ -23,7 +23,7 @@ describe HttpLoggerForRack do
     expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
     expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
     expect(json.include?("\"response_code\":\"200\"")).to be true
-    expect(json.include?("\"response_headers\":[{\"content-type\":\"text/html\"},{\"a\":\"1\"},{\"content-length\":\"25\"}]")).to be true
+    expect(json.include?("\"response_headers\":[{\"content-type\":\"text/html; charset=utf-8\"},{\"a\":\"1\"},{\"content-length\":\"25\"}]")).to be true
   end
 
   it 'logs json' do

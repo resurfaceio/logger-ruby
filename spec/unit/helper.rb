@@ -90,7 +90,7 @@ end
 class MockHtmlApp
   def call(env)
     headers = {}
-    headers[Rack::CONTENT_TYPE] = 'text/html'
+    headers[Rack::CONTENT_TYPE] = 'text/html; charset=utf-8'
     headers['A'] = '1'
     [200, headers, [MOCK_HTML]]
   end
