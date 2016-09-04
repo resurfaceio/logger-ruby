@@ -52,12 +52,9 @@ shown below.
       around_action HttpLoggerForRails.new(url: 'DEMO')              # add inside controller
     end
 
-Usage data will be logged here:
-[https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
-
-*Resurface Labs provides this free demo environment just to make our stuff easy to try. Data sent to this demo
-environment is held in volatile memory for less than 24 hours, and is never shared with third parties.
-(<a href="">Privacy and Terms of Service</a>)*
+With this configuration, usage data will be logged to our 
+[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can alternatively
+<a href="#logging_to_different_urls">log to any URL</a>.
 
 <a name="logging_from_rack_middleware"/>
 
@@ -73,19 +70,16 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
     use HttpLoggerForRack, url: 'DEMO'                               # add this line
     run <...>
 
-Usage data will be logged here:
-[https://demo-resurfaceio.herokuapp.com/messages](https://demo-resurfaceio.herokuapp.com/messages)
-
-*Resurface Labs provides this free demo environment just to make our stuff easy to try. Data sent to this demo
-environment is held in volatile memory for less than 24 hours, and is never shared with third parties.
-(<a href="">Privacy and Terms of Service</a>)*
+With this configuration, usage data will be logged to our 
+[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can alternatively
+<a href="#logging_to_different_urls">log to any URL</a>.
 
 <a name="logging_to_different_urls"/>
 
 ## Logging To Different URLs
 
 Our loggers don't lock you into using any particular backend service. Loggers can send data to any URL that accepts JSON
-messages as a standard HTTPS POST.
+messages as a standard HTTPS POST. A single application can use multiple loggers configured with different URLs.
 
     # for basic logger
     logger = HttpLogger.new(url: 'https://my-https-url')
@@ -95,8 +89,6 @@ messages as a standard HTTPS POST.
 
     # for rails controller
     around_action HttpLoggerForRails.new(url: 'https://my-other-url?session-token')
-
-As implied in the fake example above, a single app can have several loggers that send usage data to different URLs at once.
 
 <a name="advanced_topics"/>
 
