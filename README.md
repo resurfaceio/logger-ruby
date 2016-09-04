@@ -10,6 +10,7 @@ This gem makes it easy to log actual usage of Ruby web/json apps.
 <li><a href="#installing_with_bundler">Installing With Bundler</a></li>
 <li><a href="#logging_from_rails_controller">Logging From Rails Controller</a></li>
 <li><a href="#logging_from_rack_middleware">Logging From Rack Middleware</a></li>
+<li><a href="#logging_from_sinatra">Logging From Sinatra</a></li>
 <li><a href="#logging_to_different_urls">Logging To Different URLs</a></li>
 <li><a href="#advanced_topics">Advanced Topics</a><ul>
 <li><a href="#setting_default_url">Setting Default URL</a></li>
@@ -69,6 +70,38 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
     require 'resurfaceio/all'                                        # add this line
     use HttpLoggerForRack, url: 'DEMO'                               # add this line
     run <...>
+
+With this configuration, usage data will be logged to our 
+[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can alternatively
+<a href="#logging_to_different_urls">log to any URL</a>.
+
+<a name="logging_from_sinatra"/>
+
+## Logging From Sinatra
+
+<a href="#logging_from_rack_middleware">Logging from rack middleware</a> works for Sinatra applications, assuming the need is to
+log all usage. Otherwise a logger can be used just for specific routes only. (In Sinatra, a route is a URL-matching pattern
+associated with a block of code)
+
+After <a href="#installing_with_bundler">installing the gem</a>, create a logger and use it from the routes of interest.
+
+    require 'sinatra'
+    require 'resurfaceio/all'
+
+    logger = HttpLogger.new(url: 'DEMO')
+
+    get '/' do
+      content_type :html
+      response_body = "<html>Hello World</html>"
+      logger.log(request, nil, response, response_body)
+      response_body
+    end
+
+    post '/' do
+      status 401
+      logger.log(request, nil, response, nil)
+      ""
+    end
 
 With this configuration, usage data will be logged to our 
 [free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can alternatively
