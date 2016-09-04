@@ -131,7 +131,7 @@ messages as a standard HTTPS POST. A single application can use multiple loggers
 
 ### Setting Default URL
 
-Set the USAGE_LOGGERS_URL variable to provide a default value whenever the URL is not specified.
+Set the USAGE_LOGGERS_URL environment variable to provide a default value whenever the URL is not specified.
 
     # using Heroku cli
     heroku config:set USAGE_LOGGERS_URL=https://my-https-url
@@ -172,7 +172,7 @@ programmatically.
 ### Using API Directly
 
 Loggers can be directly integrated into your application if other options don't fit. This requires the most effort, but
-yields complete control over what details are logged, and where logged data is sent.
+yields complete control over how usage logging is implemented.
 
     require 'resurfaceio/all'
 
