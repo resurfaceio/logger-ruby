@@ -20,11 +20,18 @@ describe HttpResponseImpl do
   end
 
   it 'uses content_type' do
-    val = 'application/whatever'
     r = HttpResponseImpl.new
     expect(r.content_type).to be nil
+    expect(r.headers['Content-Type']).to be nil
+
+    val = 'application/whatever'
     r.content_type = val
     expect(r.content_type).to eql(val)
+    expect(r.headers['Content-Type']).to eql(val)
+
+    r.content_type = nil
+    expect(r.content_type).to be nil
+    expect(r.headers['Content-Type']).to be nil
   end
 
   it 'uses headers' do

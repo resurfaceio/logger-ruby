@@ -24,7 +24,6 @@ class HttpResponseImpl
     @headers
   end
 
-  attr_accessor :content_type
   attr_accessor :raw_body
   attr_accessor :status
 

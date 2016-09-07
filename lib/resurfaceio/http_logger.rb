@@ -14,13 +14,13 @@ class HttpLogger < BaseLogger
 
   def append_to_buffer(json, now, request, request_body, response, response_body)
     JsonMessage.start(json, 'http', agent, version, now)
-    JsonMessage.append(json << ',', 'request_method', request.request_method)
-    JsonMessage.append(json << ',', 'request_url', request.url)
+    JsonMessage.append(json << ',', 'request_method', request.request_method) unless request.request_method.nil?
+    JsonMessage.append(json << ',', 'request_url', request.url) unless request.url.nil?
     append_request_headers(json << ',', request)
     unless request_body.nil? && request.body.nil?
       JsonMessage.append(json << ',', 'request_body', request_body.nil? ? request.body : request_body)
     end
-    JsonMessage.append(json << ',', 'response_code', response.status)
+    JsonMessage.append(json << ',', 'response_code', response.status) unless response.status.nil?
     append_response_headers(json << ',', response)
     unless response_body.nil? && response.body.nil?
       JsonMessage.append(json << ',', 'response_body', response_body.nil? ? response.body : response_body)
@@ -45,13 +45,15 @@ class HttpLogger < BaseLogger
     if respond_to_env || request.respond_to?(:headers)
       headers = respond_to_env ? request.env : request.headers
       headers.each do |name, value|
-        if name =~ /^CONTENT_TYPE/
-          JsonMessage.append(json << (first ? '{' : ',{'), 'content-type', value) << '}'
-          first = false
-        end
-        if name =~ /^HTTP_/
-          JsonMessage.append(json << (first ? '{' : ',{'), name[5..-1].downcase.tr('_', '-'), value) << '}'
-          first = false
+        unless value.nil?
+          if name =~ /^CONTENT_TYPE/
+            JsonMessage.append(json << (first ? '{' : ',{'), 'content-type', value) << '}'
+            first = false
+          end
+          if name =~ /^HTTP_/
+            JsonMessage.append(json << (first ? '{' : ',{'), name[5..-1].downcase.tr('_', '-'), value) << '}'
+            first = false
+          end
         end
       end
     end
@@ -64,10 +66,12 @@ class HttpLogger < BaseLogger
     found_content_type = false
     if response.respond_to?(:headers)
       response.headers.each do |name, value|
-        name = name.downcase
-        found_content_type = true if name =~ /^content\-type/
-        JsonMessage.append(json << (first ? '{' : ',{'), name, value) << '}'
-        first = false
+        unless value.nil?
+          name = name.downcase
+          found_content_type = true if name =~ /^content-type/
+          JsonMessage.append(json << (first ? '{' : ',{'), name, value) << '}'
+          first = false
+        end
       end
     end
     unless found_content_type || response.content_type.nil?

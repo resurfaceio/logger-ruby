@@ -71,6 +71,14 @@ describe HttpLogger do
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
   end
 
+  it 'formats request with nil method and url' do
+    json = HttpLogger.new.format(HttpRequestImpl.new, nil, mock_response, nil)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"request_body\"")).to be false
+    expect(json.include?("\"request_method\"")).to be false
+    expect(json.include?("\"request_url\"")).to be false
+  end
+
   it 'formats response' do
     json = HttpLogger.new.format(mock_request, nil, mock_response, nil)
     expect(parseable?(json)).to be true
@@ -113,6 +121,18 @@ describe HttpLogger do
     expect(json.include?("\"response_code\":\"200\"")).to be true
     expect(json.include?("\"response_headers\":[]")).to be true
     expect(json.include?("\"version\":\"#{HttpLogger.version_lookup}\"")).to be true
+  end
+
+  it 'formats response with nil content type and response code' do
+    # this is the default behavior with Sinatra, https://github.com/resurfaceio/resurfaceio-logger-ruby/issues/18
+    response = HttpResponseImpl.new
+    response.content_type = nil
+    json = HttpLogger.new.format(mock_request, nil, response, nil)
+    expect(parseable?(json)).to be true
+    expect(json.include?("\"request_body\"")).to be false
+    expect(json.include?("\"response_body\"")).to be false
+    expect(json.include?("\"response_code\"")).to be false
+    expect(json.include?("\"response_headers\":[]")).to be true
   end
 
   it 'performs enabling when expected' do

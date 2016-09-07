@@ -9,6 +9,13 @@ describe JsonMessage do
     expect(JsonMessage.class.equal?(Resurfaceio::JsonMessage.class)).to be true
   end
 
+  it 'appends nils to message' do
+    expect(JsonMessage.append('', nil)).to eql('')
+    expect(JsonMessage.append('ABC', nil)).to eql('ABC')
+    expect(JsonMessage.append('', nil, nil)).to eql('')
+    expect(JsonMessage.append('XYZ', nil, nil)).to eql('XYZ')
+  end
+
   it 'appends arrays to message' do
     expect(JsonMessage.append('', 'a', %w(b))).to eql("\"a\":\"b\"")
     expect(JsonMessage.append('', 'b', [1])).to eql("\"b\":\"1\"")
