@@ -27,24 +27,26 @@ class JsonMessage
   end
 
   def self.escape(json, value)
-    value.to_s.each_char do |c|
-      case c
-        when '"'
-          json << "\\\""
-        when '\\'
-          json << "\\\\"
-        when "\b"
-          json << "\\b"
-        when "\f"
-          json << "\\f"
-        when "\n"
-          json << "\\n"
-        when "\r"
-          json << "\\r"
-        when "\t"
-          json << "\\t"
-        else
-          json << c
+    unless value.nil?
+      value.to_s.each_char do |c|
+        case c
+          when '"'
+            json << "\\\""
+          when '\\'
+            json << "\\\\"
+          when "\b"
+            json << "\\b"
+          when "\f"
+            json << "\\f"
+          when "\n"
+            json << "\\n"
+          when "\r"
+            json << "\\r"
+          when "\t"
+            json << "\\t"
+          else
+            json << c
+        end
       end
     end
     json

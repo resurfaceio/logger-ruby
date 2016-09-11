@@ -9,18 +9,18 @@ describe JsonMessage do
     expect(JsonMessage.class.equal?(Resurfaceio::JsonMessage.class)).to be true
   end
 
-  it 'appends nils to message' do
-    expect(JsonMessage.append('', nil)).to eql('')
-    expect(JsonMessage.append('ABC', nil)).to eql('ABC')
-    expect(JsonMessage.append('', nil, nil)).to eql('')
-    expect(JsonMessage.append('XYZ', nil, nil)).to eql('XYZ')
-  end
-
   it 'appends arrays to message' do
     expect(JsonMessage.append('', 'a', %w(b))).to eql("\"a\":\"b\"")
     expect(JsonMessage.append('', 'b', [1])).to eql("\"b\":\"1\"")
     expect(JsonMessage.append('', 'c', ["can\"t"])).to eql("\"c\":\"can\\\"t\"")
     expect(JsonMessage.append('X', 'd', %w(a b solute))).to eql("X\"d\":\"absolute\"")
+  end
+
+  it 'appends nils to message' do
+    expect(JsonMessage.append('', nil)).to eql('')
+    expect(JsonMessage.append('ABC', nil)).to eql('ABC')
+    expect(JsonMessage.append('', nil, nil)).to eql('')
+    expect(JsonMessage.append('XYZ', nil, nil)).to eql('XYZ')
   end
 
   it 'appends numbers to message' do
@@ -68,6 +68,11 @@ describe JsonMessage do
     expect(JsonMessage.escape('', "\nthe cow says moo")).to eql("\\nthe cow says moo")
     expect(JsonMessage.escape('', "the cow says moo\n")).to eql("the cow says moo\\n")
     expect(JsonMessage.escape('', "the cow says \nmoo")).to eql("the cow says \\nmoo")
+  end
+
+  it 'escapes nils' do
+    expect(JsonMessage.escape('', nil)).to eql('')
+    expect(JsonMessage.escape('ABC', nil)).to eql('ABC')
   end
 
   it 'escapes quotes' do
