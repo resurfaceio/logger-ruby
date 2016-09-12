@@ -91,16 +91,15 @@ After <a href="#installing_with_bundler">installing the gem</a>, create a logger
     logger = HttpLogger.new(url: 'DEMO')
 
     get '/' do
-      content_type :html
-      response_body = "<html>Hello World</html>"
-      logger.log(request, nil, response, response_body)
+      response_body = '<html>Hello World</html>'
+      logger.log request, nil, response, response_body
       response_body
     end
 
     post '/' do
       status 401
-      logger.log(request, nil, response, nil)
-      ""
+      logger.log request, nil, response, nil
+      ''
     end
 
 With this configuration, usage data will be logged to our 
