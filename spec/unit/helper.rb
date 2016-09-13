@@ -47,7 +47,7 @@ MOCK_URL = 'http://localhost:3000/index.html?foo=bar'
 
 URLS_DENIED = ["#{UsageLoggers.url_for_demo}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/']
 
-URLS_INVALID = ['', 'noway3is5this1valid2', 'http://www.noway3is5this1valid2.com/']
+URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp://www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613']
 
 class MockCustomApp
   def call(env)

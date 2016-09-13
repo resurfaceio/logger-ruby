@@ -34,7 +34,7 @@ class BaseLogger
     # validate url when present
     unless @url.nil?
       begin
-        raise Exception unless URI.parse(@url).scheme.eql?('https')
+        raise Exception unless URI.parse(@url).scheme.include?('http')
       rescue Exception
         @url = nil
         @enabled = false
@@ -70,7 +70,7 @@ class BaseLogger
       begin
         @url_parsed ||= URI.parse(@url)
         @url_connection ||= Net::HTTP.new(@url_parsed.host, @url_parsed.port)
-        @url_connection.use_ssl = true
+        @url_connection.use_ssl = @url.include?('https')
         request = Net::HTTP::Post.new(@url_parsed.path)
         request.body = json
         response = @url_connection.request(request)

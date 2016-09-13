@@ -111,7 +111,7 @@ With this configuration, usage data will be logged to our
 ## Logging To Different URLs
 
 Our loggers don't lock you into using any particular backend service. Loggers can send data to any URL that accepts JSON
-messages as a standard HTTPS POST. A single application can use multiple loggers configured with different URLs.
+messages as a standard HTTP/HTTPS POST. A single application can use multiple loggers configured with different URLs.
 
     # for basic logger
     logger = HttpLogger.new(url: 'https://my-https-url')

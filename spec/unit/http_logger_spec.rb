@@ -198,6 +198,15 @@ describe HttpLogger do
     expect(logger.submit(json)).to be true
   end
 
+  it 'submits to demo url via http' do
+    logger = HttpLogger.new(url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
+    expect(logger.url.include?('http://')).to be true
+    json = String.new
+    JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
+    JsonMessage.stop(json)
+    expect(logger.submit(json)).to be true
+  end
+
   it 'submits to denied url and fails' do
     URLS_DENIED.each do |url|
       logger = HttpLogger.new(url: url)
