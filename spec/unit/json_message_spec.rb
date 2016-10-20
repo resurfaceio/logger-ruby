@@ -93,6 +93,17 @@ describe JsonMessage do
     expect(JsonMessage.escape('', "the cow says \tmoo")).to eql("the cow says \\tmoo")
   end
 
+  it 'escapes unicode' do
+    expect(JsonMessage.escape('', 0x001b.chr('UTF-8'))).to eql('\\u001B')
+    expect(JsonMessage.escape(' ', 0x007f.chr('UTF-8'))).to eql(' \\u007F')
+    expect(JsonMessage.escape('', 0x204B.chr('UTF-8'))).to eql('\\u204B')
+    expect(JsonMessage.escape('', 0x005B.chr('UTF-8'))).to eql('[')
+    expect(JsonMessage.escape('', ' ö')).to eql(' ö')
+    expect(JsonMessage.escape('', "  #{0x00F6.chr('UTF-8')} has \ndiaeresis")).to eql('  ö has \\ndiaeresis')
+    expect(JsonMessage.escape('', 0x9BE8.chr('UTF-8'))).to eql('鯨')
+    expect(JsonMessage.escape('', '鯨 is a whale')).to eql('鯨 is a whale')
+  end
+
   it 'starts a message' do
     json = JsonMessage.start('', 'category1', 'agent1', 'version1', 1455908589662)
     expect(json.include?("{\"category\":\"category1\",")).to be true

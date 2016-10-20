@@ -26,6 +26,7 @@ class JsonMessage
     json
   end
 
+  # adapted from https://code.google.com/archive/p/json-simple (JSONValue.java)
   def self.escape(json, value)
     unless value.nil?
       value.to_s.each_char do |c|
@@ -45,7 +46,12 @@ class JsonMessage
           when "\t"
             json << "\\t"
           else
-            json << c
+            ch = c.ord
+            if (ch <= 0x001F) || (ch >= 0x007F && ch <= 0x009F) || (ch >= 0x2000 && ch <= 0x20FF)
+              json << '\\u' << ch.to_s(16).rjust(4, '0').upcase
+            else
+              json << c
+            end
         end
       end
     end
