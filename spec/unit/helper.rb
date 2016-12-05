@@ -57,6 +57,14 @@ class MockCustomApp
   end
 end
 
+class MockCustomApp2
+  def call(env)
+    headers = {}
+    headers['content_type'] = 'text/html'
+    [200, headers, ['license and registration, please']]
+  end
+end
+
 class MockCustomRedirectApp
   def call(env)
     headers = {}

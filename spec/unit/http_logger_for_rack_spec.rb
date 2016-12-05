@@ -68,7 +68,7 @@ describe HttpLoggerForRack do
   end
 
   it 'skips logging for redirects and unmatched content types' do
-    apps = [MockCustomApp.new, MockCustomRedirectApp.new, MockHtmlRedirectApp.new]
+    apps = [MockCustomApp.new, MockCustomApp2.new, MockCustomRedirectApp.new, MockHtmlRedirectApp.new]
     apps.each do |app|
       queue = []
       HttpLoggerForRack.new(app, queue: queue).call(MOCK_ENV)

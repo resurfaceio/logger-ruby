@@ -20,11 +20,20 @@ describe HttpRequestImpl do
   end
 
   it 'uses content_type' do
-    val = 'application/whatever'
     r = HttpRequestImpl.new
     expect(r.content_type).to be nil
+    expect(r.headers['CONTENT_TYPE']).to be nil
+
+    val = 'application/whatever'
     r.content_type = val
     expect(r.content_type).to eql(val)
+    expect(r.headers['CONTENT_TYPE']).to eql(val)
+    expect(r.headers['content_type']).to be nil
+
+    r.content_type = nil
+    expect(r.content_type).to be nil
+    expect(r.headers['CONTENT_TYPE']).to be nil
+    expect(r.headers['content_type']).to be nil
   end
 
   it 'uses headers' do
@@ -44,6 +53,7 @@ describe HttpRequestImpl do
     r.headers[key2] = val2
     expect(r.headers.length).to be 2
     expect(r.headers[key2]).to eql(val2)
+    expect(r.headers[key2.upcase]).to be nil
   end
 
   it 'uses raw_body' do

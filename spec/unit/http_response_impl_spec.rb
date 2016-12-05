@@ -28,10 +28,12 @@ describe HttpResponseImpl do
     r.content_type = val
     expect(r.content_type).to eql(val)
     expect(r.headers['Content-Type']).to eql(val)
+    expect(r.headers['CONTENT-TYPE']).to be nil
 
     r.content_type = nil
     expect(r.content_type).to be nil
     expect(r.headers['Content-Type']).to be nil
+    expect(r.headers['CONTENT-TYPE']).to be nil
   end
 
   it 'uses headers' do
@@ -51,6 +53,7 @@ describe HttpResponseImpl do
     r.headers[key2] = val2
     expect(r.headers.length).to be 2
     expect(r.headers[key2]).to eql(val2)
+    expect(r.headers[key2.upcase]).to be nil
   end
 
   it 'uses raw body' do
