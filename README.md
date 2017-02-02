@@ -33,9 +33,7 @@ Add this line to your Gemfile:
 
     gem 'resurfaceio-logger', :git => 'https://github.com/resurfaceio/resurfaceio-logger-ruby.git'
 
-Then update using Bundler:
-
-    bundle install
+Then install using Bundler: `bundle install`
 
 <a name="logging_from_rails_controller"/>
 
@@ -44,7 +42,7 @@ Then update using Bundler:
 Rails is the most popular Ruby framework, and is featured by Heroku's
 [Getting Started with Ruby](https://devcenter.heroku.com/articles/getting-started-with-ruby) tutorial.
 
-After <a href="#installing_with_bundler">installing the gem</a>, add an around_action to any Rails controller as
+After <a href="#installing_with_bundler">installing the gem</a>, add an `around_action` to any Rails controller as
 shown below.
 
     require 'resurfaceio/all'                                        # add at top of file
@@ -64,7 +62,7 @@ With this configuration, usage data will be logged to our
 This logs usage of apps on Sinatra and other Rack-based frameworks, including Rails. Unlike the example for Rails
 above, this requires no changes to your controllers, and logs response headers that are not seen by Rails controllers.
 
-After <a href="#installing_with_bundler">installing the gem</a>, add these lines below to config.ru, before the final
+After <a href="#installing_with_bundler">installing the gem</a>, add these lines below to `config.ru`, before the final
 'run' statement.
 
     require 'resurfaceio/all'                                        # add this line
