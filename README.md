@@ -52,7 +52,7 @@ shown below.
     end
 
 With this configuration, usage data will be logged to our 
-[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can alternatively
+[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can
 <a href="#logging_to_different_urls">log to any URL</a>.
 
 <a name="logging_from_rack_middleware"/>
@@ -70,7 +70,7 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
     run <...>
 
 With this configuration, usage data will be logged to our 
-[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can alternatively
+[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can
 <a href="#logging_to_different_urls">log to any URL</a>.
 
 <a name="logging_from_sinatra"/>
@@ -101,7 +101,7 @@ After <a href="#installing_with_bundler">installing the gem</a>, create a logger
     end
 
 With this configuration, usage data will be logged to our 
-[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can alternatively
+[free demo environment](https://demo-resurfaceio.herokuapp.com/messages), but you can
 <a href="#logging_to_different_urls">log to any URL</a>.
 
 <a name="logging_to_different_urls"/>
@@ -109,7 +109,7 @@ With this configuration, usage data will be logged to our
 ## Logging To Different URLs
 
 Our loggers don't lock you into using any particular backend service. Loggers can send data to any URL that accepts JSON
-messages as a standard HTTP/HTTPS POST. A single application can use multiple loggers configured with different URLs.
+messages as a HTTP/HTTPS POST. A single application can use multiple loggers configured with different URLs.
 
     # for basic logger
     logger = HttpLogger.new(url: 'https://my-https-url')
