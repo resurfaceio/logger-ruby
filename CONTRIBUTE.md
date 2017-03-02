@@ -8,16 +8,23 @@ If you don't use RubyMine, that's ok, but your code may get reformatted.
 
 ## Git Workflow
 
-    git clone git@github.com:resurfaceio/resurfaceio-logger-ruby.git ~/resurfaceio-logger-ruby
-    cd ~/resurfaceio-logger-ruby
-    git pull
-    (make changes)
-    bundle exec rspec                         (run automated tests)
-    git status                                (review changes)
-    git add -A
-    git commit -m "#123 Updated readme"       (123 is the GitHub issue number)
-    git pull
-    git push origin master
+```
+git clone git@github.com:resurfaceio/resurfaceio-logger-ruby.git
+cd resurfaceio-logger-ruby
+git pull
+```
 
-    # when we're ready to push through public repos
-    gem build resurfaceio-logger.gemspec
+Running unit tests:
+
+```
+bundle exec rspec
+```
+
+Committing changes:
+
+```
+git add -A
+git commit -m "#123 Updated readme"       (123 is the GitHub issue number)
+git pull
+git push origin master
+```
