@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
   spec.name = 'resurfaceio-logger'
   spec.version = '1.6.11'
 
-  spec.summary = 'Ruby library for logging to resurface.io'
+  spec.summary = 'Library for usage logging'
   spec.description = spec.summary
   spec.homepage = 'https://github.com/resurfaceio/resurfaceio-logger-ruby'
   spec.license = 'Apache-2.0'
