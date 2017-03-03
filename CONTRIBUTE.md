@@ -11,7 +11,7 @@ If you don't use RubyMine, that's ok, but your code may get reformatted.
 ```
 git clone git@github.com:resurfaceio/resurfaceio-logger-ruby.git
 cd resurfaceio-logger-ruby
-git pull
+bundle install
 ```
 
 Running unit tests:
