@@ -230,8 +230,8 @@ describe HttpLogger do
 
   it 'uses version' do
     version = HttpLogger.version_lookup
-    expect(version).to be_kind_of String
     expect(version).not_to be nil
+    expect(version).to be_kind_of String
     expect(version.length).to be > 0
     expect(version.start_with?('1.6.')).to be true
     expect(version.include?('\\')).to be false
