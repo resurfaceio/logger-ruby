@@ -228,6 +228,17 @@ describe HttpLogger do
     expect(queue.length).to eql(2)
   end
 
+  it 'uses url' do
+    url1 = 'http://resurface.io'
+    url2 = 'http://whatever.com'
+    logger1 = HttpLogger.new(url: url1)
+    logger2 = HttpLogger.new(url: url2)
+    logger3 = HttpLogger.new(url: 'DEMO')
+    expect(logger1.url).to eql(url1)
+    expect(logger2.url).to eql(url2)
+    expect(logger3.url).to eql(UsageLoggers.url_for_demo)
+  end
+
   it 'uses version' do
     version = HttpLogger.version_lookup
     expect(version).not_to be nil
