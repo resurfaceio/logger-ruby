@@ -11,17 +11,6 @@ describe HttpLogger do
     expect(Resurfaceio::HttpLogger.version_lookup).to eql(HttpLogger.version_lookup)
   end
 
-  it 'uses agent' do
-    agent = HttpLogger::AGENT
-    expect(agent).to be_kind_of String
-    expect(agent).not_to be nil
-    expect(agent.length).to be > 0
-    expect(agent.end_with?('.rb')).to be true
-    expect(agent.include?('\\')).to be false
-    expect(agent.include?('\"')).to be false
-    expect(agent.include?('\'')).to be false
-  end
-
   it 'appends request' do
     json = HttpLogger.new.append_to_buffer(String.new, 1455908640173, mock_request, nil, mock_response, nil)
     expect(parseable?(json)).to be true
@@ -135,120 +124,37 @@ describe HttpLogger do
     expect(json.include?("\"response_headers\":[]")).to be true
   end
 
-  it 'performs enabling when expected' do
-    logger = HttpLogger.new(url: 'DEMO', enabled: false)
-    expect(logger.enabled?).to be false
-    expect(logger.url).to eql(UsageLoggers.url_for_demo)
-    logger.enable
-    expect(logger.enabled?).to be true
-
-    logger = HttpLogger.new(queue: [], enabled: false)
-    expect(logger.enabled?).to be false
-    expect(logger.url).to be nil
-    logger.enable.disable.enable
-    expect(logger.enabled?).to be true
-
-    logger = HttpLogger.new(url: UsageLoggers.url_for_demo, enabled: false)
-    expect(logger.enabled?).to be false
-    expect(logger.url).to eql(UsageLoggers.url_for_demo)
-    logger.enable.disable.enable.disable.disable.disable.enable
-    expect(logger.enabled?).to be true
+  it 'maintains agent and url' do
+    url1 = 'http://resurface.io'
+    url2 = 'http://whatever.com'
+    logger1 = HttpLogger.new(url: url1)
+    logger2 = HttpLogger.new(url: url2)
+    logger3 = HttpLogger.new(url: 'DEMO')
+    expect(logger1.agent).to eql(HttpLogger::AGENT)
+    expect(logger1.url).to eql(url1)
+    expect(logger2.agent).to eql(HttpLogger::AGENT)
+    expect(logger2.url).to eql(url2)
+    expect(logger3.agent).to eql(HttpLogger::AGENT)
+    expect(logger3.url).to eql(UsageLoggers.url_for_demo)
   end
 
-  it 'skips enabling for invalid urls' do
-    URLS_INVALID.each do |url|
-      logger = HttpLogger.new(url: url)
-      expect(logger.enabled?).to be false
-      expect(logger.url).to be nil
-      logger.enable
-      expect(logger.enabled?).to be false
-    end
-  end
-
-  it 'skips enabling for missing url' do
-    logger = HttpLogger.new
-    expect(logger.enabled?).to be false
-    expect(logger.url).to be nil
-    logger.enable
-    expect(logger.enabled?).to be false
-  end
-
-  it 'skips enabling for nil url' do
-    logger = HttpLogger.new(url: nil)
-    expect(logger.enabled?).to be false
-    expect(logger.url).to be nil
-    logger.enable
-    expect(logger.enabled?).to be false
+  it 'provides valid agent string' do
+    agent = HttpLogger::AGENT
+    expect(agent).to be_kind_of String
+    expect(agent).not_to be nil
+    expect(agent.length).to be > 0
+    expect(agent.end_with?('.rb')).to be true
+    expect(agent.include?('\\')).to be false
+    expect(agent.include?('\"')).to be false
+    expect(agent.include?('\'')).to be false
   end
 
   it 'skips logging when disabled' do
     URLS_DENIED.each do |url|
       logger = HttpLogger.new(url: url).disable
       expect(logger.url).to eql(url)
-      expect(logger.log(nil, nil, nil, nil)).to be true
+      expect(logger.log(nil, nil, nil, nil)).to be true # would fail if enabled
     end
-  end
-
-  it 'submits to demo url' do
-    logger = HttpLogger.new(url: 'DEMO')
-    expect(logger.url).to eql(UsageLoggers.url_for_demo)
-    json = String.new
-    JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
-    JsonMessage.stop(json)
-    expect(logger.submit(json)).to be true
-  end
-
-  it 'submits to demo url via http' do
-    logger = HttpLogger.new(url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
-    expect(logger.url.include?('http://')).to be true
-    json = String.new
-    JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
-    JsonMessage.stop(json)
-    expect(logger.submit(json)).to be true
-  end
-
-  it 'submits to denied url and fails' do
-    URLS_DENIED.each do |url|
-      logger = HttpLogger.new(url: url)
-      expect(logger.enabled?).to be true
-      expect(logger.url).to eql(url)
-      expect(logger.submit('TEST-ABC')).to be false
-    end
-  end
-
-  it 'submits to queue' do
-    queue = []
-    logger = HttpLogger.new(queue: queue, url: URLS_DENIED[0])
-    expect(logger.url).to be nil
-    expect(logger.enabled?).to be true
-    expect(queue.length).to be 0
-    expect(logger.submit('TEST-123')).to be true
-    expect(queue.length).to eql(1)
-    expect(logger.submit('TEST-234')).to be true
-    expect(queue.length).to eql(2)
-  end
-
-  it 'uses url' do
-    url1 = 'http://resurface.io'
-    url2 = 'http://whatever.com'
-    logger1 = HttpLogger.new(url: url1)
-    logger2 = HttpLogger.new(url: url2)
-    logger3 = HttpLogger.new(url: 'DEMO')
-    expect(logger1.url).to eql(url1)
-    expect(logger2.url).to eql(url2)
-    expect(logger3.url).to eql(UsageLoggers.url_for_demo)
-  end
-
-  it 'uses version' do
-    version = HttpLogger.version_lookup
-    expect(version).not_to be nil
-    expect(version).to be_kind_of String
-    expect(version.length).to be > 0
-    expect(version.start_with?('1.6.')).to be true
-    expect(version.include?('\\')).to be false
-    expect(version.include?('\"')).to be false
-    expect(version.include?('\'')).to be false
-    expect(HttpLogger.new.version).to eql(HttpLogger.version_lookup)
   end
 
 end

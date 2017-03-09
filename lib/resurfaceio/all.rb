@@ -1,6 +1,7 @@
 # coding: utf-8
 # © 2016-2017 Resurface Labs LLC
 
+require 'resurfaceio/base_logger'
 require 'resurfaceio/http_logger'
 require 'resurfaceio/http_logger_for_rack'
 require 'resurfaceio/http_logger_for_rails'
@@ -10,6 +11,9 @@ require 'resurfaceio/json_message'
 require 'resurfaceio/usage_loggers'
 
 module Resurfaceio
+
+  class BaseLogger < HttpLogger
+  end
 
   class HttpLogger < HttpLogger
   end
