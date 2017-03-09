@@ -3,14 +3,16 @@
 
 class UsageLoggers
 
-  @@disabled = 'true'.eql?(ENV['USAGE_LOGGERS_DISABLE'])
+  @@DISABLED = 'true'.eql?(ENV['USAGE_LOGGERS_DISABLE'])
+
+  @@disabled = @@DISABLED
 
   def self.disable
     @@disabled = true
   end
 
   def self.enable
-    @@disabled = false unless 'true'.eql?(ENV['USAGE_LOGGERS_DISABLE'])
+    @@disabled = false unless @@DISABLED
   end
 
   def self.enabled?

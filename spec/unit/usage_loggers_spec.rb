@@ -20,11 +20,16 @@ describe UsageLoggers do
     expect(logger.enabled?).to be true
   end
 
-  it 'returns url for demo' do
+  it 'provides demo url' do
     url = UsageLoggers.url_for_demo
     expect(url).to be_kind_of String
     expect(url.length).to be > 0
     expect(HttpLogger.new(url: url).enabled?).to be true
+  end
+
+  it 'provides empty default url' do
+    url = UsageLoggers.url_by_default
+    expect(url).to be nil
   end
 
 end
