@@ -5,6 +5,8 @@ require 'json'
 require 'rack'
 require 'resurfaceio/all'
 
+MOCK_AGENT = 'myagent'
+
 MOCK_COOKIE = 'jsonrpc.session=3iqp3ydRwFyqjcfO0GT2bzUh.bacc2786c7a81df0d0e950bec8fa1a9b1ba0bb61'
 
 MOCK_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:26.0) Gecko/20100101 Firefox/26.0'
@@ -47,7 +49,7 @@ MOCK_URL = 'http://localhost:3000/index.html?foo=bar'
 
 URLS_DENIED = ["#{UsageLoggers.url_for_demo}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/']
 
-URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp://www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613']
+URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp:\\www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613']
 
 class MockCustomApp
   def call(env)

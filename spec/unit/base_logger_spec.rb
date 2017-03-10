@@ -11,7 +11,7 @@ describe BaseLogger do
     expect(Resurfaceio::BaseLogger.version_lookup).to eql(BaseLogger.version_lookup)
   end
 
-  it 'maintains agent and url' do
+  it 'manages multiple instances' do
     agent1 = 'agent1'
     agent2 = 'AGENT2'
     agent3 = 'aGeNt3'
@@ -20,12 +20,27 @@ describe BaseLogger do
     logger1 = BaseLogger.new(agent1, url: url1)
     logger2 = BaseLogger.new(agent2, url: url2)
     logger3 = BaseLogger.new(agent3, url: 'DEMO')
+
     expect(logger1.agent).to eql(agent1)
+    expect(logger1.enabled?).to be true
     expect(logger1.url).to eql(url1)
     expect(logger2.agent).to eql(agent2)
+    expect(logger2.enabled?).to be true
     expect(logger2.url).to eql(url2)
     expect(logger3.agent).to eql(agent3)
+    expect(logger3.enabled?).to be true
     expect(logger3.url).to eql(UsageLoggers.url_for_demo)
+
+    UsageLoggers.disable
+    expect(UsageLoggers.enabled?).to be false
+    expect(logger1.enabled?).to be false
+    expect(logger2.enabled?).to be false
+    expect(logger3.enabled?).to be false
+    UsageLoggers.enable
+    expect(UsageLoggers.enabled?).to be true
+    expect(logger1.enabled?).to be true
+    expect(logger2.enabled?).to be true
+    expect(logger3.enabled?).to be true
   end
 
   it 'provides valid version' do
@@ -37,32 +52,32 @@ describe BaseLogger do
     expect(version.include?('\\')).to be false
     expect(version.include?('\"')).to be false
     expect(version.include?('\'')).to be false
-    expect(BaseLogger.new('myagent').version).to eql(BaseLogger.version_lookup)
+    expect(BaseLogger.new(MOCK_AGENT).version).to eql(BaseLogger.version_lookup)
   end
 
   it 'performs enabling when expected' do
-    logger = BaseLogger.new('myagent', url: 'DEMO', enabled: false)
+    logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO', enabled: false)
     expect(logger.enabled?).to be false
     expect(logger.url).to eql(UsageLoggers.url_for_demo)
     logger.enable
     expect(logger.enabled?).to be true
 
-    logger = BaseLogger.new('myagent', queue: [], enabled: false)
+    logger = BaseLogger.new(MOCK_AGENT, url: UsageLoggers.url_for_demo, enabled: true)
+    expect(logger.enabled?).to be true
+    expect(logger.url).to eql(UsageLoggers.url_for_demo)
+    logger.enable.disable.enable.disable.disable.disable.enable
+    expect(logger.enabled?).to be true
+
+    logger = BaseLogger.new(MOCK_AGENT, queue: [], enabled: false)
     expect(logger.enabled?).to be false
     expect(logger.url).to be nil
     logger.enable.disable.enable
-    expect(logger.enabled?).to be true
-
-    logger = BaseLogger.new('myagent', url: UsageLoggers.url_for_demo, enabled: false)
-    expect(logger.enabled?).to be false
-    expect(logger.url).to eql(UsageLoggers.url_for_demo)
-    logger.enable.disable.enable.disable.disable.disable.enable
     expect(logger.enabled?).to be true
   end
 
   it 'skips enabling for invalid urls' do
     URLS_INVALID.each do |url|
-      logger = BaseLogger.new('myagent', url: url)
+      logger = BaseLogger.new(MOCK_AGENT, url: url)
       expect(logger.enabled?).to be false
       expect(logger.url).to be nil
       logger.enable
@@ -71,7 +86,7 @@ describe BaseLogger do
   end
 
   it 'skips enabling for missing url' do
-    logger = BaseLogger.new('myagent')
+    logger = BaseLogger.new(MOCK_AGENT)
     expect(logger.enabled?).to be false
     expect(logger.url).to be nil
     logger.enable
@@ -79,7 +94,7 @@ describe BaseLogger do
   end
 
   it 'skips enabling for nil url' do
-    logger = BaseLogger.new('myagent', url: nil)
+    logger = BaseLogger.new(MOCK_AGENT, url: nil)
     expect(logger.enabled?).to be false
     expect(logger.url).to be nil
     logger.enable
@@ -87,7 +102,7 @@ describe BaseLogger do
   end
 
   it 'submits to demo url' do
-    logger = BaseLogger.new('myagent', url: 'DEMO')
+    logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO')
     expect(logger.url).to eql(UsageLoggers.url_for_demo)
     json = String.new
     JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
@@ -96,7 +111,7 @@ describe BaseLogger do
   end
 
   it 'submits to demo url via http' do
-    logger = BaseLogger.new('myagent', url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
+    logger = BaseLogger.new(MOCK_AGENT, url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
     expect(logger.url.include?('http://')).to be true
     json = String.new
     JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
@@ -106,7 +121,7 @@ describe BaseLogger do
 
   it 'submits to denied url and fails' do
     URLS_DENIED.each do |url|
-      logger = BaseLogger.new('myagent', url: url)
+      logger = BaseLogger.new(MOCK_AGENT, url: url)
       expect(logger.enabled?).to be true
       expect(logger.url).to eql(url)
       expect(logger.submit('TEST-ABC')).to be false
@@ -115,7 +130,7 @@ describe BaseLogger do
 
   it 'submits to queue' do
     queue = []
-    logger = BaseLogger.new('myagent', queue: queue, url: URLS_DENIED[0])
+    logger = BaseLogger.new(MOCK_AGENT, queue: queue, url: URLS_DENIED[0])
     expect(logger.url).to be nil
     expect(logger.enabled?).to be true
     expect(queue.length).to be 0

@@ -124,18 +124,33 @@ describe HttpLogger do
     expect(json.include?("\"response_headers\":[]")).to be true
   end
 
-  it 'maintains agent and url' do
+  it 'manages multiple instances' do
     url1 = 'http://resurface.io'
     url2 = 'http://whatever.com'
     logger1 = HttpLogger.new(url: url1)
     logger2 = HttpLogger.new(url: url2)
     logger3 = HttpLogger.new(url: 'DEMO')
+
     expect(logger1.agent).to eql(HttpLogger::AGENT)
+    expect(logger1.enabled?).to be true
     expect(logger1.url).to eql(url1)
     expect(logger2.agent).to eql(HttpLogger::AGENT)
+    expect(logger2.enabled?).to be true
     expect(logger2.url).to eql(url2)
     expect(logger3.agent).to eql(HttpLogger::AGENT)
+    expect(logger3.enabled?).to be true
     expect(logger3.url).to eql(UsageLoggers.url_for_demo)
+
+    UsageLoggers.disable
+    expect(UsageLoggers.enabled?).to be false
+    expect(logger1.enabled?).to be false
+    expect(logger2.enabled?).to be false
+    expect(logger3.enabled?).to be false
+    UsageLoggers.enable
+    expect(UsageLoggers.enabled?).to be true
+    expect(logger1.enabled?).to be true
+    expect(logger2.enabled?).to be true
+    expect(logger3.enabled?).to be true
   end
 
   it 'provides valid agent string' do
