@@ -153,7 +153,7 @@ describe HttpLogger do
     expect(logger3.enabled?).to be true
   end
 
-  it 'provides valid agent string' do
+  it 'provides valid agent' do
     agent = HttpLogger::AGENT
     expect(agent).to be_kind_of String
     expect(agent).not_to be nil
@@ -162,12 +162,13 @@ describe HttpLogger do
     expect(agent.include?('\\')).to be false
     expect(agent.include?('\"')).to be false
     expect(agent.include?('\'')).to be false
+    expect(HttpLogger.new.agent).to eql(agent)
   end
 
   it 'skips logging when disabled' do
     URLS_DENIED.each do |url|
       logger = HttpLogger.new(url: url).disable
-      expect(logger.url).to eql(url)
+      expect(logger.enabled?).to be false
       expect(logger.log(nil, nil, nil, nil)).to be true # would fail if enabled
     end
   end

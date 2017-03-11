@@ -101,6 +101,14 @@ describe BaseLogger do
     expect(logger.enabled?).to be false
   end
 
+  it 'skips logging when disabled' do
+    URLS_DENIED.each do |url|
+      logger = BaseLogger.new(MOCK_AGENT, url: url).disable
+      expect(logger.enabled?).to be false
+      expect(logger.submit(nil)).to be true # would fail if enabled
+    end
+  end
+
   it 'submits to demo url' do
     logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO')
     expect(logger.url).to eql(UsageLoggers.url_for_demo)
@@ -123,8 +131,7 @@ describe BaseLogger do
     URLS_DENIED.each do |url|
       logger = BaseLogger.new(MOCK_AGENT, url: url)
       expect(logger.enabled?).to be true
-      expect(logger.url).to eql(url)
-      expect(logger.submit('TEST-ABC')).to be false
+      expect(logger.submit('{}')).to be false
     end
   end
 
@@ -134,9 +141,9 @@ describe BaseLogger do
     expect(logger.url).to be nil
     expect(logger.enabled?).to be true
     expect(queue.length).to be 0
-    expect(logger.submit('TEST-123')).to be true
+    expect(logger.submit('{}')).to be true
     expect(queue.length).to eql(1)
-    expect(logger.submit('TEST-234')).to be true
+    expect(logger.submit('{}')).to be true
     expect(queue.length).to eql(2)
   end
 
