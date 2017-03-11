@@ -17,7 +17,7 @@ describe BaseLogger do
     agent3 = 'aGeNt3'
     url1 = 'http://resurface.io'
     url2 = 'http://whatever.com'
-    logger1 = BaseLogger.new(agent1, url: url1)
+    logger1 = BaseLogger.new(agent1, url1)
     logger2 = BaseLogger.new(agent2, url: url2)
     logger3 = BaseLogger.new(agent3, url: 'DEMO')
 

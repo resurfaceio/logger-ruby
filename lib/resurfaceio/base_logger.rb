@@ -13,22 +13,29 @@ class BaseLogger
     @version = BaseLogger.version_lookup
 
     # set options in priority order
-    @enabled = options.fetch(:enabled, true)
-    if options.has_key?(:queue)
-      @queue = options[:queue]
-    elsif options.has_key?(:url)
-      url = options[:url]
-      if url.nil?
+    if options.respond_to?(:fetch) && options.respond_to?(:has_key?)
+      @enabled = options.fetch(:enabled, true)
+      if options.has_key?(:queue)
+        @queue = options[:queue]
+      elsif options.has_key?(:url)
+        url = options[:url]
+        if url.nil?
+          @url = UsageLoggers.url_by_default
+        elsif url.eql?('DEMO')
+          @url = UsageLoggers.url_for_demo
+        else
+          @url = url
+        end
+        @enabled = false if url.nil?
+      else
         @url = UsageLoggers.url_by_default
         @enabled = false if @url.nil?
-      elsif url.eql?('DEMO')
-        @url = UsageLoggers.url_for_demo
-      else
-        @url = url
       end
+    elsif options.respond_to?(:to_s)
+      @url = options.to_s
+      @enabled = @url.nil? ? false : true
     else
-      @url = UsageLoggers.url_by_default
-      @enabled = false if @url.nil?
+      @enabled = false
     end
 
     # validate url when present
