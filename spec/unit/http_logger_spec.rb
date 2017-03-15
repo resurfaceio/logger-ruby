@@ -155,8 +155,8 @@ describe HttpLogger do
 
   it 'provides valid agent' do
     agent = HttpLogger::AGENT
-    expect(agent).to be_kind_of String
     expect(agent).not_to be nil
+    expect(agent).to be_kind_of String
     expect(agent.length).to be > 0
     expect(agent.end_with?('.rb')).to be true
     expect(agent.include?('\\')).to be false
