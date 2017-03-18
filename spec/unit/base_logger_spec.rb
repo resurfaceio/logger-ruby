@@ -113,7 +113,7 @@ describe BaseLogger do
     logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO')
     expect(logger.url).to eql(UsageLoggers.url_for_demo)
     json = String.new
-    JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
+    JsonMessage.start(json, 'test-https', logger.agent, logger.version, Time.now.to_i)
     JsonMessage.stop(json)
     expect(logger.submit(json)).to be true
   end
@@ -122,7 +122,7 @@ describe BaseLogger do
     logger = BaseLogger.new(MOCK_AGENT, url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
     expect(logger.url.include?('http://')).to be true
     json = String.new
-    JsonMessage.start(json, 'echo', logger.agent, logger.version, Time.now.to_i)
+    JsonMessage.start(json, 'test-http', logger.agent, logger.version, Time.now.to_i)
     JsonMessage.stop(json)
     expect(logger.submit(json)).to be true
   end
