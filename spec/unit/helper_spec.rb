@@ -21,11 +21,11 @@ describe JsonMessage do
     expect(parseable?("\n\n\n\n")).to be false
     expect(parseable?('1234')).to be false
     expect(parseable?('archer')).to be false
-    expect(parseable?("\"sterling archer\"")).to be false
-    expect(parseable?('[]')).to be true
+    expect(parseable?('\"sterling archer\"')).to be false
+    expect(parseable?('[]')).to be false
     expect(parseable?('[,]')).to be false
     expect(parseable?('[:,]')).to be false
-    expect(parseable?('[ ]')).to be true
+    expect(parseable?('[ ]')).to be false
     expect(parseable?(',')).to be false
     expect(parseable?('{')).to be false
     expect(parseable?('{,')).to be false
@@ -41,25 +41,25 @@ describe JsonMessage do
     expect(parseable?('{,,}')).to be false
     expect(parseable?('exact words')).to be false
     expect(parseable?('his exact words')).to be false
-    expect(parseable?("\"exact words")).to be false
-    expect(parseable?("his exact words\"")).to be false
-    expect(parseable?("\"hello\":\"world\" }")).to be false
-    expect(parseable?("{ \"hello\":\"world\"")).to be false
-    expect(parseable?("{ \"hello world\"}")).to be false
-    expect(parseable?("{ \"hello\" world\"}")).to be false
-    expect(parseable?("{ \"hello \"world\"}")).to be false
-    expect(parseable?("{ \"hello world\":}")).to be false
-    expect(parseable?("{ \"hello\"\"world\" }")).to be false
-    expect(parseable?("{ \"hello\"\"world\", }")).to be false
-    expect(parseable?("{ ,\"hello\"\"world\" }")).to be false
-    expect(parseable?("{ ,\"hello\"\"world\", }")).to be false
-    expect(parseable?("{ \"hello\":\"world\"\"hello\":\"world\" }")).to be false
-    expect(parseable?("{ ,\"hello\":\"world\"\"hello\":\"world\" }")).to be false
-    expect(parseable?("{ \"hello\":\"world\"\"hello\":\"world\", }")).to be false
-    expect(parseable?("{ [ \"hello\":\"world\" }")).to be false
-    expect(parseable?("{ [ \"hello\":\"world\",] }")).to be false
-    expect(parseable?("{ [ \"hello\":\"world\" ], }")).to be false
-    expect(parseable?("{ [ \"hello\":\"world\" ] \"hello\":\"world\" }")).to be false
+    expect(parseable?('\"exact words')).to be false
+    expect(parseable?('his exact words\"')).to be false
+    expect(parseable?('\"hello\":\"world\" }')).to be false
+    expect(parseable?('{ \"hello\":\"world\"')).to be false
+    expect(parseable?('{ \"hello world\"}')).to be false
+    expect(parseable?('{ \"hello\" world\"}')).to be false
+    expect(parseable?('{ \"hello \"world\"}')).to be false
+    expect(parseable?('{ \"hello world\":}')).to be false
+    expect(parseable?('{ \"hello\"\"world\" }')).to be false
+    expect(parseable?('{ \"hello\"\"world\", }')).to be false
+    expect(parseable?('{ ,\"hello\"\"world\" }')).to be false
+    expect(parseable?('{ ,\"hello\"\"world\", }')).to be false
+    expect(parseable?('{ \"hello\":\"world\"\"hello\":\"world\" }')).to be false
+    expect(parseable?('{ ,\"hello\":\"world\"\"hello\":\"world\" }')).to be false
+    expect(parseable?('{ \"hello\":\"world\"\"hello\":\"world\", }')).to be false
+    expect(parseable?('{ [ \"hello\":\"world\" }')).to be false
+    expect(parseable?('{ [ \"hello\":\"world\",] }')).to be false
+    expect(parseable?('{ [ \"hello\":\"world\" ], }')).to be false
+    expect(parseable?('{ [ \"hello\":\"world\" ] \"hello\":\"world\" }')).to be false
     expect(parseable?(MOCK_JSON_ESCAPED)).to be false
     expect(parseable?(MOCK_HTML)).to be false
     expect(parseable?(MOCK_HTML_ESCAPED)).to be false

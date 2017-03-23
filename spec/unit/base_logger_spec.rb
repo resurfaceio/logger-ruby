@@ -48,11 +48,11 @@ describe BaseLogger do
     expect(version).not_to be nil
     expect(version).to be_kind_of String
     expect(version.length).to be > 0
-    expect(version.start_with?('1.6.')).to be true
+    expect(version).to start_with('1.6.')
     expect(version.include?('\\')).to be false
     expect(version.include?('\"')).to be false
     expect(version.include?('\'')).to be false
-    expect(BaseLogger.new(MOCK_AGENT).version).to eql(BaseLogger.version_lookup)
+    expect(version).to eql(BaseLogger.new(MOCK_AGENT).version)
   end
 
   it 'performs enabling when expected' do
@@ -112,7 +112,7 @@ describe BaseLogger do
   it 'submits to demo url' do
     logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO')
     expect(logger.url).to eql(UsageLoggers.url_for_demo)
-    json = String.new
+    json = ''
     JsonMessage.start(json, 'test-https', logger.agent, logger.version, Time.now.to_i)
     JsonMessage.stop(json)
     expect(logger.submit(json)).to be true
@@ -121,7 +121,7 @@ describe BaseLogger do
   it 'submits to demo url via http' do
     logger = BaseLogger.new(MOCK_AGENT, url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
     expect(logger.url.include?('http://')).to be true
-    json = String.new
+    json = ''
     JsonMessage.start(json, 'test-http', logger.agent, logger.version, Time.now.to_i)
     JsonMessage.stop(json)
     expect(logger.submit(json)).to be true

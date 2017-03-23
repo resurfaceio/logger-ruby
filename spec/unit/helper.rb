@@ -170,7 +170,7 @@ def mock_response_with_body
 end
 
 def parseable?(json)
-  return false if json.nil? || !json.chars.first == '{' || !json.chars.last == '}'
+  return false if json.nil? || json.chars.first != '{' || json.chars.last != '}'
   begin
     JSON.parse(json)
     return true
