@@ -29,7 +29,7 @@ class HttpLogger < BaseLogger
   end
 
   def format(request, request_body, response, response_body)
-    append_to_buffer(String.new, Time.now.to_i, request, request_body, response, response_body)
+    append_to_buffer('', Time.now.to_i, request, request_body, response, response_body)
   end
 
   def log(request, request_body, response, response_body)

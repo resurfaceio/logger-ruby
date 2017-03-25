@@ -6,12 +6,7 @@ require_relative 'helper'
 
 describe BaseLogger do
 
-  it 'uses module namespace' do
-    expect(BaseLogger.class.equal?(Resurfaceio::BaseLogger.class)).to be true
-    expect(Resurfaceio::BaseLogger.version_lookup).to eql(BaseLogger.version_lookup)
-  end
-
-  it 'manages multiple instances' do
+  it 'creates multiple instances' do
     agent1 = 'agent1'
     agent2 = 'AGENT2'
     agent3 = 'aGeNt3'
@@ -43,7 +38,7 @@ describe BaseLogger do
     expect(logger3.enabled?).to be true
   end
 
-  it 'provides valid version' do
+  it 'has valid version' do
     version = BaseLogger.version_lookup
     expect(version).not_to be nil
     expect(version).to be_kind_of String
@@ -145,6 +140,11 @@ describe BaseLogger do
     expect(queue.length).to eql(1)
     expect(logger.submit('{}')).to be true
     expect(queue.length).to eql(2)
+  end
+
+  it 'uses module namespace' do
+    expect(BaseLogger.class.equal?(Resurfaceio::BaseLogger.class)).to be true
+    expect(Resurfaceio::BaseLogger.version_lookup).to eql(BaseLogger.version_lookup)
   end
 
 end
