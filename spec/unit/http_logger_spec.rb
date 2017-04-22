@@ -6,6 +6,13 @@ require_relative 'helper'
 
 describe HttpLogger do
 
+  it 'creates instance' do
+    logger = HttpLogger.new
+    expect(logger.nil?).to be false
+    expect(logger.agent).to eql(HttpLogger::AGENT)
+    expect(logger.enabled?).to be false
+  end
+
   it 'creates multiple instances' do
     url1 = 'http://resurface.io'
     url2 = 'http://whatever.com'

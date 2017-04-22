@@ -1,8 +1,8 @@
 # coding: utf-8
 # © 2016-2017 Resurface Labs LLC
 
+require 'json'
 require 'resurfaceio/base_logger'
-require 'resurfaceio/json_message'
 
 class HttpLogger < BaseLogger
 
@@ -12,24 +12,19 @@ class HttpLogger < BaseLogger
     super(AGENT, options)
   end
 
-  def append_to_buffer(json, now, request, request_body, response, response_body)
-    JsonMessage.start(json, 'http', agent, version, now)
-    JsonMessage.append(json << ',', 'request_method', request.request_method) unless request.request_method.nil?
-    JsonMessage.append(json << ',', 'request_url', request.url) unless request.url.nil?
-    append_request_headers(json << ',', request)
-    unless request_body.nil? && request.body.nil?
-      JsonMessage.append(json << ',', 'request_body', request_body.nil? ? request.body : request_body)
-    end
-    JsonMessage.append(json << ',', 'response_code', response.status) unless response.status.nil?
-    append_response_headers(json << ',', response)
-    unless response_body.nil? && response.body.nil?
-      JsonMessage.append(json << ',', 'response_body', response_body.nil? ? response.body : response_body)
-    end
-    JsonMessage.stop(json)
-  end
-
-  def format(request, request_body, response, response_body)
-    append_to_buffer('', Time.now.to_i, request, request_body, response, response_body)
+  def format(request, request_body, response, response_body, now=Time.now.to_i.to_s)
+    message = []
+    append_value message, 'request_method', request.request_method
+    append_value message, 'request_url', request.url
+    append_value message, 'response_code', response.status
+    append_request_headers message, request
+    append_response_headers message, response
+    append_value message, 'request_body', request_body.nil? ? request.body : request_body
+    append_value message, 'response_body', response_body.nil? ? response.body : response_body
+    message << ['agent', @agent]
+    message << ['version', @version]
+    message << ['now', now]
+    JSON.generate message
   end
 
   def log(request, request_body, response, response_body)
@@ -38,46 +33,57 @@ class HttpLogger < BaseLogger
 
   protected
 
-  def append_request_headers(json, request)
-    JsonMessage.append(json, 'request_headers') << ':['
-    first = true
+  def append_request_headers(message, request)
     respond_to_env = request.respond_to?(:env)
     if respond_to_env || request.respond_to?(:headers)
       headers = respond_to_env ? request.env : request.headers
       headers.each do |name, value|
         unless value.nil?
           if name =~ /^CONTENT_TYPE/
-            JsonMessage.append(json << (first ? '{' : ',{'), 'content-type', value) << '}'
-            first = false
+            message << ['request_header.content-type', value]
           end
           if name =~ /^HTTP_/
-            JsonMessage.append(json << (first ? '{' : ',{'), name[5..-1].downcase.tr('_', '-'), value) << '}'
-            first = false
+            message << ["request_header.#{name[5..-1].downcase.tr('_', '-')}", value]
           end
         end
       end
     end
-    json << ']'
   end
 
-  def append_response_headers(json, response)
-    JsonMessage.append(json, 'response_headers') << ':['
-    first = true
+  def append_response_headers(message, response)
     found_content_type = false
     if response.respond_to?(:headers)
       response.headers.each do |name, value|
         unless value.nil?
           name = name.downcase
           found_content_type = true if name =~ /^content-type/
-          JsonMessage.append(json << (first ? '{' : ',{'), name, value) << '}'
-          first = false
+          message << ["response_header.#{name}", value]
         end
       end
     end
     unless found_content_type || response.content_type.nil?
-      JsonMessage.append(json << (first ? '{' : ',{'), 'content-type', response.content_type) << '}'
+      message << ['response_header.content-type', response.content_type]
     end
-    json << ']'
+  end
+
+  def append_value(message, key, value=nil)
+    unless key.nil?
+      unless value.nil?
+        case value
+          when Array
+            message << [key, value.join]
+          when String
+            message << [key, value]
+          else
+            if value.respond_to?(:read)
+              message << [key, value.read]
+            else
+              message << [key, value.to_s]
+            end
+        end
+      end
+    end
+    message
   end
 
 end

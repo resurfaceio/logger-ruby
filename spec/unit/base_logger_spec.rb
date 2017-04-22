@@ -1,10 +1,18 @@
 # coding: utf-8
 # © 2016-2017 Resurface Labs LLC
 
+require 'json'
 require 'resurfaceio/all'
 require_relative 'helper'
 
 describe BaseLogger do
+
+  it 'creates instance' do
+    logger = BaseLogger.new(MOCK_AGENT)
+    expect(logger.nil?).to be false
+    expect(logger.agent).to eql(MOCK_AGENT)
+    expect(logger.enabled?).to be false
+  end
 
   it 'creates multiple instances' do
     agent1 = 'agent1'
@@ -107,18 +115,28 @@ describe BaseLogger do
   it 'submits to demo url' do
     logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO')
     expect(logger.url).to eql(UsageLoggers.url_for_demo)
-    json = ''
-    JsonMessage.start(json, 'test-https', logger.agent, logger.version, Time.now.to_i)
-    JsonMessage.stop(json)
+    message = [
+        ['agent', logger.agent],
+        ['version', logger.version],
+        ['now', MOCK_NOW],
+        ['protocol', 'https']
+    ]
+    json = JSON.generate(message)
+    expect(parseable?(json)).to be true
     expect(logger.submit(json)).to be true
   end
 
   it 'submits to demo url via http' do
     logger = BaseLogger.new(MOCK_AGENT, url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
     expect(logger.url.include?('http://')).to be true
-    json = ''
-    JsonMessage.start(json, 'test-http', logger.agent, logger.version, Time.now.to_i)
-    JsonMessage.stop(json)
+    message = [
+        ['agent', logger.agent],
+        ['version', logger.version],
+        ['now', MOCK_NOW],
+        ['protocol', 'http']
+    ]
+    json = JSON.generate(message)
+    expect(parseable?(json)).to be true
     expect(logger.submit(json)).to be true
   end
 

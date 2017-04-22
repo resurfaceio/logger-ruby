@@ -16,14 +16,17 @@ describe HttpLoggerForRack do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("\"category\":\"http\"")).to be true
-    expect(json.include?("\"request_body\"")).to be false
-    expect(json.include?("\"request_headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
-    expect(json.include?("\"request_method\":\"GET\"")).to be true
-    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
-    expect(json.include?("\"response_code\":\"200\"")).to be true
-    expect(json.include?("\"response_headers\":[{\"content-type\":\"text/html; charset=utf-8\"},{\"a\":\"1\"},{\"content-length\":\"25\"}]")).to be true
+    expect(json.include?("[\"request_header.cookie\",\"#{MOCK_COOKIE}\"]")).to be true
+    expect(json.include?("[\"request_header.host\",\"localhost:3000\"]")).to be true
+    expect(json.include?("[\"request_header.user-agent\",\"#{MOCK_USER_AGENT}\"]")).to be true
+    expect(json.include?("[\"request_method\",\"GET\"]")).to be true
+    expect(json.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
+    expect(json.include?("[\"response_body\",\"#{MOCK_HTML_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"response_code\",\"200\"]")).to be true
+    expect(json.include?("[\"response_header.a\",\"1\"]")).to be true
+    expect(json.include?("[\"response_header.content-length\",\"25\"]")).to be true
+    expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
+    expect(json.include?('request_body')).to be false
   end
 
   it 'logs json' do
@@ -32,14 +35,16 @@ describe HttpLoggerForRack do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("\"category\":\"http\"")).to be true
-    expect(json.include?("\"request_body\"")).to be false
-    expect(json.include?("\"request_headers\":[#{MOCK_HEADERS_ESCAPED}]")).to be true
-    expect(json.include?("\"request_method\":\"GET\"")).to be true
-    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-    expect(json.include?("\"response_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-    expect(json.include?("\"response_code\":\"200\"")).to be true
-    expect(json.include?("\"response_headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
+    expect(json.include?("[\"request_header.cookie\",\"#{MOCK_COOKIE}\"]")).to be true
+    expect(json.include?("[\"request_header.host\",\"localhost:3000\"]")).to be true
+    expect(json.include?("[\"request_header.user-agent\",\"#{MOCK_USER_AGENT}\"]")).to be true
+    expect(json.include?("[\"request_method\",\"GET\"]")).to be true
+    expect(json.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
+    expect(json.include?("[\"response_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"response_code\",\"200\"]")).to be true
+    expect(json.include?("[\"response_header.content-length\",\"21\"]")).to be true
+    expect(json.include?("[\"response_header.content-type\",\"application/json\"]")).to be true
+    expect(json.include?('request_body')).to be false
   end
 
   it 'logs json post' do
@@ -48,14 +53,17 @@ describe HttpLoggerForRack do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("\"category\":\"http\"")).to be true
-    expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-    expect(json.include?("\"request_headers\":[#{MOCK_JSON_ENV_ESCAPED}]")).to be true
-    expect(json.include?("\"request_method\":\"POST\"")).to be true
-    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-    expect(json.include?("\"response_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-    expect(json.include?("\"response_code\":\"200\"")).to be true
-    expect(json.include?("\"response_headers\":[{\"content-type\":\"application/json\"},{\"content-length\":\"21\"}]")).to be true
+    expect(json.include?("[\"request_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"request_header.content-type\",\"application/json\"]")).to be true
+    expect(json.include?("[\"request_header.cookie\",\"#{MOCK_COOKIE}\"]")).to be true
+    expect(json.include?("[\"request_header.host\",\"localhost:3000\"]")).to be true
+    expect(json.include?("[\"request_header.user-agent\",\"#{MOCK_USER_AGENT}\"]")).to be true
+    expect(json.include?("[\"request_method\",\"POST\"]")).to be true
+    expect(json.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
+    expect(json.include?("[\"response_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"response_code\",\"200\"]")).to be true
+    expect(json.include?("[\"response_header.content-length\",\"21\"]")).to be true
+    expect(json.include?("[\"response_header.content-type\",\"application/json\"]")).to be true
   end
 
   it 'skips logging for exceptions' do

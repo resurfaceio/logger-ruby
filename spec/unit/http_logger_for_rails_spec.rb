@@ -16,14 +16,13 @@ describe HttpLoggerForRails do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("\"category\":\"http\"")).to be true
-    expect(json.include?("\"request_body\"")).to be false
-    expect(json.include?("\"request_headers\":[]")).to be true
-    expect(json.include?("\"request_method\":\"GET\"")).to be true
-    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
-    expect(json.include?("\"response_code\":\"200\"")).to be true
-    expect(json.include?("\"response_headers\":[]")).to be true
+    expect(json.include?("[\"request_method\",\"GET\"]")).to be true
+    expect(json.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
+    expect(json.include?("[\"response_body\",\"#{MOCK_HTML_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"response_code\",\"200\"]")).to be true
+    expect(json.include?('request_body')).to be false
+    expect(json.include?('request_header')).to be false
+    expect(json.include?('response_header')).to be false
   end
 
   it 'logs html response to json request' do
@@ -32,14 +31,13 @@ describe HttpLoggerForRails do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("\"category\":\"http\"")).to be true
-    expect(json.include?("\"request_body\":\"#{MOCK_JSON_ESCAPED}\"")).to be true
-    expect(json.include?("\"request_headers\":[{\"content-type\":\"application/json\"}]")).to be true
-    expect(json.include?("\"request_method\":\"POST\"")).to be true
-    expect(json.include?("\"request_url\":\"#{MOCK_URL}\"")).to be true
-    expect(json.include?("\"response_body\":\"#{MOCK_HTML_ESCAPED}\"")).to be true
-    expect(json.include?("\"response_code\":\"200\"")).to be true
-    expect(json.include?("\"response_headers\":[]")).to be true
+    expect(json.include?("[\"request_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"request_header.content-type\",\"application/json\"]")).to be true
+    expect(json.include?("[\"request_method\",\"POST\"]")).to be true
+    expect(json.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
+    expect(json.include?("[\"response_body\",\"#{MOCK_HTML_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"response_code\",\"200\"]")).to be true
+    expect(json.include?('response_header')).to be false
   end
 
   it 'skips logging for exceptions' do

@@ -21,31 +21,27 @@ MOCK_ENV = {
     'rack.url_scheme' => 'http',
 }
 
-MOCK_HEADERS_ESCAPED = "{\"host\":\"localhost:3000\"},{\"user-agent\":\"#{MOCK_USER_AGENT}\"},{\"cookie\":\"#{MOCK_COOKIE}\"}"
-
 MOCK_JSON = "{ \"hello\" : \"world\" }"
 
 MOCK_JSON_ENV = MOCK_ENV.clone.merge ({
     'CONTENT_TYPE' => 'application/json', 'rack.input' => StringIO.new(MOCK_JSON), 'REQUEST_METHOD' => 'POST'
 })
 
-MOCK_JSON_ENV_ESCAPED = "#{MOCK_HEADERS_ESCAPED},{\"content-type\":\"application/json\"}"
-
-MOCK_JSON_ESCAPED = JsonMessage.escape('', MOCK_JSON)
+MOCK_JSON_ESCAPED = "{ \\\"hello\\\" : \\\"world\\\" }"
 
 MOCK_JSON_ALT = "{ \"moonbeam\" : \"city\" }"
 
-MOCK_JSON_ALT_ESCAPED = JsonMessage.escape('', MOCK_JSON_ALT)
+MOCK_JSON_ALT_ESCAPED = "{ \\\"moonbeam\\\" : \\\"city\\\" }"
 
 MOCK_HTML = '<html>Hello World!</html>'
 
-MOCK_HTML_ESCAPED = JsonMessage.escape('', MOCK_HTML)
+MOCK_HTML_ESCAPED = MOCK_HTML
 
 MOCK_HTML_ALT = '<html><h1>We want the funk</h1><p>Gotta have that funk</p></html>'
 
-MOCK_HTML_ALT_ESCAPED = JsonMessage.escape('', MOCK_HTML_ALT)
+MOCK_HTML_ALT_ESCAPED = MOCK_HTML_ALT
 
-MOCK_NOW = 1455908640173
+MOCK_NOW = '1455908640173'
 
 MOCK_URL = 'http://localhost:3000/index.html?foo=bar'
 
@@ -172,7 +168,7 @@ def mock_response_with_body
 end
 
 def parseable?(json)
-  return false if json.nil? || json.chars.first != '{' || json.chars.last != '}'
+  return false if json.nil? || json.chars.first != '[' || json.chars.last != ']'
   begin
     JSON.parse(json)
     return true

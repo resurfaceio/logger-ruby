@@ -83,7 +83,6 @@ class BaseLogger
         response = @url_connection.request(request)
         response.code.to_i == 200
       rescue SocketError
-        # todo retry?
         @url_connection = nil
         false
       end
