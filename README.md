@@ -171,41 +171,43 @@ programmatically.
 Loggers can be directly integrated into your application if other options don't fit. This requires the most effort, but
 yields complete control over how usage logging is implemented.
 
-    require 'resurfaceio/all'
+```
+require 'resurfaceio/all'
 
-    # manage all loggers (even those not created yet)
-    UsageLoggers.disable                                             # disable all loggers
-    UsageLoggers.enable                                              # enable all loggers
+# manage all loggers (even those not created yet)
+UsageLoggers.disable                                                 # disable all loggers
+UsageLoggers.enable                                                  # enable all loggers
 
-    # create and configure logger
-    logger = HttpLogger.new(queue: my_queue)                         # log to appendable list
-    logger = HttpLogger.new(queue: my_queue, enabled: false)         # (initially disabled)
-    logger = HttpLogger.new(url: my_https_url)                       # log to https url
-    logger = HttpLogger.new(url: my_https_url, enabled: false)       # (initially disabled)
-    logger.disable                                                   # disable this logger
-    logger.enable                                                    # enable this logger
-    if logger.enabled? ...                                           # test if this enabled
+# create and configure logger
+logger = HttpLogger.new(queue: my_queue)                             # log to appendable list
+logger = HttpLogger.new(queue: my_queue, enabled: false)             # (initially disabled)
+logger = HttpLogger.new(url: my_https_url)                           # log to https url
+logger = HttpLogger.new(url: my_https_url, enabled: false)           # (initially disabled)
+logger.disable                                                       # disable this logger
+logger.enable                                                        # enable this logger
+if logger.enabled? ...                                               # test if this enabled
 
-    # define request to log
-    request = HttpRequestImpl.new
-    request.body = 'some json'
-    request.content_type = 'application/json'
-    request.headers['A'] = '123'
-    request.request_method = 'GET'
-    request.url = 'http://google.com'
+# define request to log
+request = HttpRequestImpl.new
+request.body = 'some json'
+request.content_type = 'application/json'
+request.headers['A'] = '123'
+request.request_method = 'GET'
+request.url = 'http://google.com'
 
-    # define response to log
-    response = HttpResponseImpl.new
-    response.body = 'some html'
-    response.content_type = 'text/html'
-    response.headers['B'] = '234'
-    response.status = 200
+# define response to log
+response = HttpResponseImpl.new
+response.body = 'some html'
+response.content_type = 'text/html'
+response.headers['B'] = '234'
+response.status = 200
 
-    # log objects defined above
-    logger.log(request, nil, response, nil)
+# log objects defined above
+logger.log request, nil, response, nil
 
-    # log with overriden request/response bodies
-    logger.log(request, 'my-request', response, 'my-response')
+# log with overriden request/response bodies
+logger.log request, 'my-request', response, 'my-response'
 
-    # submit a custom message (destination may accept or not)
-    logger.submit('...')
+# submit a custom message (destination may accept or not)
+logger.submit '...'
+```
