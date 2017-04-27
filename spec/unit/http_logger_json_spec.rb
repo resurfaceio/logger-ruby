@@ -79,7 +79,7 @@ describe HttpLogger do
   end
 
   it 'formats response with nil content type and response code' do
-    # this is the default behavior with Sinatra, https://github.com/resurfaceio/resurfaceio-logger-ruby/issues/18
+    # this is the default behavior with Sinatra, https://github.com/resurfaceio/logger-ruby/issues/18
     response = HttpResponseImpl.new
     response.content_type = nil
     json = HttpLogger.new.format(mock_request, nil, response, nil)

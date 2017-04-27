@@ -9,7 +9,7 @@ If you don't use RubyMine, that's ok, but your code may get reformatted.
 ## Git Workflow
 
 ```
-git clone git@github.com:resurfaceio/resurfaceio-logger-ruby.git
+git clone git@github.com:resurfaceio/logger-ruby.git resurfaceio-logger-ruby
 cd resurfaceio-logger-ruby
 bundle install
 ```

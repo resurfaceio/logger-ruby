@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'Library for usage logging'
   spec.description = spec.summary
-  spec.homepage = 'https://github.com/resurfaceio/resurfaceio-logger-ruby'
+  spec.homepage = 'https://github.com/resurfaceio/logger-ruby'
   spec.license = 'Apache-2.0'
   spec.authors = ['RobDickinson']
   spec.email = ['resurfacelabs@gmail.com']
