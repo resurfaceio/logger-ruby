@@ -8,6 +8,16 @@ class HttpRequestImpl
     @raw_body = nil
   end
 
+  def add_header(key, value)
+    unless value.nil?
+      if @headers.has_key?(key)
+        @headers[key] = "#{@headers[key]},#{value}"
+      else
+        @headers[key] = value
+      end
+    end
+  end
+
   def body
     @raw_body ? StringIO.new(@raw_body) : nil
   end
