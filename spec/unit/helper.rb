@@ -9,6 +9,22 @@ MOCK_AGENT = 'helper.rb'
 
 MOCK_COOKIE = 'jsonrpc.session=3iqp3ydRwFyqjcfO0GT2bzUh.bacc2786c7a81df0d0e950bec8fa1a9b1ba0bb61'
 
+MOCK_JSON = "{ \"hello\" : \"world\" }"
+
+MOCK_JSON_ESCAPED = "{ \\\"hello\\\" : \\\"world\\\" }"
+
+MOCK_HTML = '<html>Hello World!</html>'
+
+MOCK_NOW = '1455908640173'
+
+MOCK_QUERY_STRING = 'foo=bar'
+
+MOCK_URL = 'http://localhost:3000/index.html'
+
+MOCK_URLS_DENIED = ["#{UsageLoggers.url_for_demo}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/']
+
+MOCK_URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp:\\www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613']
+
 MOCK_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:26.0) Gecko/20100101 Firefox/26.0'
 
 MOCK_ENV = {
@@ -21,33 +37,9 @@ MOCK_ENV = {
     'rack.url_scheme' => 'http',
 }
 
-MOCK_JSON = "{ \"hello\" : \"world\" }"
-
-MOCK_JSON_ENV = MOCK_ENV.clone.merge ({
+MOCK_ENV_JSON = MOCK_ENV.clone.merge ({
     'CONTENT_TYPE' => 'application/json', 'rack.input' => StringIO.new(MOCK_JSON), 'REQUEST_METHOD' => 'POST'
 })
-
-MOCK_JSON_ESCAPED = "{ \\\"hello\\\" : \\\"world\\\" }"
-
-MOCK_JSON_ALT = "{ \"moonbeam\" : \"city\" }"
-
-MOCK_JSON_ALT_ESCAPED = "{ \\\"moonbeam\\\" : \\\"city\\\" }"
-
-MOCK_HTML = '<html>Hello World!</html>'
-
-MOCK_HTML_ESCAPED = MOCK_HTML
-
-MOCK_HTML_ALT = '<html><h1>We want the funk</h1><p>Gotta have that funk</p></html>'
-
-MOCK_HTML_ALT_ESCAPED = MOCK_HTML_ALT
-
-MOCK_NOW = '1455908640173'
-
-MOCK_URL = 'http://localhost:3000/index.html?foo=bar'
-
-URLS_DENIED = ["#{UsageLoggers.url_for_demo}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/']
-
-URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp:\\www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613']
 
 class MockCustomApp
   def call(env)
@@ -137,20 +129,18 @@ end
 
 def mock_request_with_body
   r = HttpRequestImpl.new
-  r.content_type = 'application/json'
+  r.content_type = 'Application/JSON'
   r.request_method = 'POST'
   r.raw_body = MOCK_JSON
-  r.url = MOCK_URL
+  r.url = "#{MOCK_URL}?#{MOCK_QUERY_STRING}"
   r
 end
 
 def mock_request_with_body2
-  r = HttpRequestImpl.new
-  r.content_type = 'application/json'
+  r = mock_request_with_body
   r.headers['HTTP_ABC'] = '123'
-  r.request_method = 'POST'
-  r.raw_body = MOCK_JSON
-  r.url = MOCK_URL
+  r.add_header 'HTTP_A', '1'
+  r.add_header 'HTTP_A', '2'
   r
 end
 
@@ -162,6 +152,7 @@ end
 
 def mock_response_with_body
   r = HttpResponseImpl.new
+  r.content_type = 'text/html; charset=utf-8'
   r.raw_body = MOCK_HTML
   r.status = 200
   r

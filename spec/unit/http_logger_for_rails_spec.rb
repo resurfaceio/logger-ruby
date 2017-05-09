@@ -18,11 +18,11 @@ describe HttpLoggerForRails do
     expect(parseable?(json)).to be true
     expect(json.include?("[\"request_method\",\"GET\"]")).to be true
     expect(json.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
-    expect(json.include?("[\"response_body\",\"#{MOCK_HTML_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"response_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
+    expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
     expect(json.include?('request_body')).to be false
     expect(json.include?('request_header')).to be false
-    expect(json.include?('response_header')).to be false
   end
 
   it 'logs html response to json request' do
@@ -32,18 +32,18 @@ describe HttpLoggerForRails do
     json = queue[0]
     expect(parseable?(json)).to be true
     expect(json.include?("[\"request_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
-    expect(json.include?("[\"request_header.content-type\",\"application/json\"]")).to be true
+    expect(json.include?("[\"request_header.content-type\",\"Application/JSON\"]")).to be true
     expect(json.include?("[\"request_method\",\"POST\"]")).to be true
-    expect(json.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
-    expect(json.include?("[\"response_body\",\"#{MOCK_HTML_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"request_url\",\"#{MOCK_URL}?#{MOCK_QUERY_STRING}\"]")).to be true
+    expect(json.include?("[\"response_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
-    expect(json.include?('response_header')).to be false
+    expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
   end
 
   it 'skips logging for exceptions' do
     queue = []
     begin
-      HttpLoggerForRails.new(queue: queue).around(MockRailsHtmlController.new) { raise ZeroDivisionError }
+      HttpLoggerForRails.new(queue: queue).around(MockRailsHtmlController.new) {raise ZeroDivisionError}
     rescue ZeroDivisionError
       expect(queue.length).to eql(0)
     end

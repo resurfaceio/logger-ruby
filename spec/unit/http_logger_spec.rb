@@ -55,7 +55,7 @@ describe HttpLogger do
   end
 
   it 'skips logging when disabled' do
-    URLS_DENIED.each do |url|
+    MOCK_URLS_DENIED.each do |url|
       logger = HttpLogger.new(url: url).disable
       expect(logger.enabled?).to be false
       expect(logger.log(nil, nil, nil, nil)).to be true # would fail if enabled
