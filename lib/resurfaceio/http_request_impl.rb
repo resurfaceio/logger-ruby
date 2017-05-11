@@ -10,10 +10,11 @@ class HttpRequestImpl
 
   def add_header(key, value)
     unless value.nil?
-      if @headers.has_key?(key)
-        @headers[key] = "#{@headers[key]},#{value}"
-      else
+      existing = @headers[key]
+      if existing.nil?
         @headers[key] = value
+      else
+        @headers[key] = "#{existing},#{value}"
       end
     end
   end
