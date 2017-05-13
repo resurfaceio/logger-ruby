@@ -33,7 +33,7 @@ describe HttpLogger do
     json = HttpLogger.new.format(mock_request_with_body2, '', mock_response, nil)
     expect(parseable?(json)).to be true
     expect(json.include?("[\"request_body\",\"\"]")).to be true
-    expect(json.include?("[\"request_header.a\",\"1,2\"]")).to be true
+    expect(json.include?("[\"request_header.a\",\"1, 2\"]")).to be true
     expect(json.include?("[\"request_header.abc\",\"123\"]")).to be true
     expect(json.include?("[\"request_header.content-type\",\"Application/JSON\"]")).to be true
     expect(json.include?("[\"request_method\",\"POST\"]")).to be true

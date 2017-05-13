@@ -56,7 +56,7 @@ describe HttpRequestImpl do
 
     r.add_header(key, val)
     expect(r.headers.length).to be 1
-    expect(r.headers[key]).to eql("#{val2},#{val}")
+    expect(r.headers[key]).to eql("#{val2}, #{val}")
 
     r.headers[key2] = val2
     expect(r.headers.length).to be 2

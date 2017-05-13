@@ -14,7 +14,7 @@ class HttpResponseImpl
       if existing.nil?
         @headers[key] = value
       else
-        @headers[key] = "#{existing},#{value}"
+        @headers[key] = "#{existing}, #{value}"
       end
     end
   end
