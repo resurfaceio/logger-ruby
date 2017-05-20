@@ -38,7 +38,7 @@ Push changes to [RubyGems.org](https://rubygems.org/):
 ```
 gem build resurfaceio-logger.gemspec
 gem push <gemfile>
-git tag v<MAJOR>.<MINOR>.<PATCH>
+git tag v1.x.x
 git push origin master --tags
 ```
 
