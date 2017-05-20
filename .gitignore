@@ -5,3 +5,4 @@ tmp/
 .*.swp
 /log/*.log
 /.bundle
+resurfaceio-logger-*.gem

@@ -8,6 +8,8 @@ If you don't use RubyMine, that's ok, but your code may get reformatted.
 
 ## Git Workflow
 
+Initial setup:
+
 ```
 git clone git@github.com:resurfaceio/logger-ruby.git resurfaceio-logger-ruby
 cd resurfaceio-logger-ruby
@@ -28,3 +30,16 @@ git commit -m "#123 Updated readme"       (123 is the GitHub issue number)
 git pull --rebase                         (avoid merge bubbles)
 git push origin master
 ```
+
+All [integration tests](https://github.com/resurfaceio/logger-tests) must pass prior to making changes public.
+
+Push changes to [RubyGems.org](https://rubygems.org/):
+
+```
+gem build resurfaceio-logger.gemspec
+gem push <gemfile>
+git tag v<MAJOR>.<MINOR>.<PATCH>
+git push origin master --tags
+```
+
+Finish by incrementing the version number. (search/replace on version string)

@@ -31,7 +31,7 @@ Requires Ruby 2.x. No other dependencies to conflict with your app.
 
 Add this line to your Gemfile:
 
-    gem 'resurfaceio-logger', :git => 'https://github.com/resurfaceio/logger-ruby.git'
+    gem 'resurfaceio-logger'
 
 Then install using Bundler: `bundle install`
 

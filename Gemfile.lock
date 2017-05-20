@@ -27,11 +27,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler
-  rack
-  rake
+  bundler (~> 1.11)
+  rack (~> 1.6)
+  rake (~> 10.0)
   resurfaceio-logger!
-  rspec
+  rspec (~> 3.0)
 
 BUNDLED WITH
    1.14.6
