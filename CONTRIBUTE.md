@@ -1,4 +1,4 @@
-# resurfaceio-logger-ruby
+# Contributing to resurfaceio-logger-ruby
 &copy; 2016-2017 Resurface Labs LLC
 
 ## Coding Conventions
