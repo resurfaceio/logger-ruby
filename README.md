@@ -3,6 +3,8 @@
 
 This gem makes it easy to log actual usage of Ruby web/json apps.
 
+[![Gem Version](https://badge.fury.io/rb/resurfaceio-logger.svg)](https://badge.fury.io/rb/resurfaceio-logger)
+
 ## Contents
 
 <ul>
