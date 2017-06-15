@@ -31,15 +31,22 @@ git pull --rebase                         (avoid merge bubbles)
 git push origin master
 ```
 
-All [integration tests](https://github.com/resurfaceio/logger-tests) must pass prior to making changes public.
+## Release Process
 
-Push changes to [RubyGems.org](https://rubygems.org/):
+All [integration tests](https://github.com/resurfaceio/logger-tests) must pass first.
+
+Push artifacts to [RubyGems.org](https://rubygems.org/):
 
 ```
 gem build resurfaceio-logger.gemspec
 gem push <gemfile>
+```
+
+Tag release version:
+
+```
 git tag v1.x.x
 git push origin master --tags
 ```
 
-Finish by incrementing the version number. (search/replace on version string)
+Start the next version by incrementing the version number.
