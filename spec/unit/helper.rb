@@ -5,6 +5,8 @@ require 'json'
 require 'rack'
 require 'resurfaceio/all'
 
+DEMO_URL = 'https://demo-resurfaceio.herokuapp.com/ping'
+
 MOCK_AGENT = 'helper.rb'
 
 MOCK_COOKIE = 'jsonrpc.session=3iqp3ydRwFyqjcfO0GT2bzUh.bacc2786c7a81df0d0e950bec8fa1a9b1ba0bb61'
@@ -21,7 +23,7 @@ MOCK_QUERY_STRING = 'foo=bar'
 
 MOCK_URL = 'http://localhost:3000/index.html'
 
-MOCK_URLS_DENIED = ["#{UsageLoggers.url_for_demo}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/']
+MOCK_URLS_DENIED = ["#{DEMO_URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/']
 
 MOCK_URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp:\\www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613']
 

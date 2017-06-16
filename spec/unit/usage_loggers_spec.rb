@@ -14,11 +14,4 @@ describe UsageLoggers do
     expect(url).to be nil
   end
 
-  it 'provides demo url' do
-    url = UsageLoggers.url_for_demo
-    expect(url).to be_kind_of String
-    expect(url.length).to be > 0
-    expect(url).to start_with('https://')
-  end
-
 end

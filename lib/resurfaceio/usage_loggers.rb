@@ -23,8 +23,4 @@ class UsageLoggers
     ENV['USAGE_LOGGERS_URL']
   end
 
-  def self.url_for_demo
-    'https://demo-resurfaceio.herokuapp.com/messages'
-  end
-
 end

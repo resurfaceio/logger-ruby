@@ -18,7 +18,7 @@ describe HttpLogger do
     url2 = 'http://whatever.com'
     logger1 = HttpLogger.new(url: url1)
     logger2 = HttpLogger.new(url: url2)
-    logger3 = HttpLogger.new(url: 'DEMO')
+    logger3 = HttpLogger.new(url: DEMO_URL)
 
     expect(logger1.agent).to eql(HttpLogger::AGENT)
     expect(logger1.enabled?).to be true
@@ -28,7 +28,7 @@ describe HttpLogger do
     expect(logger2.url).to eql(url2)
     expect(logger3.agent).to eql(HttpLogger::AGENT)
     expect(logger3.enabled?).to be true
-    expect(logger3.url).to eql(UsageLoggers.url_for_demo)
+    expect(logger3.url).to eql(DEMO_URL)
 
     UsageLoggers.disable
     expect(UsageLoggers.enabled?).to be false

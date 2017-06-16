@@ -21,8 +21,6 @@ class BaseLogger
         url = options[:url]
         if url.nil?
           @url = UsageLoggers.url_by_default
-        elsif url.eql?('DEMO')
-          @url = UsageLoggers.url_for_demo
         else
           @url = url
         end
@@ -81,7 +79,7 @@ class BaseLogger
         request = Net::HTTP::Post.new(@url_parsed.path)
         request.body = json
         response = @url_connection.request(request)
-        response.code.to_i == 200
+        response.code.to_i == 204
       rescue SocketError
         @url_connection = nil
         false

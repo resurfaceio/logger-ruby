@@ -22,7 +22,7 @@ describe BaseLogger do
     url2 = 'http://whatever.com'
     logger1 = BaseLogger.new(agent1, url1)
     logger2 = BaseLogger.new(agent2, url: url2)
-    logger3 = BaseLogger.new(agent3, url: 'DEMO')
+    logger3 = BaseLogger.new(agent3, url: DEMO_URL)
 
     expect(logger1.agent).to eql(agent1)
     expect(logger1.enabled?).to be true
@@ -32,7 +32,7 @@ describe BaseLogger do
     expect(logger2.url).to eql(url2)
     expect(logger3.agent).to eql(agent3)
     expect(logger3.enabled?).to be true
-    expect(logger3.url).to eql(UsageLoggers.url_for_demo)
+    expect(logger3.url).to eql(DEMO_URL)
 
     UsageLoggers.disable
     expect(UsageLoggers.enabled?).to be false
@@ -59,16 +59,10 @@ describe BaseLogger do
   end
 
   it 'performs enabling when expected' do
-    logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO', enabled: false)
+    logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL, enabled: false)
     expect(logger.enabled?).to be false
-    expect(logger.url).to eql(UsageLoggers.url_for_demo)
+    expect(logger.url).to eql(DEMO_URL)
     logger.enable
-    expect(logger.enabled?).to be true
-
-    logger = BaseLogger.new(MOCK_AGENT, url: UsageLoggers.url_for_demo, enabled: true)
-    expect(logger.enabled?).to be true
-    expect(logger.url).to eql(UsageLoggers.url_for_demo)
-    logger.enable.disable.enable.disable.disable.disable.enable
     expect(logger.enabled?).to be true
 
     logger = BaseLogger.new(MOCK_AGENT, queue: [], enabled: false)
@@ -113,8 +107,8 @@ describe BaseLogger do
   end
 
   it 'submits to demo url' do
-    logger = BaseLogger.new(MOCK_AGENT, url: 'DEMO')
-    expect(logger.url).to eql(UsageLoggers.url_for_demo)
+    logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL)
+    expect(logger.url).to eql(DEMO_URL)
     message = [
         ['agent', logger.agent],
         ['version', logger.version],
@@ -127,7 +121,7 @@ describe BaseLogger do
   end
 
   it 'submits to demo url via http' do
-    logger = BaseLogger.new(MOCK_AGENT, url: UsageLoggers.url_for_demo.gsub('https://', 'http://'))
+    logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL.gsub('https://', 'http://'))
     expect(logger.url.include?('http://')).to be true
     message = [
         ['agent', logger.agent],
