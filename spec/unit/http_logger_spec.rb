@@ -16,7 +16,7 @@ describe HttpLogger do
   it 'creates multiple instances' do
     url1 = 'http://resurface.io'
     url2 = 'http://whatever.com'
-    logger1 = HttpLogger.new(url: url1)
+    logger1 = HttpLogger.new(url1)
     logger2 = HttpLogger.new(url: url2)
     logger3 = HttpLogger.new(url: DEMO_URL)
 

@@ -141,10 +141,10 @@ yields complete control over how usage logging is implemented.
     UsageLoggers.enable                                              # enable all loggers
     
     # create and configure logger
+    logger = HttpLogger.new(my_https_url)                            # log to remote url
+    logger = HttpLogger.new(url: my_https_url, enabled: false)       # (initially disabled)
     logger = HttpLogger.new(queue: my_queue)                         # log to appendable list
     logger = HttpLogger.new(queue: my_queue, enabled: false)         # (initially disabled)
-    logger = HttpLogger.new(url: my_https_url)                       # log to https url
-    logger = HttpLogger.new(url: my_https_url, enabled: false)       # (initially disabled)
     logger.disable                                                   # disable this logger
     logger.enable                                                    # enable this logger
     if logger.enabled? ...                                           # test if this enabled
