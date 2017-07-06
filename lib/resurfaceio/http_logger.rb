@@ -6,7 +6,7 @@ require 'resurfaceio/base_logger'
 
 class HttpLogger < BaseLogger
 
-  AGENT = 'http_logger.rb'
+  AGENT = 'http_logger.rb'.freeze
 
   def initialize(options={})
     super(AGENT, options)
