@@ -10,7 +10,6 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/resurfaceio/logger-ruby'
   spec.license = 'Apache-2.0'
   spec.authors = ['RobDickinson']
-  spec.email = ['resurfacelabs@gmail.com']
 
   spec.files = `git ls-files -z ./lib`.split("\x0")
   spec.require_paths = ['lib']
