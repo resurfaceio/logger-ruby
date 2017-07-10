@@ -5,7 +5,7 @@ require 'json'
 require 'rack'
 require 'resurfaceio/all'
 
-DEMO_URL = 'https://demo-resurfaceio.herokuapp.com/ping'
+DEMO_URL = 'https://demo.resurface.io/ping'
 
 MOCK_AGENT = 'helper.rb'
 
