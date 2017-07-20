@@ -33,8 +33,6 @@ git push origin master
 
 ## Release Process
 
-All [integration tests](https://github.com/resurfaceio/logger-tests) must pass first.
-
 Push artifacts to [RubyGems.org](https://rubygems.org/):
 
 ```
