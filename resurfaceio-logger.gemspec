@@ -3,7 +3,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = 'resurfaceio-logger'
-  spec.version = '1.7.13'
+  spec.version = '1.8.0'
 
   spec.summary = 'Library for usage logging'
   spec.description = spec.summary
