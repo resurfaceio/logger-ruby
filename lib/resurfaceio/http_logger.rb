@@ -12,7 +12,7 @@ class HttpLogger < BaseLogger
     super(AGENT, options)
   end
 
-  def format(request, request_body, response, response_body, now=Time.now.to_i.to_s)
+  def format(request, request_body, response, response_body, now=nil)
     message = []
     append_value message, 'request_method', request.request_method
     append_value message, 'request_url', request.url
@@ -23,7 +23,7 @@ class HttpLogger < BaseLogger
     append_value message, 'response_body', response_body.nil? ? response.body : response_body
     message << ['agent', @agent]
     message << ['version', @version]
-    message << ['now', now]
+    message << ['now', now.nil? ? (Time.now.to_f * 1000).floor.to_s : now]
     JSON.generate message
   end
 
