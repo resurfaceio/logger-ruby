@@ -13,7 +13,7 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
 
   def call(env)
     status, headers, body = @app.call(env)
-    if @logger.enabled? && status < 300
+    if @logger.enabled? && (status < 300 || status == 302)
       response = Rack::Response.new(body, status, headers)
       if @logger.string_content_type?(response.content_type)
         request = Rack::Request.new(env)

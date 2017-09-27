@@ -27,6 +27,7 @@ describe HttpLoggerForRack do
     expect(json.include?("[\"response_header.content-length\",\"25\"]")).to be true
     expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
     expect(json.include?('request_body')).to be false
+    expect(json.include?('request_param')).to be false
   end
 
   it 'logs json' do
@@ -45,6 +46,7 @@ describe HttpLoggerForRack do
     expect(json.include?("[\"response_header.content-length\",\"21\"]")).to be true
     expect(json.include?("[\"response_header.content-type\",\"application/json\"]")).to be true
     expect(json.include?('request_body')).to be false
+    expect(json.include?('request_param')).to be false
   end
 
   it 'logs json post' do
@@ -53,7 +55,6 @@ describe HttpLoggerForRack do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("[\"request_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(json.include?("[\"request_header.content-type\",\"application/json\"]")).to be true
     expect(json.include?("[\"request_header.cookie\",\"#{MOCK_COOKIE}\"]")).to be true
     expect(json.include?("[\"request_header.host\",\"localhost:3000\"]")).to be true
@@ -64,6 +65,8 @@ describe HttpLoggerForRack do
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
     expect(json.include?("[\"response_header.content-length\",\"21\"]")).to be true
     expect(json.include?("[\"response_header.content-type\",\"application/json\"]")).to be true
+    expect(json.include?('request_body')).to be false
+    expect(json.include?('request_param')).to be false
   end
 
   it 'skips logging for exceptions' do
@@ -75,8 +78,8 @@ describe HttpLoggerForRack do
     end
   end
 
-  it 'skips logging for redirects and unmatched content types' do
-    apps = [MockCustomApp.new, MockCustomApp2.new, MockCustomRedirectApp.new, MockHtmlRedirectApp.new]
+  it 'skips logging for 404s and unmatched content types' do
+    apps = [MockCustomApp.new, MockCustom404App.new, MockHtml404App.new, MockJson404App.new]
     apps.each do |app|
       queue = []
       HttpLoggerForRack.new(app, queue: queue).call(MOCK_ENV)

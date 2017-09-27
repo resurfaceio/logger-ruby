@@ -12,18 +12,19 @@ class HttpLogger < BaseLogger
     super(AGENT, options)
   end
 
-  def format(request, request_body, response, response_body, now=Time.now.to_i.to_s)
+  def format(request, request_body, response, response_body, now=nil)
     message = []
     append_value message, 'request_method', request.request_method
     append_value message, 'request_url', request.url
     append_value message, 'response_code', response.status
     append_request_headers message, request
+    append_request_params message, request
     append_response_headers message, response
-    append_value message, 'request_body', request_body.nil? ? request.body : request_body
+    append_value message, 'request_body', request_body
     append_value message, 'response_body', response_body.nil? ? response.body : response_body
     message << ['agent', @agent]
     message << ['version', @version]
-    message << ['now', now]
+    message << ['now', now.nil? ? (Time.now.to_f * 1000).floor.to_s : now]
     JSON.generate message
   end
 
@@ -50,7 +51,23 @@ class HttpLogger < BaseLogger
             message << ["request_header.#{name[5..-1].downcase.tr('_', '-')}", value]
           end
         end
-      end
+      end unless headers.nil?
+    end
+  end
+
+  def append_request_params(message, request)
+    respond_to_env = request.respond_to?(:env)
+    if respond_to_env || request.respond_to?(:form_hash)
+      hash = respond_to_env ? request.env['rack.request.form_hash'] : request.form_hash
+      hash.each do |name, value|
+        append_value message, "request_param.#{name.downcase}", value
+      end unless hash.nil?
+    end
+    if respond_to_env || request.respond_to?(:query_hash)
+      hash = respond_to_env ? request.env['rack.request.query_hash'] : request.query_hash
+      hash.each do |name, value|
+        append_value message, "request_param.#{name.downcase}", value
+      end unless hash.nil?
     end
   end
 
@@ -63,7 +80,7 @@ class HttpLogger < BaseLogger
           found_content_type = true if name =~ /^content-type/
           message << ["response_header.#{name}", value]
         end
-      end
+      end unless response.headers.nil?
     end
     unless found_content_type || response.content_type.nil?
       message << ['response_header.content-type', response.content_type]
@@ -79,7 +96,7 @@ class HttpLogger < BaseLogger
           when String
             message << [key, value]
           else
-            if value.respond_to?(:read)
+            if value.respond_to?(:read) # todo still needed?
               message << [key, value.read]
             else
               message << [key, value.to_s]

@@ -23,6 +23,7 @@ describe HttpLoggerForRails do
     expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
     expect(json.include?('request_body')).to be false
     expect(json.include?('request_header')).to be false
+    expect(json.include?('request_param')).to be false
   end
 
   it 'logs html response to json request' do
@@ -31,13 +32,14 @@ describe HttpLoggerForRails do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("[\"request_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(json.include?("[\"request_header.content-type\",\"Application/JSON\"]")).to be true
     expect(json.include?("[\"request_method\",\"POST\"]")).to be true
+    expect(json.include?("[\"request_param.message\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(json.include?("[\"request_url\",\"#{MOCK_URL}?#{MOCK_QUERY_STRING}\"]")).to be true
     expect(json.include?("[\"response_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
     expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
+    expect(json.include?('request_body')).to be false
   end
 
   it 'skips logging for exceptions' do

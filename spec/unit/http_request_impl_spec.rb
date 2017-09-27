@@ -10,15 +10,6 @@ describe HttpRequestImpl do
     expect(HttpRequestImpl.class.equal?(Resurfaceio::HttpRequestImpl.class)).to be true
   end
 
-  it 'uses body' do
-    val = 'Sterling Archer'
-    r = HttpRequestImpl.new
-    expect(r.body).to be nil
-    r.raw_body = val
-    expect(r.body.class.name).to eql('StringIO')
-    expect(r.body.read).to eql(val)
-  end
-
   it 'uses content_type' do
     r = HttpRequestImpl.new
     expect(r.content_type).to be nil
@@ -36,11 +27,35 @@ describe HttpRequestImpl do
     expect(r.headers['content_type']).to be nil
   end
 
-  it 'uses headers' do
+  it 'uses form hash' do
     key = '2345'
-    key2 = 'fish'
+    key2 = 'egret'
     val = 'u-turn'
-    val2 = 'swell'
+    val2 = 'bleep'
+
+    r = HttpRequestImpl.new
+    expect(r.form_hash.length).to be 0
+    expect(r.form_hash[key]).to be nil
+
+    r.form_hash[key] = val
+    expect(r.form_hash.length).to be 1
+    expect(r.form_hash[key]).to eql(val)
+
+    r.form_hash[key] = val2
+    expect(r.form_hash.length).to be 1
+    expect(r.form_hash[key]).to eql(val2)
+
+    r.form_hash[key2] = val2
+    expect(r.form_hash.length).to be 2
+    expect(r.form_hash[key2]).to eql(val2)
+    expect(r.form_hash[key2.upcase]).to be nil
+  end
+
+  it 'uses headers' do
+    key = '3456'
+    key2 = 'freddy'
+    val = 'two-step'
+    val2 = 'swell!'
 
     r = HttpRequestImpl.new
     expect(r.headers.length).to be 0
@@ -64,11 +79,28 @@ describe HttpRequestImpl do
     expect(r.headers[key2.upcase]).to be nil
   end
 
-  it 'uses raw_body' do
+  it 'uses query hash' do
+    key = '4567'
+    key2 = 'gracious'
+    val = 'forever-more'
+    val2 = 'carson'
+
     r = HttpRequestImpl.new
-    expect(r.raw_body).to be nil
-    r.raw_body = MOCK_HTML
-    expect(r.raw_body).to eql(MOCK_HTML)
+    expect(r.query_hash.length).to be 0
+    expect(r.query_hash[key]).to be nil
+
+    r.query_hash[key] = val
+    expect(r.query_hash.length).to be 1
+    expect(r.query_hash[key]).to eql(val)
+
+    r.query_hash[key] = val2
+    expect(r.query_hash.length).to be 1
+    expect(r.query_hash[key]).to eql(val2)
+
+    r.query_hash[key2] = val2
+    expect(r.query_hash.length).to be 2
+    expect(r.query_hash[key2]).to eql(val2)
+    expect(r.query_hash[key2.upcase]).to be nil
   end
 
   it 'uses request method' do

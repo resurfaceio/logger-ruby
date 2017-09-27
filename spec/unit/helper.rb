@@ -5,29 +5,31 @@ require 'json'
 require 'rack'
 require 'resurfaceio/all'
 
-DEMO_URL = 'https://demo.resurface.io/ping'
+DEMO_URL = 'https://demo.resurface.io/ping'.freeze
 
-MOCK_AGENT = 'helper.rb'
+MOCK_AGENT = 'helper.rb'.freeze
 
-MOCK_COOKIE = 'jsonrpc.session=3iqp3ydRwFyqjcfO0GT2bzUh.bacc2786c7a81df0d0e950bec8fa1a9b1ba0bb61'
+MOCK_COOKIE = 'jsonrpc.session=3iqp3ydRwFyqjcfO0GT2bzUh.bacc2786c7a81df0d0e950bec8fa1a9b1ba0bb61'.freeze
 
-MOCK_JSON = "{ \"hello\" : \"world\" }"
+MOCK_HTML = '<html>Hello World!</html>'.freeze
 
-MOCK_JSON_ESCAPED = "{ \\\"hello\\\" : \\\"world\\\" }"
+MOCK_HTML2 = '<html>Hola Mundo!</html>'.freeze
 
-MOCK_HTML = '<html>Hello World!</html>'
+MOCK_JSON = "{ \"hello\" : \"world\" }".freeze
 
-MOCK_NOW = '1455908640173'
+MOCK_JSON_ESCAPED = "{ \\\"hello\\\" : \\\"world\\\" }".freeze
 
-MOCK_QUERY_STRING = 'foo=bar'
+MOCK_NOW = '1455908640173'.freeze
 
-MOCK_URL = 'http://localhost:3000/index.html'
+MOCK_QUERY_STRING = 'foo=bar'.freeze
 
-MOCK_URLS_DENIED = ["#{DEMO_URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/']
+MOCK_URL = 'http://localhost:3000/index.html'.freeze
 
-MOCK_URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp:\\www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613']
+MOCK_URLS_DENIED = ["#{DEMO_URL}/noway3is5this1valid2", 'https://www.noway3is5this1valid2.com/'].freeze
 
-MOCK_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:26.0) Gecko/20100101 Firefox/26.0'
+MOCK_URLS_INVALID = ['', 'noway3is5this1valid2', 'ftp:\\www.noway3is5this1valid2.com/', 'urn:ISSN:1535–3613'].freeze
+
+MOCK_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:26.0) Gecko/20100101 Firefox/26.0'.freeze
 
 MOCK_ENV = {
     'HTTP_HOST' => 'localhost:3000',
@@ -37,11 +39,11 @@ MOCK_ENV = {
     'QUERY_STRING' => 'foo=bar',
     'REQUEST_METHOD' => 'GET',
     'rack.url_scheme' => 'http',
-}
+}.freeze
 
 MOCK_ENV_JSON = MOCK_ENV.clone.merge ({
-    'CONTENT_TYPE' => 'application/json', 'rack.input' => StringIO.new(MOCK_JSON), 'REQUEST_METHOD' => 'POST'
-})
+    'CONTENT_TYPE' => 'application/json', 'REQUEST_METHOD' => 'POST'
+}).freeze
 
 class MockCustomApp
   def call(env)
@@ -51,41 +53,17 @@ class MockCustomApp
   end
 end
 
-class MockCustomApp2
+class MockCustom404App
   def call(env)
     headers = {}
-    headers['content_type'] = 'text/html'
-    [200, headers, ['license and registration, please']]
-  end
-end
-
-class MockCustomRedirectApp
-  def call(env)
-    headers = {}
-    headers[Rack::CONTENT_TYPE] = 'application/crazy'
-    [304, headers, ['']]
+    headers[Rack::CONTENT_TYPE] = 'application/whatever'
+    [404, headers, ['']]
   end
 end
 
 class MockExceptionApp
   def call(env)
     raise ZeroDivisionError
-  end
-end
-
-class MockJsonApp
-  def call(env)
-    headers = {}
-    headers[Rack::CONTENT_TYPE] = 'application/json'
-    [200, headers, [MOCK_JSON]]
-  end
-end
-
-class MockJsonRedirectApp
-  def call(env)
-    headers = {}
-    headers[Rack::CONTENT_TYPE] = 'application/json'
-    [304, headers, ['']]
   end
 end
 
@@ -98,11 +76,27 @@ class MockHtmlApp
   end
 end
 
-class MockHtmlRedirectApp
+class MockHtml404App
   def call(env)
     headers = {}
     headers[Rack::CONTENT_TYPE] = 'text/html; charset=utf-8'
-    [304, headers, [MOCK_HTML]]
+    [404, headers, [MOCK_HTML]]
+  end
+end
+
+class MockJsonApp
+  def call(env)
+    headers = {}
+    headers[Rack::CONTENT_TYPE] = 'application/json'
+    [200, headers, [MOCK_JSON]]
+  end
+end
+
+class MockJson404App
+  def call(env)
+    headers = {}
+    headers[Rack::CONTENT_TYPE] = 'application/json'
+    [404, headers, ['']]
   end
 end
 
@@ -112,13 +106,13 @@ class MockRailsHtmlController
   end
 
   def response
-    mock_response_with_body
+    mock_response_with_html
   end
 end
 
 class MockRailsJsonController < MockRailsHtmlController
   def request
-    mock_request_with_body
+    mock_request_with_json
   end
 end
 
@@ -129,20 +123,22 @@ def mock_request
   r
 end
 
-def mock_request_with_body
+def mock_request_with_json
   r = HttpRequestImpl.new
   r.content_type = 'Application/JSON'
+  r.form_hash[:message] = MOCK_JSON
   r.request_method = 'POST'
-  r.raw_body = MOCK_JSON
   r.url = "#{MOCK_URL}?#{MOCK_QUERY_STRING}"
   r
 end
 
-def mock_request_with_body2
-  r = mock_request_with_body
+def mock_request_with_json2
+  r = mock_request_with_json
   r.headers['HTTP_ABC'] = '123'
   r.add_header 'HTTP_A', '1'
   r.add_header 'HTTP_A', '2'
+  r.form_hash['ABC'] = '123'
+  r.query_hash['ABC'] = '234'
   r
 end
 
@@ -152,7 +148,7 @@ def mock_response
   r
 end
 
-def mock_response_with_body
+def mock_response_with_html
   r = HttpResponseImpl.new
   r.content_type = 'text/html; charset=utf-8'
   r.raw_body = MOCK_HTML

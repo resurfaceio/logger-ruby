@@ -11,9 +11,11 @@ class HttpLoggerForRails
 
   def around(controller)
     yield
+    request = controller.request
     response = controller.response
-    if response.status < 300 && @logger.string_content_type?(response.content_type)
-      @logger.log(controller.request, nil, response, nil)
+    status = response.status
+    if (status < 300 || status == 302) && @logger.string_content_type?(response.content_type)
+      @logger.log(request, nil, response, nil)
     end
   end
 

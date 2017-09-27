@@ -4,8 +4,9 @@
 class HttpRequestImpl
 
   def initialize
+    @form_hash = Hash.new
     @headers = Hash.new
-    @raw_body = nil
+    @query_hash = Hash.new
   end
 
   def add_header(key, value)
@@ -19,10 +20,6 @@ class HttpRequestImpl
     end
   end
 
-  def body
-    @raw_body ? StringIO.new(@raw_body) : nil
-  end
-
   def content_type
     @headers['CONTENT_TYPE']
   end
@@ -31,11 +28,18 @@ class HttpRequestImpl
     @headers['CONTENT_TYPE'] = content_type
   end
 
+  def form_hash
+    @form_hash
+  end
+
   def headers
     @headers
   end
 
-  attr_accessor :raw_body
+  def query_hash
+    @query_hash
+  end
+
   attr_accessor :request_method
   attr_accessor :url
 
