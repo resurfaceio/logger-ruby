@@ -96,11 +96,7 @@ class HttpLogger < BaseLogger
           when String
             message << [key, value]
           else
-            if value.respond_to?(:read) # todo still needed?
-              message << [key, value.read]
-            else
-              message << [key, value.to_s]
-            end
+            message << [key, value.to_s]
         end
       end
     end
