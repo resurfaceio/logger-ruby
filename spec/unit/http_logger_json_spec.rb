@@ -34,7 +34,6 @@ describe HttpLogger do
   it 'formats request with empty body' do
     json = HttpLogger.new.format(mock_request_with_json2, '', mock_response, nil)
     expect(parseable?(json)).to be true
-    expect(json.include?("[\"request_body\",\"\"]")).to be true
     expect(json.include?("[\"request_header.a\",\"1, 2\"]")).to be true
     expect(json.include?("[\"request_header.abc\",\"123\"]")).to be true
     expect(json.include?("[\"request_header.content-type\",\"Application/JSON\"]")).to be true
@@ -43,6 +42,7 @@ describe HttpLogger do
     expect(json.include?("[\"request_param.abc\",\"234\"]")).to be true
     expect(json.include?("[\"request_param.message\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(json.include?("[\"request_url\",\"#{MOCK_URL}?#{MOCK_QUERY_STRING}\"]")).to be true
+    expect(json.include?('request_body')).to be false
   end
 
   it 'formats request with nil method and url' do
@@ -74,9 +74,9 @@ describe HttpLogger do
   it 'formats response with empty body' do
     json = HttpLogger.new.format(mock_request, nil, mock_response_with_html, '')
     expect(parseable?(json)).to be true
-    expect(json.include?("[\"response_body\",\"\"]")).to be true
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
     expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
+    expect(json.include?('response_body')).to be false
   end
 
   it 'formats response with nil content type and response code' do

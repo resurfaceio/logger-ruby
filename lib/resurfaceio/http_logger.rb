@@ -20,8 +20,9 @@ class HttpLogger < BaseLogger
     append_request_headers message, request
     append_request_params message, request
     append_response_headers message, response
-    append_value message, 'request_body', request_body
-    append_value message, 'response_body', response_body.nil? ? response.body : response_body
+    append_value message, 'request_body', request_body unless request_body == ''
+    final_response_body = response_body.nil? ? response.body : response_body
+    append_value message, 'response_body', final_response_body unless final_response_body == ''
     message << ['agent', @agent]
     message << ['version', @version]
     message << ['now', now.nil? ? (Time.now.to_f * 1000).floor.to_s : now]
