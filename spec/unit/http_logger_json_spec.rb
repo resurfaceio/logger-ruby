@@ -83,8 +83,6 @@ describe HttpLogger do
     response.content_type = nil
     json = HttpLogger.new.format(mock_request, nil, response, nil)
     expect(parseable?(json)).to be true
-    expect(json.include?('request_body')).to be false
-    expect(json.include?('request_param')).to be false
     expect(json.include?('response_body')).to be false
     expect(json.include?('response_code')).to be false
     expect(json.include?('response_header')).to be false
