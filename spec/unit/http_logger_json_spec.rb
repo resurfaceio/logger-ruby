@@ -17,8 +17,6 @@ describe HttpLogger do
     expect(json.include?('request_body')).to be false
     expect(json.include?('request_header')).to be false
     expect(json.include?('request_param')).to be false
-    expect(json.include?('response_body')).to be false
-    expect(json.include?('response_header')).to be false
   end
 
   it 'formats request with body' do
@@ -45,7 +43,7 @@ describe HttpLogger do
     expect(json.include?('request_body')).to be false
   end
 
-  it 'formats request with nil method and url' do
+  it 'formats request with missing details' do
     json = HttpLogger.new.format(HttpRequestImpl.new, nil, mock_response, nil)
     expect(parseable?(json)).to be true
     expect(json.include?('request_body')).to be false
@@ -79,7 +77,7 @@ describe HttpLogger do
     expect(json.include?('response_body')).to be false
   end
 
-  it 'formats response with nil content type and response code' do
+  it 'formats response with missing details' do
     # this is the default behavior with Sinatra, https://github.com/resurfaceio/logger-ruby/issues/18
     response = HttpResponseImpl.new
     response.content_type = nil
