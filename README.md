@@ -15,8 +15,8 @@ This gem makes it easy to log actual usage of Ruby web/json apps.
 <li><a href="#logging_from_sinatra">Logging From Sinatra</a></li>
 <li><a href="#advanced_topics">Advanced Topics</a><ul>
 <li><a href="#setting_default_url">Setting Default URL</a></li>
-<li><a href="#disabling_all_logging">Disabling All Logging</a></li>
-<li><a href="#using_api_directly">Using API Directly</a></li>
+<li><a href="#enabling_and_disabling">Enabling and Disabling Loggers</a></li>
+<li><a href="#logging_api">Logging API</a></li>
 </ul></li>
 </ul>
 
@@ -34,7 +34,7 @@ Add this line to your Gemfile:
 
     gem 'resurfaceio-logger'
 
-Then install using Bundler: `bundle install`
+Then install with Bundler: `bundle install`
 
 <a name="logging_from_rails_controller"/>
 
@@ -47,7 +47,6 @@ After <a href="#installing_with_bundler">installing the gem</a>, add an `around_
     class MyController < ApplicationController
       around_action HttpLoggerForRails.new(url: 'https://...')
     end
-
 
 <a name="logging_from_rack_middleware"/>
 
@@ -64,7 +63,7 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
 
 ## Logging From Sinatra
 
-After <a href="#installing_with_bundler">installing the gem</a>, create a logger and use it from the routes of interest.
+After <a href="#installing_with_bundler">installing the gem</a>, create a logger and call it from the routes of interest.
 
     require 'sinatra'
     require 'resurfaceio/all'
@@ -93,52 +92,60 @@ After <a href="#installing_with_bundler">installing the gem</a>, create a logger
 
 Set the `USAGE_LOGGERS_URL` environment variable to provide a default value whenever the URL is not specified.
 
-    # using Heroku cli
-    heroku config:set USAGE_LOGGERS_URL=https://my-https-url
+    # from command line
+    export USAGE_LOGGERS_URL="https://my-logging-url"
 
-    # from within config.ru or rails configuration file
-    ENV['USAGE_LOGGERS_URL']='https://my-https-url'
+    # in config.ru
+    ENV['USAGE_LOGGERS_URL']='https://my-logging-url'
 
-Loggers look for this environment variable when no other options are set, as in these examples.
+    # for Heroku app
+    heroku config:set USAGE_LOGGERS_URL=https://my-logging-url
 
-    # in rails context
+Loggers look for this environment variable when no URL is provided.
+
+    # for basic logger
+    logger = HttpLogger.new
+
+    # in rails controller
     around_action HttpLoggerForRails.new
 
-    # in rack context
+    # in rack middleware
     use HttpLoggerForRack
 
-    # using api directly
-    HttpLogger.new
+<a name="enabling_and_disabling"/>
 
-<a name="disabling_all_logging"/>
+### Enabling and Disabling Loggers
 
-### Disabling All Logging
+Individual loggers can be controlled through their `enable` and `disable` methods. When disabled, loggers will
+not send any logging data, and the result returned by the `log` method will always be true (success).
 
-It's important to have a "kill switch" to universally disable all logging. For example, loggers might be disabled when
-running automated tests. All loggers can also be disabled at runtime, either by setting an environment variable or
-programmatically.
+All loggers for an application can be enabled or disabled at once with the `UsageLoggers` class. This even controls
+loggers that have not yet been created by the application.
+
+    UsageLoggers.disable       # disable all loggers
+    UsageLoggers.enable        # enable all loggers
+
+All loggers can be permanently disabled with the `USAGE_LOGGERS_DISABLE` environment variable. When set to true,
+loggers will never become enabled, even if `UsageLoggers.enable` is called by the application. This is primarily 
+done by automated tests to disable all logging even if other control logic exists. 
+
+    # from command line
+    export USAGE_LOGGERS_DISABLE="true"
+
+    # in config.ru
+    ENV['USAGE_LOGGERS_DISABLE']='true'
 
     # for Heroku app
     heroku config:set USAGE_LOGGERS_DISABLE=true
 
-    # from within Rails config
-    ENV['USAGE_LOGGERS_DISABLE']='true'
+<a name="logging_api"/>
 
-    # at runtime
-    UsageLoggers.disable
+### Logging API
 
-<a name="using_api_directly"/>
-
-### Using API Directly
-
-Loggers can be directly integrated into your application if other options don't fit. This requires the most effort, but
-yields complete control over how usage logging is implemented.
+Loggers can be directly integrated into your application with this API, which gives complete control over how
+usage logging is implemented.
 
     require 'resurfaceio/all'
-    
-    # manage all loggers (even those not created yet)
-    UsageLoggers.disable                                             # disable all loggers
-    UsageLoggers.enable                                              # enable all loggers
     
     # create and configure logger
     logger = HttpLogger.new(my_https_url)                            # log to remote url
