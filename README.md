@@ -32,7 +32,9 @@ Requires Ruby 2.x. No other dependencies to conflict with your app.
 
 Add this line to your Gemfile:
 
-    gem 'resurfaceio-logger'
+```ruby
+gem 'resurfaceio-logger'
+```
 
 Then install with Bundler: `bundle install`
 
@@ -42,11 +44,13 @@ Then install with Bundler: `bundle install`
 
 After <a href="#installing_with_bundler">installing the gem</a>, add an `around_action` to your Rails controller.
 
-    require 'resurfaceio/all'
+```ruby
+require 'resurfaceio/all'
 
-    class MyController < ApplicationController
-      around_action HttpLoggerForRails.new(url: 'https://...')
-    end
+class MyController < ApplicationController
+  around_action HttpLoggerForRails.new(url: 'https://my-logging-url')
+end
+```
 
 <a name="logging_from_rack_middleware"/>
 
@@ -55,9 +59,11 @@ After <a href="#installing_with_bundler">installing the gem</a>, add an `around_
 After <a href="#installing_with_bundler">installing the gem</a>, add these lines below to `config.ru`, before the final
 'run' statement.
 
-    require 'resurfaceio/all'
-    use HttpLoggerForRack, url: 'https://...'
-    run <...>
+```ruby
+require 'resurfaceio/all'
+use HttpLoggerForRack, url: 'https://my-logging-url'
+run <...>
+```
 
 <a name="logging_from_sinatra"/>
 
@@ -65,22 +71,24 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
 
 After <a href="#installing_with_bundler">installing the gem</a>, create a logger and call it from the routes of interest.
 
-    require 'sinatra'
-    require 'resurfaceio/all'
+```ruby
+require 'sinatra'
+require 'resurfaceio/all'
 
-    logger = HttpLogger.new(url: 'https://...')
+logger = HttpLogger.new(url: 'https://my-logging-url')
 
-    get '/' do
-      response_body = '<html>Hello World</html>'
-      logger.log request, nil, response, response_body
-      response_body
-    end
+get '/' do
+  response_body = '<html>Hello World</html>'
+  logger.log request, nil, response, response_body
+  response_body
+end
 
-    post '/' do
-      status 401
-      logger.log request, nil, response, nil
-      ''
-    end
+post '/' do
+  status 401
+  logger.log request, nil, response, nil
+  ''
+end
+```
 
 <a name="advanced_topics"/>
 
@@ -92,25 +100,29 @@ After <a href="#installing_with_bundler">installing the gem</a>, create a logger
 
 Set the `USAGE_LOGGERS_URL` environment variable to provide a default value whenever the URL is not specified.
 
-    # from command line
-    export USAGE_LOGGERS_URL="https://my-logging-url"
+```ruby
+# from command line
+export USAGE_LOGGERS_URL="https://my-logging-url"
 
-    # in config.ru
-    ENV['USAGE_LOGGERS_URL']='https://my-logging-url'
+# in config.ru
+ENV['USAGE_LOGGERS_URL']='https://my-logging-url'
 
-    # for Heroku app
-    heroku config:set USAGE_LOGGERS_URL=https://my-logging-url
+# for Heroku app
+heroku config:set USAGE_LOGGERS_URL=https://my-logging-url
+```
 
 Loggers look for this environment variable when no URL is provided.
 
-    # for basic logger
-    logger = HttpLogger.new
+```ruby
+# for basic logger
+logger = HttpLogger.new
 
-    # in rails controller
-    around_action HttpLoggerForRails.new
+# in rails controller
+around_action HttpLoggerForRails.new
 
-    # in rack middleware
-    use HttpLoggerForRack
+# in rack middleware
+use HttpLoggerForRack
+```
 
 <a name="enabling_and_disabling"/>
 
@@ -122,21 +134,25 @@ not send any logging data, and the result returned by the `log` method will alwa
 All loggers for an application can be enabled or disabled at once with the `UsageLoggers` class. This even controls
 loggers that have not yet been created by the application.
 
-    UsageLoggers.disable       # disable all loggers
-    UsageLoggers.enable        # enable all loggers
+```ruby
+UsageLoggers.disable       # disable all loggers
+UsageLoggers.enable        # enable all loggers
+```
 
 All loggers can be permanently disabled with the `USAGE_LOGGERS_DISABLE` environment variable. When set to true,
 loggers will never become enabled, even if `UsageLoggers.enable` is called by the application. This is primarily 
 done by automated tests to disable all logging even if other control logic exists. 
 
-    # from command line
-    export USAGE_LOGGERS_DISABLE="true"
+```ruby
+# from command line
+export USAGE_LOGGERS_DISABLE="true"
 
-    # in config.ru
-    ENV['USAGE_LOGGERS_DISABLE']='true'
+# in config.ru
+ENV['USAGE_LOGGERS_DISABLE']='true'
 
-    # for Heroku app
-    heroku config:set USAGE_LOGGERS_DISABLE=true
+# for Heroku app
+heroku config:set USAGE_LOGGERS_DISABLE=true
+```
 
 <a name="logging_api"/>
 
@@ -145,37 +161,39 @@ done by automated tests to disable all logging even if other control logic exist
 Loggers can be directly integrated into your application with this API, which gives complete control over how
 usage logging is implemented.
 
-    require 'resurfaceio/all'
-    
-    # create and configure logger
-    logger = HttpLogger.new(my_https_url)                            # log to remote url
-    logger = HttpLogger.new(url: my_https_url, enabled: false)       # (initially disabled)
-    logger = HttpLogger.new(queue: my_queue)                         # log to appendable list
-    logger = HttpLogger.new(queue: my_queue, enabled: false)         # (initially disabled)
-    logger.disable                                                   # disable this logger
-    logger.enable                                                    # enable this logger
-    if logger.enabled? ...                                           # test if this enabled
-    
-    # define request to log
-    request = HttpRequestImpl.new
-    request.body = 'some json'
-    request.content_type = 'application/json'
-    request.headers['A'] = '123'
-    request.request_method = 'GET'
-    request.url = 'http://google.com'
-    
-    # define response to log
-    response = HttpResponseImpl.new
-    response.body = 'some html'
-    response.content_type = 'text/html'
-    response.headers['B'] = '234'
-    response.status = 200
-    
-    # log objects defined above
-    logger.log request, nil, response, nil
-    
-    # log with overriden request/response bodies
-    logger.log request, 'my-request-body', response, 'my-response-body'
-    
-    # submit a custom message (destination may accept or not)
-    logger.submit '...'
+```ruby
+require 'resurfaceio/all'
+
+# create and configure logger
+logger = HttpLogger.new(my_https_url)                            # log to remote url
+logger = HttpLogger.new(url: my_https_url, enabled: false)       # (initially disabled)
+logger = HttpLogger.new(queue: my_queue)                         # log to appendable list
+logger = HttpLogger.new(queue: my_queue, enabled: false)         # (initially disabled)
+logger.disable                                                   # disable this logger
+logger.enable                                                    # enable this logger
+if logger.enabled? ...                                           # test if this enabled
+
+# define request to log
+request = HttpRequestImpl.new
+request.body = 'some json'
+request.content_type = 'application/json'
+request.headers['A'] = '123'
+request.request_method = 'GET'
+request.url = 'http://google.com'
+
+# define response to log
+response = HttpResponseImpl.new
+response.body = 'some html'
+response.content_type = 'text/html'
+response.headers['B'] = '234'
+response.status = 200
+
+# log objects defined above
+logger.log request, nil, response, nil
+
+# log with overriden request/response bodies
+logger.log request, 'my-request-body', response, 'my-response-body'
+
+# submit a custom message (destination may accept or not)
+logger.submit '...'
+```
