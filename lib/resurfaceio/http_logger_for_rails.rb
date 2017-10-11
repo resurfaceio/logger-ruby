@@ -14,7 +14,7 @@ class HttpLoggerForRails
     request = controller.request
     response = controller.response
     status = response.status
-    if (status < 300 || status == 302) && @logger.string_content_type?(response.content_type)
+    if (status < 300 || status == 302) && HttpLogger::string_content_type?(response.content_type)
       @logger.log(request, nil, response, nil)
     end
   end

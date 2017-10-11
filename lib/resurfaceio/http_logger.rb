@@ -33,10 +33,6 @@ class HttpLogger < BaseLogger
     !enabled? || submit(format(request, request_body, response, response_body))
   end
 
-  def string_content_type?(s)
-    HttpLogger::string_content_type?(s)
-  end
-
   def self.string_content_type?(s)
     !s.nil? && !(s =~ /^(text\/(html|plain|xml))|(application\/(json|soap|xml|x-www-form-urlencoded))/i).nil?
   end

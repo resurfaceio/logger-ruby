@@ -43,9 +43,16 @@ describe HttpLogger do
   end
 
   it 'detects string content types' do
-    logger = HttpLogger.new
+    expect(HttpLogger::string_content_type?(nil)).to be false
+    expect(HttpLogger::string_content_type?('')).to be false
+    expect(HttpLogger::string_content_type?(' ')).to be false
+    expect(HttpLogger::string_content_type?('/')).to be false
+    expect(HttpLogger::string_content_type?('application/')).to be false
+    expect(HttpLogger::string_content_type?('json')).to be false
+    expect(HttpLogger::string_content_type?('html')).to be false
+    expect(HttpLogger::string_content_type?('xml')).to be false
 
-    expect(logger.string_content_type?('application/json')).to be true
+    expect(HttpLogger::string_content_type?('application/json')).to be true
     expect(HttpLogger::string_content_type?('application/soap')).to be true
     expect(HttpLogger::string_content_type?('application/xml')).to be true
     expect(HttpLogger::string_content_type?('application/x-www-form-urlencoded')).to be true
@@ -55,11 +62,6 @@ describe HttpLogger do
     expect(HttpLogger::string_content_type?('text/plain123')).to be true
     expect(HttpLogger::string_content_type?('text/xml')).to be true
     expect(HttpLogger::string_content_type?('Text/XML')).to be true
-
-    expect(logger.string_content_type?('application/')).to be false
-    expect(HttpLogger::string_content_type?('json')).to be false
-    expect(HttpLogger::string_content_type?('html')).to be false
-    expect(HttpLogger::string_content_type?('xml')).to be false
   end
 
   it 'has valid agent' do
