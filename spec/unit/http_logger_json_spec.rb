@@ -7,7 +7,7 @@ require_relative 'helper'
 describe HttpLogger do
 
   it 'formats request' do
-    json = HttpLogger.new.format(mock_request, nil, mock_response, nil, MOCK_NOW)
+    json = HttpLogger.new.format(mock_request, mock_response, nil, nil, MOCK_NOW)
     expect(parseable?(json)).to be true
     expect(json.include?("[\"agent\",\"#{HttpLogger::AGENT}\"]")).to be true
     expect(json.include?("[\"version\",\"#{HttpLogger.version_lookup}\"]")).to be true
@@ -20,7 +20,7 @@ describe HttpLogger do
   end
 
   it 'formats request with body' do
-    json = HttpLogger.new.format(mock_request_with_json, MOCK_JSON, mock_response, nil)
+    json = HttpLogger.new.format(mock_request_with_json, mock_response, nil, MOCK_JSON)
     expect(parseable?(json)).to be true
     expect(json.include?("[\"request_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(json.include?("[\"request_header.content-type\",\"Application/JSON\"]")).to be true
@@ -30,7 +30,7 @@ describe HttpLogger do
   end
 
   it 'formats request with empty body' do
-    json = HttpLogger.new.format(mock_request_with_json2, '', mock_response, nil)
+    json = HttpLogger.new.format(mock_request_with_json2, mock_response, nil, '')
     expect(parseable?(json)).to be true
     expect(json.include?("[\"request_header.a\",\"1, 2\"]")).to be true
     expect(json.include?("[\"request_header.abc\",\"123\"]")).to be true
@@ -44,7 +44,7 @@ describe HttpLogger do
   end
 
   it 'formats request with missing details' do
-    json = HttpLogger.new.format(HttpRequestImpl.new, nil, mock_response, nil)
+    json = HttpLogger.new.format(HttpRequestImpl.new, mock_response)
     expect(parseable?(json)).to be true
     expect(json.include?('request_body')).to be false
     expect(json.include?('request_header')).to be false
@@ -54,7 +54,7 @@ describe HttpLogger do
   end
 
   it 'formats response' do
-    json = HttpLogger.new.format(mock_request, nil, mock_response, nil)
+    json = HttpLogger.new.format(mock_request, mock_response)
     expect(parseable?(json)).to be true
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
     expect(json.include?('response_body')).to be false
@@ -62,7 +62,7 @@ describe HttpLogger do
   end
 
   it 'formats response with body' do
-    json = HttpLogger.new.format(mock_request, nil, mock_response_with_html, MOCK_HTML2)
+    json = HttpLogger.new.format(mock_request, mock_response_with_html, MOCK_HTML2)
     expect(parseable?(json)).to be true
     expect(json.include?("[\"response_body\",\"#{MOCK_HTML2}\"]")).to be true
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
@@ -70,7 +70,7 @@ describe HttpLogger do
   end
 
   it 'formats response with empty body' do
-    json = HttpLogger.new.format(mock_request, nil, mock_response_with_html, '')
+    json = HttpLogger.new.format(mock_request, mock_response_with_html, '')
     expect(parseable?(json)).to be true
     expect(json.include?("[\"response_code\",\"200\"]")).to be true
     expect(json.include?("[\"response_header.content-type\",\"text/html; charset=utf-8\"]")).to be true
@@ -81,7 +81,7 @@ describe HttpLogger do
     # this is the default behavior with Sinatra, https://github.com/resurfaceio/logger-ruby/issues/18
     response = HttpResponseImpl.new
     response.content_type = nil
-    json = HttpLogger.new.format(mock_request, nil, response, nil)
+    json = HttpLogger.new.format(mock_request, response)
     expect(parseable?(json)).to be true
     expect(json.include?('response_body')).to be false
     expect(json.include?('response_code')).to be false

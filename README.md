@@ -79,13 +79,13 @@ logger = HttpLogger.new(url: 'https://my-logging-url')
 
 get '/' do
   response_body = '<html>Hello World</html>'
-  logger.log request, nil, response, response_body
+  logger.log request, response, response_body
   response_body
 end
 
 post '/' do
   status 401
-  logger.log request, nil, response, nil
+  logger.log request, response
   ''
 end
 ```
@@ -189,10 +189,10 @@ response.headers['B'] = '234'
 response.status = 200
 
 # log objects defined above
-logger.log request, nil, response, nil
+logger.log request, response
 
 # log with overriden request/response bodies
-logger.log request, 'my-request-body', response, 'my-response-body'
+logger.log request, response, 'my-response-body', 'my-request-body'
 
 # submit a custom message (destination may accept or not)
 logger.submit '...'

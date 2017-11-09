@@ -12,7 +12,7 @@ class HttpLogger < BaseLogger
     super(AGENT, options)
   end
 
-  def format(request, request_body, response, response_body, now=nil)
+  def format(request, response, response_body=nil, request_body=nil, now=nil)
     message = []
     append_value message, 'request_method', request.request_method
     append_value message, 'request_url', request.url
@@ -29,8 +29,8 @@ class HttpLogger < BaseLogger
     JSON.generate message
   end
 
-  def log(request, request_body, response, response_body)
-    !enabled? || submit(format(request, request_body, response, response_body))
+  def log(request, response, response_body=nil, request_body=nil)
+    !enabled? || submit(format(request, response, response_body, request_body))
   end
 
   def self.string_content_type?(s)
