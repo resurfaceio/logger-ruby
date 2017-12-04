@@ -12,6 +12,7 @@ describe BaseLogger do
     expect(logger.nil?).to be false
     expect(logger.agent).to eql(MOCK_AGENT)
     expect(logger.enabled?).to be false
+    expect(logger.skip_compression?).to be false
   end
 
   it 'creates multiple instances' do
@@ -117,6 +118,9 @@ describe BaseLogger do
     ]
     json = JSON.generate(message)
     expect(parseable?(json)).to be true
+    expect(logger.submit(json)).to be true
+    logger.skip_compression = true
+    expect(logger.skip_compression?).to be true
     expect(logger.submit(json)).to be true
   end
 

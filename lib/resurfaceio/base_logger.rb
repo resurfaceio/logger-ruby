@@ -4,12 +4,14 @@
 require 'uri'
 require 'net/http'
 require 'net/https'
+require 'zlib'
 require 'resurfaceio/usage_loggers'
 
 class BaseLogger
 
-  def initialize(agent, options={})
+  def initialize(agent, options = {})
     @agent = agent
+    @skip_compression = false
     @version = BaseLogger.version_lookup
 
     # set options in priority order
@@ -65,6 +67,14 @@ class BaseLogger
     @enabled && UsageLoggers.enabled?
   end
 
+  def skip_compression?
+    @skip_compression
+  end
+
+  def skip_compression=(value)
+    @skip_compression = value
+  end
+
   def submit(json)
     if !enabled?
       true
@@ -77,7 +87,12 @@ class BaseLogger
         @url_connection ||= Net::HTTP.new(@url_parsed.host, @url_parsed.port)
         @url_connection.use_ssl = @url.include?('https')
         request = Net::HTTP::Post.new(@url_parsed.path)
-        request.body = json
+        if @skip_compression
+          request.body = json
+        else
+          request.add_field('Content-Encoding', 'deflated')
+          request.body = Zlib::Deflate.deflate(json)
+        end
         response = @url_connection.request(request)
         response.code.to_i == 204
       rescue SocketError
