@@ -11,6 +11,10 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
     @logger = HttpLogger.new(options)
   end
 
+  def logger
+    @logger
+  end
+
   def call(env)
     status, headers, body = @app.call(env)
     if @logger.enabled? && (status < 300 || status == 302)

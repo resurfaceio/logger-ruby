@@ -9,6 +9,10 @@ class HttpLoggerForRails
     @logger = HttpLogger.new(options)
   end
 
+  def logger
+    @logger
+  end
+
   def around(controller)
     yield
     request = controller.request
