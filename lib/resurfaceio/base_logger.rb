@@ -12,6 +12,7 @@ class BaseLogger
   def initialize(agent, options = {})
     @agent = agent
     @skip_compression = false
+    @skip_submission = false
     @version = BaseLogger.version_lookup
 
     # set options in priority order
@@ -75,8 +76,16 @@ class BaseLogger
     @skip_compression = value
   end
 
+  def skip_submission?
+    @skip_submission
+  end
+
+  def skip_submission=(value)
+    @skip_submission = value
+  end
+
   def submit(json)
-    if !enabled?
+    if @skip_submission || !enabled?
       true
     elsif @queue
       @queue << json
