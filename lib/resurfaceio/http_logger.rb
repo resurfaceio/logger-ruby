@@ -46,10 +46,10 @@ class HttpLogger < BaseLogger
       headers.each do |name, value|
         unless value.nil?
           if name =~ /^CONTENT_TYPE/
-            message << ['request_header.content-type', value]
+            message << ['request_header:content-type', value]
           end
           if name =~ /^HTTP_/
-            message << ["request_header.#{name[5..-1].downcase.tr('_', '-')}", value]
+            message << ["request_header:#{name[5..-1].downcase.tr('_', '-')}", value]
           end
         end
       end unless headers.nil?
@@ -61,13 +61,13 @@ class HttpLogger < BaseLogger
     if respond_to_env || request.respond_to?(:form_hash)
       hash = respond_to_env ? request.env['rack.request.form_hash'] : request.form_hash
       hash.each do |name, value|
-        append_value message, "request_param.#{name.downcase}", value
+        append_value message, "request_param:#{name.downcase}", value
       end unless hash.nil?
     end
     if respond_to_env || request.respond_to?(:query_hash)
       hash = respond_to_env ? request.env['rack.request.query_hash'] : request.query_hash
       hash.each do |name, value|
-        append_value message, "request_param.#{name.downcase}", value
+        append_value message, "request_param:#{name.downcase}", value
       end unless hash.nil?
     end
   end
@@ -79,12 +79,12 @@ class HttpLogger < BaseLogger
         unless value.nil?
           name = name.downcase
           found_content_type = true if name =~ /^content-type/
-          message << ["response_header.#{name}", value]
+          message << ["response_header:#{name}", value]
         end
       end unless response.headers.nil?
     end
     unless found_content_type || response.content_type.nil?
-      message << ['response_header.content-type', response.content_type]
+      message << ['response_header:content-type', response.content_type]
     end
   end
 
