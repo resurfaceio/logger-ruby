@@ -165,7 +165,7 @@ usage logging is implemented.
 require 'resurfaceio/all'
 
 # create and configure logger
-logger = HttpLogger.new(my_https_url)                            # log to remote url
+logger = HttpLogger.new(url: my_https_url)                       # log to remote url
 logger = HttpLogger.new(url: my_https_url, enabled: false)       # (initially disabled)
 logger = HttpLogger.new(queue: my_queue)                         # log to appendable list
 logger = HttpLogger.new(queue: my_queue, enabled: false)         # (initially disabled)
