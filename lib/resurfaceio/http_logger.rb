@@ -8,11 +8,11 @@ class HttpLogger < BaseLogger
 
   AGENT = 'http_logger.rb'.freeze
 
-  def initialize(options={})
+  def initialize(options = {})
     super(AGENT, options)
   end
 
-  def format(request, response, response_body=nil, request_body=nil, now=nil)
+  def format(request, response, response_body = nil, request_body = nil, now = nil)
     message = []
     append_value message, 'request_method', request.request_method
     append_value message, 'request_url', request.url
@@ -29,7 +29,7 @@ class HttpLogger < BaseLogger
     JSON.generate message
   end
 
-  def log(request, response, response_body=nil, request_body=nil)
+  def log(request, response, response_body = nil, request_body = nil)
     !enabled? || submit(format(request, response, response_body, request_body))
   end
 
@@ -88,7 +88,7 @@ class HttpLogger < BaseLogger
     end
   end
 
-  def append_value(message, key, value=nil)
+  def append_value(message, key, value = nil)
     unless key.nil?
       unless value.nil?
         case value

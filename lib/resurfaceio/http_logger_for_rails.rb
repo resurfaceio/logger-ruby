@@ -5,7 +5,7 @@ require 'resurfaceio/http_logger'
 
 class HttpLoggerForRails
 
-  def initialize(options={})
+  def initialize(options = {})
     @logger = HttpLogger.new(options)
   end
 
@@ -15,11 +15,14 @@ class HttpLoggerForRails
 
   def around(controller)
     yield
-    request = controller.request
-    response = controller.response
-    status = response.status
-    if (status < 300 || status == 302) && HttpLogger::string_content_type?(response.content_type)
-      @logger.log(request, response)
+    if @logger.enabled?
+      request = controller.request
+      response = controller.response
+      status = response.status
+      if (status < 300 || status == 302) && HttpLogger::string_content_type?(response.content_type)
+        message = @logger.format(request, response)
+        @logger.submit(message)
+      end
     end
   end
 

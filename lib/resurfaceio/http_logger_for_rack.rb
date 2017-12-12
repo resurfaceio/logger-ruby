@@ -6,7 +6,7 @@ require 'resurfaceio/http_logger'
 
 class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
 
-  def initialize(app, options={})
+  def initialize(app, options = {})
     @app = app
     @logger = HttpLogger.new(options)
   end
@@ -21,7 +21,8 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
       response = Rack::Response.new(body, status, headers)
       if HttpLogger::string_content_type?(response.content_type)
         request = Rack::Request.new(env)
-        @logger.log(request, response)
+        message = @logger.format(request, response)
+        @logger.submit(message)
       end
     end
     [status, headers, body]
