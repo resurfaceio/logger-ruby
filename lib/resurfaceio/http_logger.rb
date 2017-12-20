@@ -9,6 +9,10 @@ class HttpLogger < BaseLogger
 
   AGENT = 'http_logger.rb'.freeze
 
+  def self.string_content_type?(s)
+    !s.nil? && !(s =~ /^(text\/(html|plain|xml))|(application\/(json|soap|xml|x-www-form-urlencoded))/i).nil?
+  end
+
   def initialize(options = {})
     super(AGENT, options)
   end
@@ -23,10 +27,6 @@ class HttpLogger < BaseLogger
 
   def log(request, response, response_body = nil, request_body = nil)
     !enabled? || submit(format(request, response, response_body, request_body))
-  end
-
-  def self.string_content_type?(s)
-    !s.nil? && !(s =~ /^(text\/(html|plain|xml))|(application\/(json|soap|xml|x-www-form-urlencoded))/i).nil?
   end
 
 end
