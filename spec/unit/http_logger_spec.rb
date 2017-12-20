@@ -10,6 +10,7 @@ describe HttpLogger do
     logger = HttpLogger.new
     expect(logger.nil?).to be false
     expect(logger.agent).to eql(HttpLogger::AGENT)
+    expect(logger.enableable?).to be false
     expect(logger.enabled?).to be false
   end
 
@@ -21,12 +22,15 @@ describe HttpLogger do
     logger3 = HttpLogger.new(url: DEMO_URL)
 
     expect(logger1.agent).to eql(HttpLogger::AGENT)
+    expect(logger1.enableable?).to be true
     expect(logger1.enabled?).to be true
     expect(logger1.url).to eql(url1)
     expect(logger2.agent).to eql(HttpLogger::AGENT)
+    expect(logger2.enableable?).to be true
     expect(logger2.enabled?).to be true
     expect(logger2.url).to eql(url2)
     expect(logger3.agent).to eql(HttpLogger::AGENT)
+    expect(logger3.enableable?).to be true
     expect(logger3.enabled?).to be true
     expect(logger3.url).to eql(DEMO_URL)
 
@@ -79,6 +83,7 @@ describe HttpLogger do
   it 'skips logging when disabled' do
     MOCK_URLS_DENIED.each do |url|
       logger = HttpLogger.new(url: url).disable
+      expect(logger.enableable?).to be true
       expect(logger.enabled?).to be false
       expect(logger.log(nil, nil, nil, nil)).to be true # would fail if enabled
     end

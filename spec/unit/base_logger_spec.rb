@@ -11,6 +11,7 @@ describe BaseLogger do
     logger = BaseLogger.new(MOCK_AGENT)
     expect(logger.nil?).to be false
     expect(logger.agent).to eql(MOCK_AGENT)
+    expect(logger.enableable?).to be false
     expect(logger.enabled?).to be false
   end
 
@@ -25,12 +26,15 @@ describe BaseLogger do
     logger3 = BaseLogger.new(agent3, url: DEMO_URL)
 
     expect(logger1.agent).to eql(agent1)
+    expect(logger1.enableable?).to be true
     expect(logger1.enabled?).to be true
     expect(logger1.url).to eql(url1)
     expect(logger2.agent).to eql(agent2)
+    expect(logger2.enableable?).to be true
     expect(logger2.enabled?).to be true
     expect(logger2.url).to eql(url2)
     expect(logger3.agent).to eql(agent3)
+    expect(logger3.enableable?).to be true
     expect(logger3.enabled?).to be true
     expect(logger3.url).to eql(DEMO_URL)
 
@@ -60,12 +64,14 @@ describe BaseLogger do
 
   it 'performs enabling when expected' do
     logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL, enabled: false)
+    expect(logger.enableable?).to be true
     expect(logger.enabled?).to be false
     expect(logger.url).to eql(DEMO_URL)
     logger.enable
     expect(logger.enabled?).to be true
 
     logger = BaseLogger.new(MOCK_AGENT, queue: [], enabled: false)
+    expect(logger.enableable?).to be true
     expect(logger.enabled?).to be false
     expect(logger.url).to be nil
     logger.enable.disable.enable
@@ -75,6 +81,7 @@ describe BaseLogger do
   it 'skips enabling for invalid urls' do
     MOCK_URLS_INVALID.each do |url|
       logger = BaseLogger.new(MOCK_AGENT, url: url)
+      expect(logger.enableable?).to be false
       expect(logger.enabled?).to be false
       expect(logger.url).to be nil
       logger.enable
@@ -84,6 +91,7 @@ describe BaseLogger do
 
   it 'skips enabling for missing url' do
     logger = BaseLogger.new(MOCK_AGENT)
+    expect(logger.enableable?).to be false
     expect(logger.enabled?).to be false
     expect(logger.url).to be nil
     logger.enable
@@ -92,6 +100,7 @@ describe BaseLogger do
 
   it 'skips enabling for nil url' do
     logger = BaseLogger.new(MOCK_AGENT, url: nil)
+    expect(logger.enableable?).to be false
     expect(logger.enabled?).to be false
     expect(logger.url).to be nil
     logger.enable
@@ -101,6 +110,7 @@ describe BaseLogger do
   it 'skips logging when disabled' do
     MOCK_URLS_DENIED.each do |url|
       logger = BaseLogger.new(MOCK_AGENT, url: url).disable
+      expect(logger.enableable?).to be true
       expect(logger.enabled?).to be false
       expect(logger.submit(nil)).to be true # would fail if enabled
     end
@@ -140,6 +150,7 @@ describe BaseLogger do
   it 'submits to denied url and fails' do
     MOCK_URLS_DENIED.each do |url|
       logger = BaseLogger.new(MOCK_AGENT, url: url)
+      expect(logger.enableable?).to be true
       expect(logger.enabled?).to be true
       expect(logger.submit('{}')).to be false
     end
@@ -149,6 +160,7 @@ describe BaseLogger do
     queue = []
     logger = BaseLogger.new(MOCK_AGENT, queue: queue, url: MOCK_URLS_DENIED[0])
     expect(logger.url).to be nil
+    expect(logger.enableable?).to be true
     expect(logger.enabled?).to be true
     expect(queue.length).to be 0
     expect(logger.submit('{}')).to be true

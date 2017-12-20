@@ -48,6 +48,8 @@ class BaseLogger
         @enabled = false
       end
     end
+
+    @enableable = !@queue.nil? || !@url.nil?
   end
 
   def agent
@@ -60,8 +62,12 @@ class BaseLogger
   end
 
   def enable
-    @enabled = true unless @queue.nil? && @url.nil?
+    @enabled = true if @enableable
     self
+  end
+
+  def enableable?
+    @enableable
   end
 
   def enabled?
