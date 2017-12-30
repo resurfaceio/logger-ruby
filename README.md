@@ -1,5 +1,5 @@
 # resurfaceio-logger-ruby
-&copy; 2016-2017 Resurface Labs LLC
+&copy; 2016-2018 Resurface Labs LLC
 
 This gem makes it easy to log actual usage of Ruby web/json apps.
 

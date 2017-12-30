@@ -1,5 +1,5 @@
 # coding: utf-8
-# © 2016-2017 Resurface Labs LLC
+# © 2016-2018 Resurface Labs LLC
 
 Gem::Specification.new do |spec|
   spec.name = 'resurfaceio-logger'
