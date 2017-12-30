@@ -6,10 +6,6 @@ require_relative 'helper'
 
 describe HttpRequestImpl do
 
-  it 'uses module namespace' do
-    expect(HttpRequestImpl.class.equal?(Resurfaceio::HttpRequestImpl.class)).to be true
-  end
-
   it 'uses content_type' do
     r = HttpRequestImpl.new
     expect(r.content_type).to be nil

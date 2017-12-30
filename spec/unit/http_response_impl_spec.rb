@@ -6,10 +6,6 @@ require_relative 'helper'
 
 describe HttpResponseImpl do
 
-  it 'uses module namespace' do
-    expect(HttpResponseImpl.class.equal?(Resurfaceio::HttpResponseImpl.class)).to be true
-  end
-
   it 'uses body' do
     val = 'Conway Stern'
     r = HttpResponseImpl.new

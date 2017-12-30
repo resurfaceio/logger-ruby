@@ -6,10 +6,6 @@ require_relative 'helper'
 
 describe HttpLoggerForRails do
 
-  it 'uses module namespace' do
-    expect(HttpLoggerForRails.class.equal?(Resurfaceio::HttpLoggerForRails.class)).to be true
-  end
-
   it 'logs html response' do
     queue = []
     HttpLoggerForRails.new(queue: queue).around(MockRailsHtmlController.new) {}

@@ -169,11 +169,6 @@ describe BaseLogger do
     expect(queue.length).to eql(2)
   end
 
-  it 'uses module namespace' do
-    expect(BaseLogger.class.equal?(Resurfaceio::BaseLogger.class)).to be true
-    expect(Resurfaceio::BaseLogger.version_lookup).to eql(BaseLogger.version_lookup)
-  end
-
   it 'uses skip options' do
     logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL)
     expect(logger.skip_compression?).to be false

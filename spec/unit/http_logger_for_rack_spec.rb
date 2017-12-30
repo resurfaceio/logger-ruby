@@ -6,10 +6,6 @@ require_relative 'helper'
 
 describe HttpLoggerForRack do
 
-  it 'uses module namespace' do
-    expect(HttpLoggerForRack.class.equal?(Resurfaceio::HttpLoggerForRack.class)).to be true
-  end
-
   it 'logs html' do
     queue = []
     HttpLoggerForRack.new(MockHtmlApp.new, queue: queue).call(MOCK_ENV)
