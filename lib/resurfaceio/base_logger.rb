@@ -91,7 +91,7 @@ class BaseLogger
   end
 
   def submit(json)
-    if @skip_submission || !enabled?
+    if json.nil? || @skip_submission || !enabled?
       true
     elsif @queue
       @queue << json
