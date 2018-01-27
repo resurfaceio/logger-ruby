@@ -36,7 +36,7 @@ class HttpRules
     elsif (m = r.match(REGEX_REMOVE_UNLESS))
       HttpRule.new('remove_unless', parse_regex(r, m[1]), parse_regex(r, m[2]))
     elsif (m = r.match(REGEX_REPLACE))
-      HttpRule.new('replace', parse_regex(r, m[1]), parse_regex(r, m[2]), parse_string(r, m[3]))
+      HttpRule.new('replace', parse_regex(r, m[1]), parse_regex_find(r, m[2]), parse_string(r, m[3]))
     elsif (m = r.match(REGEX_SAMPLE))
       m1 = m[1].to_i
       raise RuntimeError.new("Invalid sample percent: #{m1}") if m1 < 1 || m1 > 99
@@ -59,6 +59,18 @@ class HttpRules
   protected
 
   def self.parse_regex(r, regex)
+    str = parse_string(r, regex)
+    raise RuntimeError.new("Invalid regex (#{regex}) in rule: #{r}") if '*' == str || '+' == str || '?' == str
+    str = "^#{str}" unless str.start_with?('^')
+    str = "#{str}$" unless str.end_with?('$')
+    begin
+      return Regexp.compile(str)
+    rescue RegexpError
+      raise RuntimeError.new("Invalid regex (#{regex}) in rule: #{r}")
+    end
+  end
+
+  def self.parse_regex_find(r, regex)
     begin
       return Regexp.compile(parse_string(r, regex))
     rescue RegexpError

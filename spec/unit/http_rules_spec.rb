@@ -130,14 +130,17 @@ describe HttpRules do
     parse_fail("/.*/ copy_session_field /(.*))/")
 
     # with valid regexes
-    parse_ok("copy_session_field !.*!", "copy_session_field", nil, ".*", nil)
-    parse_ok("copy_session_field /.*/", "copy_session_field", nil, ".*", nil)
+    parse_ok("copy_session_field !.*!", "copy_session_field", nil, "^.*$", nil)
+    parse_ok("copy_session_field /.*/", "copy_session_field", nil, "^.*$", nil)
+    parse_ok("copy_session_field /^.*/", "copy_session_field", nil, "^.*$", nil)
+    parse_ok("copy_session_field /.*$/", "copy_session_field", nil, "^.*$", nil)
+    parse_ok("copy_session_field /^.*$/", "copy_session_field", nil, "^.*$", nil)
 
     # with valid regexes and escape sequences
-    parse_ok("copy_session_field !A\\!|B!", "copy_session_field", nil, "A!|B", nil)
-    parse_ok("copy_session_field |A\\|B|", "copy_session_field", nil, "A|B", nil)
-    parse_ok("copy_session_field |A\\|B\\|C|", "copy_session_field", nil, "A|B|C", nil)
-    parse_ok("copy_session_field /A\\/B\\/C/", "copy_session_field", nil, "A/B/C", nil)
+    parse_ok("copy_session_field !A\\!|B!", "copy_session_field", nil, "^A!|B$", nil)
+    parse_ok("copy_session_field |A\\|B|", "copy_session_field", nil, "^A|B$", nil)
+    parse_ok("copy_session_field |A\\|B\\|C|", "copy_session_field", nil, "^A|B|C$", nil)
+    parse_ok("copy_session_field /A\\/B\\/C/", "copy_session_field", nil, "^A/B/C$", nil)
   end
 
   it 'parses remove rules' do
@@ -159,19 +162,19 @@ describe HttpRules do
 
     # with valid regexes
     parse_ok("%request_header:cookie|response_header:set-cookie% remove",
-             "remove", "request_header:cookie|response_header:set-cookie", nil, nil)
+             "remove", "^request_header:cookie|response_header:set-cookie$", nil, nil)
     parse_ok("/request_header:cookie|response_header:set-cookie/ remove",
-             "remove", "request_header:cookie|response_header:set-cookie", nil, nil)
+             "remove", "^request_header:cookie|response_header:set-cookie$", nil, nil)
 
     # with valid regexes and escape sequences
     parse_ok("!request_header\\!|response_header:set-cookie! remove",
-             "remove", "request_header!|response_header:set-cookie", nil, nil)
+             "remove", "^request_header!|response_header:set-cookie$", nil, nil)
     parse_ok("|request_header:cookie\\|response_header:set-cookie| remove",
-             "remove", "request_header:cookie|response_header:set-cookie", nil, nil)
+             "remove", "^request_header:cookie|response_header:set-cookie$", nil, nil)
     parse_ok("|request_header:cookie\\|response_header:set-cookie\\|boo| remove",
-             "remove", "request_header:cookie|response_header:set-cookie|boo", nil, nil)
+             "remove", "^request_header:cookie|response_header:set-cookie|boo$", nil, nil)
     parse_ok("/request_header:cookie\\/response_header:set-cookie\\/boo/ remove",
-             "remove", "request_header:cookie/response_header:set-cookie/boo", nil, nil)
+             "remove", "^request_header:cookie/response_header:set-cookie/boo$", nil, nil)
   end
 
   it 'parses remove_if rules' do
@@ -209,19 +212,19 @@ describe HttpRules do
 
     # with valid regexes
     parse_ok("%response_body% remove_if %<!--SKIP_BODY_LOGGING-->%",
-             "remove_if", "response_body", "<!--SKIP_BODY_LOGGING-->", nil)
+             "remove_if", "^response_body$", "^<!--SKIP_BODY_LOGGING-->$", nil)
     parse_ok("/response_body/ remove_if /<!--SKIP_BODY_LOGGING-->/",
-             "remove_if", "response_body", "<!--SKIP_BODY_LOGGING-->", nil)
+             "remove_if", "^response_body$", "^<!--SKIP_BODY_LOGGING-->$", nil)
 
     # with valid regexes and escape sequences
     parse_ok("!request_body|response_body! remove_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->|",
-             "remove_if", "request_body|response_body", "<!--IGNORE_LOGGING-->|<!-SKIP-->", nil)
+             "remove_if", "^request_body|response_body$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->$", nil)
     parse_ok("|request_body\\|response_body| remove_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->|",
-             "remove_if", "request_body|response_body", "<!--IGNORE_LOGGING-->|<!-SKIP-->", nil)
+             "remove_if", "^request_body|response_body$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->$", nil)
     parse_ok("|request_body\\|response_body\\|boo| remove_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->\\|asdf|",
-             "remove_if", "request_body|response_body|boo", "<!--IGNORE_LOGGING-->|<!-SKIP-->|asdf", nil)
+             "remove_if", "^request_body|response_body|boo$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->|asdf$", nil)
     parse_ok("/request_body\\/response_body\\/boo/ remove_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->\\|asdf|",
-             "remove_if", "request_body/response_body/boo", "<!--IGNORE_LOGGING-->|<!-SKIP-->|asdf", nil)
+             "remove_if", "^request_body/response_body/boo$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->|asdf$", nil)
   end
 
   it 'parses remove_unless rules' do
@@ -259,19 +262,19 @@ describe HttpRules do
 
     # with valid regexes
     parse_ok("%response_body% remove_unless %<!--PERFORM_BODY_LOGGING-->%",
-             "remove_unless", "response_body", "<!--PERFORM_BODY_LOGGING-->", nil)
+             "remove_unless", "^response_body$", "^<!--PERFORM_BODY_LOGGING-->$", nil)
     parse_ok("/response_body/ remove_unless /<!--PERFORM_BODY_LOGGING-->/",
-             "remove_unless", "response_body", "<!--PERFORM_BODY_LOGGING-->", nil)
+             "remove_unless", "^response_body$", "^<!--PERFORM_BODY_LOGGING-->$", nil)
 
     # with valid regexes and escape sequences
     parse_ok("!request_body|response_body! remove_unless |<!--PERFORM_LOGGING-->\\|<!-SKIP-->|",
-             "remove_unless", "request_body|response_body", "<!--PERFORM_LOGGING-->|<!-SKIP-->", nil)
+             "remove_unless", "^request_body|response_body$", "^<!--PERFORM_LOGGING-->|<!-SKIP-->$", nil)
     parse_ok("|request_body\\|response_body| remove_unless |<!--PERFORM_LOGGING-->\\|<!-SKIP-->|",
-             "remove_unless", "request_body|response_body", "<!--PERFORM_LOGGING-->|<!-SKIP-->", nil)
+             "remove_unless", "^request_body|response_body$", "^<!--PERFORM_LOGGING-->|<!-SKIP-->$", nil)
     parse_ok("|request_body\\|response_body\\|boo| remove_unless |<!--PERFORM_LOGGING-->\\|<!-SKIP-->\\|skipit|",
-             "remove_unless", "request_body|response_body|boo", "<!--PERFORM_LOGGING-->|<!-SKIP-->|skipit", nil)
+             "remove_unless", "^request_body|response_body|boo$", "^<!--PERFORM_LOGGING-->|<!-SKIP-->|skipit$", nil)
     parse_ok("/request_body\\/response_body\\/boo/ remove_unless |<!--PERFORM_LOGGING-->\\|<!-SKIP-->\\|skipit|",
-             "remove_unless", "request_body/response_body/boo", "<!--PERFORM_LOGGING-->|<!-SKIP-->|skipit", nil)
+             "remove_unless", "^request_body/response_body/boo$", "^<!--PERFORM_LOGGING-->|<!-SKIP-->|skipit$", nil)
   end
 
   it 'parses replace rules' do
@@ -316,24 +319,24 @@ describe HttpRules do
     parse_fail("/.*/ replace /1/, /")
 
     # with valid regexes
-    parse_ok("%response_body% replace %kurt%, %vagner%", "replace", "response_body", "kurt", "vagner")
-    parse_ok("/response_body/ replace /kurt/, /vagner/", "replace", "response_body", "kurt", "vagner")
+    parse_ok("%response_body% replace %kurt%, %vagner%", "replace", "^response_body$", "kurt", "vagner")
+    parse_ok("/response_body/ replace /kurt/, /vagner/", "replace", "^response_body$", "kurt", "vagner")
     parse_ok("%response_body|.+_header:.+% replace %kurt%, %vagner%",
-             "replace", "response_body|.+_header:.+", "kurt", "vagner")
+             "replace", "^response_body|.+_header:.+$", "kurt", "vagner")
     parse_ok("|response_body\\|.+_header:.+| replace |kurt|, |vagner\\|frazier|",
-             "replace", "response_body|.+_header:.+", "kurt", "vagner|frazier")
+             "replace", "^response_body|.+_header:.+$", "kurt", "vagner|frazier")
 
     # with valid regexes and escape sequences
     parse_ok("|response_body\\|.+_header:.+| replace |kurt|, |vagner|",
-             "replace", "response_body|.+_header:.+", "kurt", "vagner")
+             "replace", "^response_body|.+_header:.+$", "kurt", "vagner")
     parse_ok("|response_body\\|.+_header:.+\\|boo| replace |kurt|, |vagner|",
-             "replace", "response_body|.+_header:.+|boo", "kurt", "vagner")
+             "replace", "^response_body|.+_header:.+|boo$", "kurt", "vagner")
     parse_ok("|response_body| replace |kurt\\|bruce|, |vagner|",
-             "replace", "response_body", "kurt|bruce", "vagner")
+             "replace", "^response_body$", "kurt|bruce", "vagner")
     parse_ok("|response_body| replace |kurt\\|bruce\\|kevin|, |vagner|",
-             "replace", "response_body", "kurt|bruce|kevin", "vagner")
+             "replace", "^response_body$", "kurt|bruce|kevin", "vagner")
     parse_ok("|response_body| replace /kurt\\/bruce\\/kevin/, |vagner|",
-             "replace", "response_body", "kurt/bruce/kevin", "vagner")
+             "replace", "^response_body$", "kurt/bruce/kevin", "vagner")
   end
 
   it 'parses sample rules' do
@@ -382,15 +385,15 @@ describe HttpRules do
     parse_fail("%.*% stop /1/, /2/, /3/ # blah")
 
     # with valid regexes
-    parse_ok("%request_header:skip_usage_logging% stop", "stop", "request_header:skip_usage_logging", nil, nil)
-    parse_ok("|request_header:skip_usage_logging| stop", "stop", "request_header:skip_usage_logging", nil, nil)
-    parse_ok("/request_header:skip_usage_logging/ stop", "stop", "request_header:skip_usage_logging", nil, nil)
+    parse_ok("%request_header:skip_usage_logging% stop", "stop", "^request_header:skip_usage_logging$", nil, nil)
+    parse_ok("|request_header:skip_usage_logging| stop", "stop", "^request_header:skip_usage_logging$", nil, nil)
+    parse_ok("/request_header:skip_usage_logging/ stop", "stop", "^request_header:skip_usage_logging$", nil, nil)
 
     # with valid regexes and escape sequences
-    parse_ok("!request_header\\!! stop", "stop", "request_header!", nil, nil)
-    parse_ok("|request_header\\|response_header| stop", "stop", "request_header|response_header", nil, nil)
-    parse_ok("|request_header\\|response_header\\|boo| stop", "stop", "request_header|response_header|boo", nil, nil)
-    parse_ok("/request_header\\/response_header\\/boo/ stop", "stop", "request_header/response_header/boo", nil, nil)
+    parse_ok("!request_header\\!! stop", "stop", "^request_header!$", nil, nil)
+    parse_ok("|request_header\\|response_header| stop", "stop", "^request_header|response_header$", nil, nil)
+    parse_ok("|request_header\\|response_header\\|boo| stop", "stop", "^request_header|response_header|boo$", nil, nil)
+    parse_ok("/request_header\\/response_header\\/boo/ stop", "stop", "^request_header/response_header/boo$", nil, nil)
   end
 
   it 'parses stop_if rules' do
@@ -427,18 +430,18 @@ describe HttpRules do
     parse_fail("/.*/ stop_if /(.*))/")
 
     # with valid regexes
-    parse_ok("%response_body% stop_if %<!--IGNORE_LOGGING-->%", "stop_if", "response_body", "<!--IGNORE_LOGGING-->", nil)
-    parse_ok("/response_body/ stop_if /<!--IGNORE_LOGGING-->/", "stop_if", "response_body", "<!--IGNORE_LOGGING-->", nil)
+    parse_ok("%response_body% stop_if %<!--IGNORE_LOGGING-->%", "stop_if", "^response_body$", "^<!--IGNORE_LOGGING-->$", nil)
+    parse_ok("/response_body/ stop_if /<!--IGNORE_LOGGING-->/", "stop_if", "^response_body$", "^<!--IGNORE_LOGGING-->$", nil)
 
     # with valid regexes and escape sequences
     parse_ok("!request_body|response_body! stop_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->|",
-             "stop_if", "request_body|response_body", "<!--IGNORE_LOGGING-->|<!-SKIP-->", nil)
+             "stop_if", "^request_body|response_body$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->$", nil)
     parse_ok("!request_body|response_body|boo\\!! stop_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->|",
-             "stop_if", "request_body|response_body|boo!", "<!--IGNORE_LOGGING-->|<!-SKIP-->", nil)
+             "stop_if", "^request_body|response_body|boo!$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->$", nil)
     parse_ok("|request_body\\|response_body| stop_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->|",
-             "stop_if", "request_body|response_body", "<!--IGNORE_LOGGING-->|<!-SKIP-->", nil)
+             "stop_if", "^request_body|response_body$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->$", nil)
     parse_ok("/request_body\\/response_body/ stop_if |<!--IGNORE_LOGGING-->\\|<!-SKIP-->\\|pipe\\||",
-             "stop_if", "request_body/response_body", "<!--IGNORE_LOGGING-->|<!-SKIP-->|pipe|", nil)
+             "stop_if", "^request_body/response_body$", "^<!--IGNORE_LOGGING-->|<!-SKIP-->|pipe|$", nil)
   end
 
   it 'parses stop_unless rules' do
@@ -475,20 +478,20 @@ describe HttpRules do
     parse_fail("/.*/ stop_unless /(.*))/")
 
     # with valid regexes
-    parse_ok("%response_body% stop_unless %<!--DO_LOGGING-->%", "stop_unless", "response_body", "<!--DO_LOGGING-->", nil)
-    parse_ok("/response_body/ stop_unless /<!--DO_LOGGING-->/", "stop_unless", "response_body", "<!--DO_LOGGING-->", nil)
+    parse_ok("%response_body% stop_unless %<!--DO_LOGGING-->%", "stop_unless", "^response_body$", "^<!--DO_LOGGING-->$", nil)
+    parse_ok("/response_body/ stop_unless /<!--DO_LOGGING-->/", "stop_unless", "^response_body$", "^<!--DO_LOGGING-->$", nil)
 
     # with valid regexes and escape sequences
     parse_ok("!request_body|response_body! stop_unless |<!--DO_LOGGING-->\\|<!-NOSKIP-->|",
-             "stop_unless", "request_body|response_body", "<!--DO_LOGGING-->|<!-NOSKIP-->", nil)
+             "stop_unless", "^request_body|response_body$", "^<!--DO_LOGGING-->|<!-NOSKIP-->$", nil)
     parse_ok("!request_body|response_body|boo\\!! stop_unless |<!--DO_LOGGING-->\\|<!-NOSKIP-->|",
-             "stop_unless", "request_body|response_body|boo!", "<!--DO_LOGGING-->|<!-NOSKIP-->", nil)
+             "stop_unless", "^request_body|response_body|boo!$", "^<!--DO_LOGGING-->|<!-NOSKIP-->$", nil)
     parse_ok("|request_body\\|response_body| stop_unless |<!--DO_LOGGING-->\\|<!-NOSKIP-->|",
-             "stop_unless", "request_body|response_body", "<!--DO_LOGGING-->|<!-NOSKIP-->", nil)
+             "stop_unless", "^request_body|response_body$", "^<!--DO_LOGGING-->|<!-NOSKIP-->$", nil)
     parse_ok("|request_body\\|response_body| stop_unless |<!--DO_LOGGING-->\\|<!-NOSKIP-->\\|pipe\\||",
-             "stop_unless", "request_body|response_body", "<!--DO_LOGGING-->|<!-NOSKIP-->|pipe|", nil)
+             "stop_unless", "^request_body|response_body$", "^<!--DO_LOGGING-->|<!-NOSKIP-->|pipe|$", nil)
     parse_ok("/request_body\\/response_body/ stop_unless |<!--DO_LOGGING-->\\|<!-NOSKIP-->\\|pipe\\||",
-             "stop_unless", "request_body/response_body", "<!--DO_LOGGING-->|<!-NOSKIP-->|pipe|", nil)
+             "stop_unless", "^request_body/response_body$", "^<!--DO_LOGGING-->|<!-NOSKIP-->|pipe|$", nil)
   end
 
   it 'raises expected errors' do
