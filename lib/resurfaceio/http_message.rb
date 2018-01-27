@@ -3,7 +3,7 @@
 
 require 'json'
 
-class HttpMessageImpl
+class HttpMessage
 
   def self.build(request, response, response_body = nil, request_body = nil)
     message = []

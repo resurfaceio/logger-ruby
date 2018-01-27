@@ -107,6 +107,15 @@ describe HttpRequestImpl do
     expect(r.request_method).to eql(val)
   end
 
+  it 'uses session' do
+    val = 'asdf1234'
+    r = HttpRequestImpl.new
+    expect(r.session).not_to be nil
+    expect(r.session[:session_id]).to be nil
+    r.session[:session_id] = val
+    expect(r.session[:session_id]).to eql(val)
+  end
+
   it 'uses url' do
     val = 'http://goofball.com'
     r = HttpRequestImpl.new

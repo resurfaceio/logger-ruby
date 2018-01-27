@@ -15,6 +15,17 @@ MOCK_HTML = '<html>Hello World!</html>'.freeze
 
 MOCK_HTML2 = '<html>Hola Mundo!</html>'.freeze
 
+MOCK_HTML3 = '<html>1 World 2 World Red World Blue World!</html>'.freeze
+
+MOCK_HTML4 = "<html>1 World\n2 World\nRed World \nBlue World!\n</html>".freeze
+
+MOCK_HTML5 = %q(<html>
+<input type="hidden">SECRET1</input>
+<input class='foo' type="hidden">
+SECRET2
+</input>
+</html>).freeze
+
 MOCK_JSON = "{ \"hello\" : \"world\" }".freeze
 
 MOCK_JSON_ESCAPED = "{ \\\"hello\\\" : \\\"world\\\" }".freeze

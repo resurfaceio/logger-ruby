@@ -7,6 +7,7 @@ class HttpRequestImpl
     @form_hash = Hash.new
     @headers = Hash.new
     @query_hash = Hash.new
+    @session = Hash.new
   end
 
   def add_header(key, value)
@@ -38,6 +39,10 @@ class HttpRequestImpl
 
   def query_hash
     @query_hash
+  end
+
+  def session
+    @session
   end
 
   attr_accessor :request_method

@@ -12,7 +12,7 @@ describe HttpLoggerForRack do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("[\"request_header:cookie\",\"#{MOCK_COOKIE}\"]")).to be true
+    expect(json.include?("[\"request_header:cookie\",")).to be false
     expect(json.include?("[\"request_header:host\",\"localhost:3000\"]")).to be true
     expect(json.include?("[\"request_header:user-agent\",\"#{MOCK_USER_AGENT}\"]")).to be true
     expect(json.include?("[\"request_method\",\"GET\"]")).to be true
@@ -32,7 +32,7 @@ describe HttpLoggerForRack do
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
-    expect(json.include?("[\"request_header:cookie\",\"#{MOCK_COOKIE}\"]")).to be true
+    expect(json.include?("[\"request_header:cookie\",")).to be false
     expect(json.include?("[\"request_header:host\",\"localhost:3000\"]")).to be true
     expect(json.include?("[\"request_header:user-agent\",\"#{MOCK_USER_AGENT}\"]")).to be true
     expect(json.include?("[\"request_method\",\"GET\"]")).to be true
@@ -52,7 +52,7 @@ describe HttpLoggerForRack do
     json = queue[0]
     expect(parseable?(json)).to be true
     expect(json.include?("[\"request_header:content-type\",\"application/json\"]")).to be true
-    expect(json.include?("[\"request_header:cookie\",\"#{MOCK_COOKIE}\"]")).to be true
+    expect(json.include?("[\"request_header:cookie\",")).to be false
     expect(json.include?("[\"request_header:host\",\"localhost:3000\"]")).to be true
     expect(json.include?("[\"request_header:user-agent\",\"#{MOCK_USER_AGENT}\"]")).to be true
     expect(json.include?("[\"request_method\",\"POST\"]")).to be true
