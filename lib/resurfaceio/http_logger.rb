@@ -41,12 +41,16 @@ class HttpLogger < BaseLogger
     @rules_copy_session_field = prs.select {|r| 'copy_session_field' == r.verb}
     @rules_remove = prs.select {|r| 'remove' == r.verb}
     @rules_remove_if = prs.select {|r| 'remove_if' == r.verb}
+    @rules_remove_if_found = prs.select {|r| 'remove_if_found' == r.verb}
     @rules_remove_unless = prs.select {|r| 'remove_unless' == r.verb}
+    @rules_remove_unless_found = prs.select {|r| 'remove_unless_found' == r.verb}
     @rules_replace = prs.select {|r| 'replace' == r.verb}
     @rules_sample = prs.select {|r| 'sample' == r.verb}
     @rules_stop = prs.select {|r| 'stop' == r.verb}
     @rules_stop_if = prs.select {|r| 'stop_if' == r.verb}
+    @rules_stop_if_found = prs.select {|r| 'stop_if_found' == r.verb}
     @rules_stop_unless = prs.select {|r| 'stop_unless' == r.verb}
+    @rules_stop_unless_found = prs.select {|r| 'stop_unless_found' == r.verb}
     @skip_compression = prs.select {|r| 'skip_compression' == r.verb}.length > 0
     @skip_submission = prs.select {|r| 'skip_submission' == r.verb}.length > 0
 
@@ -81,7 +85,11 @@ class HttpLogger < BaseLogger
 
     # quit early based on stop rules if configured
     @rules_stop.each {|r| details.each {|d| return nil if r.scope.match(d[0])}}
+    @rules_stop_if_found.each {|r| details.each {|d| return nil if r.scope.match(d[0]) && r.param1.match(d[1])}}
     @rules_stop_if.each {|r| details.each {|d| return nil if r.scope.match(d[0]) && r.param1.match(d[1])}}
+    passed = 0
+    @rules_stop_unless_found.each {|r| details.each {|d| passed += 1 if r.scope.match(d[0]) && r.param1.match(d[1])}}
+    return nil if passed != @rules_stop_unless_found.length
     passed = 0
     @rules_stop_unless.each {|r| details.each {|d| passed += 1 if r.scope.match(d[0]) && r.param1.match(d[1])}}
     return nil if passed != @rules_stop_unless.length
@@ -91,6 +99,8 @@ class HttpLogger < BaseLogger
 
     # winnow sensitive details based on remove rules if configured
     @rules_remove.each {|r| details.delete_if {|d| r.scope.match(d[0])}}
+    @rules_remove_unless_found.each {|r| details.delete_if {|d| r.scope.match(d[0]) && !r.param1.match(d[1])}}
+    @rules_remove_if_found.each {|r| details.delete_if {|d| r.scope.match(d[0]) && r.param1.match(d[1])}}
     @rules_remove_unless.each {|r| details.delete_if {|d| r.scope.match(d[0]) && !r.param1.match(d[1])}}
     @rules_remove_if.each {|r| details.delete_if {|d| r.scope.match(d[0]) && r.param1.match(d[1])}}
     return nil if details.empty?

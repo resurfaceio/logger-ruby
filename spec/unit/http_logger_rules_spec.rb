@@ -261,6 +261,53 @@ describe HttpLogger do
     expect(queue[0].include?("[\"response_body\",")).to be false
   end
 
+  it 'uses remove_if_found rules' do
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! remove_if_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!.*! remove_if_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 0
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!request_body! remove_if_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! remove_if_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if_found !World!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if_found !.*World.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if_found !blahblahblah!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be true
+  end
+
   it 'uses remove_unless rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! remove_unless !.*!')
@@ -302,6 +349,53 @@ describe HttpLogger do
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "!response_body! remove_unless !.*!\n!request_body! remove_unless !.*!")
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be true
+  end
+
+  it 'uses remove_unless_found rules' do
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! remove_unless_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!.*! remove_unless_found !blahblahblah!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 0
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!request_body! remove_unless_found !blahblahblah!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! remove_unless_found !blahblahblah!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless_found !World!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless_found !.*World.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless_found !.*!')
     logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
     expect(queue.length).to be 1
     expect(queue[0].include?("[\"request_body\",")).to be true
@@ -479,6 +573,33 @@ describe HttpLogger do
     expect(queue.length).to be 1
   end
 
+  it 'uses stop_if_found rules' do
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop_if_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
+    expect(queue.length).to be 1
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 0
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !World!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 0
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !.*World.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 0
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !blahblahblah!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
+    expect(queue.length).to be 1
+  end
+
   it 'uses stop_unless rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop_unless !.*!')
@@ -497,6 +618,33 @@ describe HttpLogger do
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless !.*blahblahblah.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
+    expect(queue.length).to be 0
+  end
+
+  it 'uses stop_unless_found rules' do
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop_unless_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
+    expect(queue.length).to be 0
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
+    expect(queue.length).to be 1
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !World!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
+    expect(queue.length).to be 1
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !.*World.*!')
+    logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
+    expect(queue.length).to be 1
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !blahblahblah!')
     logger.log(mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
     expect(queue.length).to be 0
   end

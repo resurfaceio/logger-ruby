@@ -33,8 +33,12 @@ class HttpRules
       HttpRule.new('remove', parse_regex(r, m[1]))
     elsif (m = r.match(REGEX_REMOVE_IF))
       HttpRule.new('remove_if', parse_regex(r, m[1]), parse_regex(r, m[2]))
+    elsif (m = r.match(REGEX_REMOVE_IF_FOUND))
+      HttpRule.new('remove_if_found', parse_regex(r, m[1]), parse_regex_find(r, m[2]))
     elsif (m = r.match(REGEX_REMOVE_UNLESS))
       HttpRule.new('remove_unless', parse_regex(r, m[1]), parse_regex(r, m[2]))
+    elsif (m = r.match(REGEX_REMOVE_UNLESS_FOUND))
+      HttpRule.new('remove_unless_found', parse_regex(r, m[1]), parse_regex_find(r, m[2]))
     elsif (m = r.match(REGEX_REPLACE))
       HttpRule.new('replace', parse_regex(r, m[1]), parse_regex_find(r, m[2]), parse_string(r, m[3]))
     elsif (m = r.match(REGEX_SAMPLE))
@@ -49,8 +53,12 @@ class HttpRules
       HttpRule.new('stop', parse_regex(r, m[1]))
     elsif (m = r.match(REGEX_STOP_IF))
       HttpRule.new('stop_if', parse_regex(r, m[1]), parse_regex(r, m[2]))
+    elsif (m = r.match(REGEX_STOP_IF_FOUND))
+      HttpRule.new('stop_if_found', parse_regex(r, m[1]), parse_regex_find(r, m[2]))
     elsif (m = r.match(REGEX_STOP_UNLESS))
       HttpRule.new('stop_unless', parse_regex(r, m[1]), parse_regex(r, m[2]))
+    elsif (m = r.match(REGEX_STOP_UNLESS_FOUND))
+      HttpRule.new('stop_unless_found', parse_regex(r, m[1]), parse_regex_find(r, m[2]))
     else
       raise RuntimeError.new("Invalid rule: #{r}")
     end
@@ -94,13 +102,17 @@ class HttpRules
   REGEX_COPY_SESSION_FIELD = /^\s*copy_session_field\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
   REGEX_REMOVE = /^\s*([~!%|\/].+[~!%|\/])\s*remove\s*(#.*)?$/.freeze
   REGEX_REMOVE_IF = /^\s*([~!%|\/].+[~!%|\/])\s*remove_if\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
+  REGEX_REMOVE_IF_FOUND = /^\s*([~!%|\/].+[~!%|\/])\s*remove_if_found\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
   REGEX_REMOVE_UNLESS = /^\s*([~!%|\/].+[~!%|\/])\s*remove_unless\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
+  REGEX_REMOVE_UNLESS_FOUND = /^\s*([~!%|\/].+[~!%|\/])\s*remove_unless_found\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
   REGEX_REPLACE = /^\s*([~!%|\/].+[~!%|\/])\s*replace[\s]+([~!%|\/].+[~!%|\/]),[\s]+([~!%|\/].*[~!%|\/])\s*(#.*)?$/.freeze
   REGEX_SAMPLE = /^\s*sample\s+(\d+)\s*(#.*)?$/.freeze
   REGEX_SKIP_COMPRESSION = /^\s*skip_compression\s*(#.*)?$/.freeze
   REGEX_SKIP_SUBMISSION = /^\s*skip_submission\s*(#.*)?$/.freeze
   REGEX_STOP = /^\s*([~!%|\/].+[~!%|\/])\s*stop\s*(#.*)?$/.freeze
   REGEX_STOP_IF = /^\s*([~!%|\/].+[~!%|\/])\s*stop_if\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
+  REGEX_STOP_IF_FOUND = /^\s*([~!%|\/].+[~!%|\/])\s*stop_if_found\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
   REGEX_STOP_UNLESS = /^\s*([~!%|\/].+[~!%|\/])\s*stop_unless\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
+  REGEX_STOP_UNLESS_FOUND = /^\s*([~!%|\/].+[~!%|\/])\s*stop_unless_found\s+([~!%|\/].+[~!%|\/])\s*(#.*)?$/.freeze
 
 end
