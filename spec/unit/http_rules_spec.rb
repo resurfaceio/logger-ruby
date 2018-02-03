@@ -5,6 +5,60 @@ require 'resurfaceio/all'
 
 describe HttpRules do
 
+  it 'includes standard rules' do
+    rules = HttpRules.parse('include standard')
+    expect(rules.length).to eql(3)
+    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
+    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(2)
+
+    rules = HttpRules.parse("include standard\n")
+    expect(rules.length).to eql(3)
+    rules = HttpRules.parse("include standard\nsample 50")
+    expect(rules.length).to eql(4)
+    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
+
+    rules = HttpRules.parse(" include standard\ninclude standard\n")
+    expect(rules.length).to eql(6)
+    rules = HttpRules.parse("include standard\nsample 50\ninclude standard")
+    expect(rules.length).to eql(7)
+  end
+
+  it 'includes debug rules' do
+    rules = HttpRules.parse('include debug')
+    expect(rules.length).to eql(2)
+    expect(rules.select {|r| 'allow_http_url' == r.verb}.length).to eql(1)
+    expect(rules.select {|r| 'copy_session_field' == r.verb}.length).to eql(1)
+
+    rules = HttpRules.parse("include debug\n")
+    expect(rules.length).to eql(2)
+    rules = HttpRules.parse("include debug\nsample 50")
+    expect(rules.length).to eql(3)
+    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
+
+    rules = HttpRules.parse(" include debug\ninclude debug\n")
+    expect(rules.length).to eql(4)
+    rules = HttpRules.parse("include debug\nsample 50\ninclude debug")
+    expect(rules.length).to eql(5)
+  end
+
+  it 'includes weblog rules' do
+    rules = HttpRules.parse('include weblog')
+    expect(rules.length).to eql(2)
+    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
+    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(1)
+
+    rules = HttpRules.parse("include weblog\n")
+    expect(rules.length).to eql(2)
+    rules = HttpRules.parse("include weblog\nsample 50")
+    expect(rules.length).to eql(3)
+    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
+
+    rules = HttpRules.parse(" include weblog\ninclude weblog\n")
+    expect(rules.length).to eql(4)
+    rules = HttpRules.parse("include weblog\nsample 50\ninclude weblog")
+    expect(rules.length).to eql(5)
+  end
+
   def parse_fail(line)
     begin
       HttpRules.parse_rule(line)
@@ -731,35 +785,6 @@ describe HttpRules do
     rescue RuntimeError => e
       expect(e.message).to eql("Unescaped separator (!) in rule: !!! stop")
     end
-  end
-
-  it 'uses basic rules' do
-    rules = HttpRules.parse(HttpRules.basic_rules)
-    expect(rules.length).to eql(3)
-    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
-    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(2)
-
-    rules = HttpRules.parse('include basic')
-    expect(rules.length).to eql(3)
-    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
-    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(2)
-
-    rules = HttpRules.parse("include basic\n")
-    expect(rules.length).to eql(3)
-    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
-    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(2)
-
-    rules = HttpRules.parse("include basic\nsample 50")
-    expect(rules.length).to eql(4)
-    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
-
-    rules = HttpRules.parse(" include basic\ninclude basic\n")
-    expect(rules.length).to eql(6)
-    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(2)
-    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(4)
-
-    rules = HttpRules.parse("include basic\nsample 50\ninclude basic")
-    expect(rules.length).to eql(7)
   end
 
 end

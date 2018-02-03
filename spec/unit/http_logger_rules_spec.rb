@@ -6,18 +6,9 @@ require_relative 'helper'
 
 describe HttpLogger do
 
-  it 'includes predefined rules' do
-    expect(HttpLogger.default_rules).to eql(HttpRules.basic_rules)
+  it 'manages default rules' do
+    expect(HttpLogger.default_rules).to eql(HttpRules.standard_rules)
     begin
-      HttpLogger.default_rules = "include basic"
-      rules = HttpRules.parse(HttpLogger.default_rules)
-      expect(rules.length).to eql(HttpRules.parse(HttpRules.basic_rules).length)
-
-      HttpLogger.default_rules = "include basic\nsample 50"
-      rules = HttpRules.parse(HttpLogger.default_rules)
-      expect(rules.length).to eql(HttpRules.parse(HttpRules.basic_rules).length + 1)
-      expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
-
       HttpLogger.default_rules = ''
       expect(HttpLogger.default_rules).to eql('')
       expect(HttpRules.parse(HttpLogger.default_rules).length).to eql(0)
@@ -36,15 +27,15 @@ describe HttpLogger do
       expect(rules.length).to eql(1)
       expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
     ensure
-      HttpLogger.default_rules = HttpRules.basic_rules
+      HttpLogger.default_rules = HttpRules.standard_rules
     end
   end
 
   it 'overrides default rules' do
-    expect(HttpLogger.default_rules).to eql(HttpRules.basic_rules)
+    expect(HttpLogger.default_rules).to eql(HttpRules.standard_rules)
     begin
       logger = HttpLogger.new(url: 'https://mysite.com')
-      expect(logger.rules).to eql(HttpRules.basic_rules)
+      expect(logger.rules).to eql(HttpRules.standard_rules)
       logger = HttpLogger.new(url: 'https://mysite.com', rules: '# 123')
       expect(logger.rules).to eql('# 123')
 
@@ -66,7 +57,7 @@ describe HttpLogger do
       logger = HttpLogger.new(url: 'https://mysite.com', rules: "include default\nskip_submission\n")
       expect(logger.rules).to eql("sample 42\n\nskip_submission\n")
     ensure
-      HttpLogger.default_rules = HttpRules.basic_rules
+      HttpLogger.default_rules = HttpRules.standard_rules
     end
   end
 
