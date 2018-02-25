@@ -11,7 +11,7 @@ class HttpLogger < BaseLogger
 
   AGENT = 'http_logger.rb'.freeze
 
-  @@default_rules = HttpRules.standard_rules
+  @@default_rules = HttpRules.strict_rules
 
   def self.default_rules
     @@default_rules

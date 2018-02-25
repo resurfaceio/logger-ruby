@@ -8,7 +8,7 @@ describe HttpLoggerForRack do
 
   it 'logs html' do
     queue = []
-    HttpLoggerForRack.new(MockHtmlApp.new, queue: queue).call(MOCK_ENV)
+    HttpLoggerForRack.new(MockHtmlApp.new, queue: queue, rules: 'include standard').call(MOCK_ENV)
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
@@ -28,7 +28,7 @@ describe HttpLoggerForRack do
 
   it 'logs json' do
     queue = []
-    HttpLoggerForRack.new(MockJsonApp.new, queue: queue).call(MOCK_ENV)
+    HttpLoggerForRack.new(MockJsonApp.new, queue: queue, rules: 'include standard').call(MOCK_ENV)
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
@@ -47,7 +47,7 @@ describe HttpLoggerForRack do
 
   it 'logs json post' do
     queue = []
-    HttpLoggerForRack.new(MockJsonApp.new, queue: queue).call(MOCK_ENV_JSON)
+    HttpLoggerForRack.new(MockJsonApp.new, queue: queue, rules: 'include standard').call(MOCK_ENV_JSON)
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true

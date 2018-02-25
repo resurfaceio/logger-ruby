@@ -3,6 +3,10 @@
 
 class HttpRules
 
+  def self.debug_rules
+    "allow_http_url\ncopy_session_field /.*/\n"
+  end
+
   def self.standard_rules
     %q(/request_header:cookie|response_header:set-cookie/ remove
 /(request|response)_body|request_param/ replace /[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)/, /x@y.com/
@@ -10,11 +14,7 @@ class HttpRules
 )
   end
 
-  def self.debug_rules
-    "allow_http_url\ncopy_session_field /.*/\n"
-  end
-
-  def self.weblog_rules
+  def self.strict_rules
     %q(/request_url/ replace /([^\?;]+).*/, !\\\\1!
 /request_body|response_body|request_param:.*|request_header:(?!user-agent).*|response_header:(?!(content-length)|(content-type)).*/ remove
 )
@@ -25,7 +25,7 @@ class HttpRules
     unless rules.nil?
       rules = rules.gsub(/^\s*include debug\s*$/, debug_rules)
       rules = rules.gsub(/^\s*include standard\s*$/, standard_rules)
-      rules = rules.gsub(/^\s*include weblog\s*$/, weblog_rules)
+      rules = rules.gsub(/^\s*include strict\s*$/, strict_rules)
       rules.each_line do |rule|
         parsed = parse_rule(rule)
         result << parsed unless parsed.nil?

@@ -8,7 +8,7 @@ describe HttpLoggerForRails do
 
   it 'logs html response' do
     queue = []
-    HttpLoggerForRails.new(queue: queue).around(MockRailsHtmlController.new) {}
+    HttpLoggerForRails.new(queue: queue, rules: 'include standard').around(MockRailsHtmlController.new) {}
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true
@@ -24,7 +24,7 @@ describe HttpLoggerForRails do
 
   it 'logs html response to json request' do
     queue = []
-    HttpLoggerForRails.new(queue: queue).around(MockRailsJsonController.new) {}
+    HttpLoggerForRails.new(queue: queue, rules: 'include standard').around(MockRailsJsonController.new) {}
     expect(queue.length).to eql(1)
     json = queue[0]
     expect(parseable?(json)).to be true

@@ -5,24 +5,6 @@ require 'resurfaceio/all'
 
 describe HttpRules do
 
-  it 'includes standard rules' do
-    rules = HttpRules.parse('include standard')
-    expect(rules.length).to eql(3)
-    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
-    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(2)
-
-    rules = HttpRules.parse("include standard\n")
-    expect(rules.length).to eql(3)
-    rules = HttpRules.parse("include standard\nsample 50")
-    expect(rules.length).to eql(4)
-    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
-
-    rules = HttpRules.parse(" include standard\ninclude standard\n")
-    expect(rules.length).to eql(6)
-    rules = HttpRules.parse("include standard\nsample 50\ninclude standard")
-    expect(rules.length).to eql(7)
-  end
-
   it 'includes debug rules' do
     rules = HttpRules.parse('include debug')
     expect(rules.length).to eql(2)
@@ -41,21 +23,39 @@ describe HttpRules do
     expect(rules.length).to eql(5)
   end
 
-  it 'includes weblog rules' do
-    rules = HttpRules.parse('include weblog')
+  it 'includes standard rules' do
+    rules = HttpRules.parse('include standard')
+    expect(rules.length).to eql(3)
+    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
+    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(2)
+
+    rules = HttpRules.parse("include standard\n")
+    expect(rules.length).to eql(3)
+    rules = HttpRules.parse("include standard\nsample 50")
+    expect(rules.length).to eql(4)
+    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
+
+    rules = HttpRules.parse(" include standard\ninclude standard\n")
+    expect(rules.length).to eql(6)
+    rules = HttpRules.parse("include standard\nsample 50\ninclude standard")
+    expect(rules.length).to eql(7)
+  end
+
+  it 'includes strict rules' do
+    rules = HttpRules.parse('include strict')
     expect(rules.length).to eql(2)
     expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
     expect(rules.select {|r| 'replace' == r.verb}.length).to eql(1)
 
-    rules = HttpRules.parse("include weblog\n")
+    rules = HttpRules.parse("include strict\n")
     expect(rules.length).to eql(2)
-    rules = HttpRules.parse("include weblog\nsample 50")
+    rules = HttpRules.parse("include strict\nsample 50")
     expect(rules.length).to eql(3)
     expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
 
-    rules = HttpRules.parse(" include weblog\ninclude weblog\n")
+    rules = HttpRules.parse(" include strict\ninclude strict\n")
     expect(rules.length).to eql(4)
-    rules = HttpRules.parse("include weblog\nsample 50\ninclude weblog")
+    rules = HttpRules.parse("include strict\nsample 50\ninclude strict")
     expect(rules.length).to eql(5)
   end
 

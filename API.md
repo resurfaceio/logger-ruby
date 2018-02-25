@@ -29,7 +29,7 @@ logger = HttpLogger.new
 logger = HttpLogger.new(url: 'https://...')
 
 # with specific url and rules
-logger = HttpLogger.new(url: 'https://...', rules: 'include standard')
+logger = HttpLogger.new(url: 'https://...', rules: 'include strict')
 ```
 
 <a name="logging_http"/>
@@ -76,18 +76,18 @@ logger.log request, response
 
 ## Setting Default Rules
 
-If no rules are provided when creating a logger, the default value of `include standard` will be applied. A different default
-value can be specified as shown below.
+If no <a href="https://resurface.io/rules.html">rules</a> are provided when creating a logger, the default value of 
+`include strict` will be applied. A different default value can be specified as shown below.
 
 ```ruby
-HttpLogger.default_rules = 'include weblog'
+HttpLogger.default_rules = 'include debug'
 ```
 
 When specifying multiple default rules, put each on a separate line. This is most easily done with a non-interpolated string.
 
 ```ruby
 HttpLogger.default_rules = %q(
-  include weblog
+  include debug
   sample 10
 )
 ```

@@ -48,7 +48,7 @@ class MyController < ApplicationController
   
   around_action HttpLoggerForRails.new(
     url: 'https://...', 
-    rules: 'include standard'
+    rules: 'include strict'
   )
 
 end
@@ -66,7 +66,7 @@ require 'resurfaceio/all'
 
 use HttpLoggerForRack,
   url: 'https://...',
-  rules: 'include standard'
+  rules: 'include strict'
 
 run <...>
 ```
@@ -83,7 +83,7 @@ require 'resurfaceio/all'
 
 logger = HttpLogger.new(
   url: 'https://...', 
-  rules: 'include standard'
+  rules: 'include strict'
 )
 
 get '/' do
@@ -113,7 +113,7 @@ the options described above, but also offers the greatest flexibility and contro
 ## Protecting User Privacy
 
 Loggers always have an active set of <a href="https://resurface.io/rules.html">rules</a> that control what data is logged
-and how sensitive data is masked. All of the examples above use a standard predefined set of rules (`include standard`),
+and how sensitive data is masked. All of the examples above apply a predefined set of rules (`include strict`),
 but logging rules are easily customized to meet the needs of any application.
 
 <a href="https://resurface.io/rules.html">Logging rules documentation</a>
