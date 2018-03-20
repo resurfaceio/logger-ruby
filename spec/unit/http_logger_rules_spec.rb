@@ -42,6 +42,8 @@ describe HttpLogger do
       HttpLogger.default_rules = ''
       logger = HttpLogger.new(url: 'https://mysite.com')
       expect(logger.rules).to eql('')
+      logger = HttpLogger.new(url: 'https://mysite.com', rules: '   ')
+      expect(logger.rules).to eql('')
       logger = HttpLogger.new(url: 'https://mysite.com', rules: ' sample 42')
       expect(logger.rules).to eql(' sample 42')
 
@@ -53,6 +55,8 @@ describe HttpLogger do
 
       HttpLogger.default_rules = "sample 42\n"
       logger = HttpLogger.new(url: 'https://mysite.com')
+      expect(logger.rules).to eql("sample 42\n")
+      logger = HttpLogger.new(url: 'https://mysite.com', rules: '   ')
       expect(logger.rules).to eql("sample 42\n")
       logger = HttpLogger.new(url: 'https://mysite.com', rules: "include default\nskip_submission\n")
       expect(logger.rules).to eql("sample 42\n\nskip_submission\n")

@@ -31,6 +31,7 @@ class HttpLogger < BaseLogger
     # read rules from param or defaults
     if options.respond_to?(:has_key?) && options.has_key?(:rules)
       @rules = options[:rules].gsub(/^\s*include default\s*$/, @@default_rules)
+      @rules = @@default_rules unless @rules.strip.length > 0
     else
       @rules = @@default_rules
     end
