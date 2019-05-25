@@ -1,5 +1,5 @@
 # coding: utf-8
-# © 2016-2018 Resurface Labs LLC
+# © 2016-2019 Resurface Labs Inc.
 
 require 'resurfaceio/http_logger'
 
