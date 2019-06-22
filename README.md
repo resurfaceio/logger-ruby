@@ -29,7 +29,7 @@ Requires Ruby 2.x. No other dependencies to conflict with your app.
 
 Add this line to your Gemfile:
 
-```ruby
+```
 gem 'resurfaceio-logger'
 ```
 
