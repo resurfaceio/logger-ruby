@@ -13,6 +13,8 @@ describe BaseLogger do
     expect(logger.agent).to eql(MOCK_AGENT)
     expect(logger.enableable?).to be false
     expect(logger.enabled?).to be false
+    expect(logger.queue).to be nil
+    expect(logger.url).to be nil
   end
 
   it 'creates multiple instances' do
@@ -128,9 +130,6 @@ describe BaseLogger do
     json = JSON.generate(message)
     expect(parseable?(json)).to be true
     expect(logger.submit(json)).to be true
-    logger.skip_compression = true
-    expect(logger.skip_compression?).to be true
-    expect(logger.submit(json)).to be true
   end
 
   it 'submits to demo url via http' do
@@ -141,6 +140,22 @@ describe BaseLogger do
         ['version', logger.version],
         ['now', MOCK_NOW],
         ['protocol', 'http']
+    ]
+    json = JSON.generate(message)
+    expect(parseable?(json)).to be true
+    expect(logger.submit(json)).to be true
+  end
+
+  it 'submits to demo url without compression' do
+    logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL)
+    logger.skip_compression = true
+    expect(logger.skip_compression?).to be true
+    message = [
+        ['agent', logger.agent],
+        ['version', logger.version],
+        ['now', MOCK_NOW],
+        ['protocol', 'https'],
+        ['skip_compression', 'true']
     ]
     json = JSON.generate(message)
     expect(parseable?(json)).to be true
@@ -159,6 +174,7 @@ describe BaseLogger do
   it 'submits to queue' do
     queue = []
     logger = BaseLogger.new(MOCK_AGENT, queue: queue, url: MOCK_URLS_DENIED[0])
+    expect(logger.queue).to be(queue)
     expect(logger.url).to be nil
     expect(logger.enableable?).to be true
     expect(logger.enabled?).to be true

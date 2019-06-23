@@ -74,6 +74,10 @@ class BaseLogger
     @enabled && UsageLoggers.enabled?
   end
 
+  def queue
+    @queue
+  end
+
   def skip_compression?
     @skip_compression
   end
