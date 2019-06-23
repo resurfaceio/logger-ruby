@@ -185,6 +185,32 @@ describe BaseLogger do
     expect(queue.length).to eql(2)
   end
 
+  it 'silently ignores unexpected option types' do
+    logger = BaseLogger.new(MOCK_AGENT, [])
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
+
+    logger = BaseLogger.new(MOCK_AGENT, url: true)
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
+
+    logger = BaseLogger.new(MOCK_AGENT, url: [])
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
+
+    logger = BaseLogger.new(MOCK_AGENT, url: 23)
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
+  end
+
   it 'uses skip options' do
     logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL)
     expect(logger.skip_compression?).to be false
