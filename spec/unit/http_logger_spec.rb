@@ -12,6 +12,8 @@ describe HttpLogger do
     expect(logger.agent).to eql(HttpLogger::AGENT)
     expect(logger.enableable?).to be false
     expect(logger.enabled?).to be false
+    expect(logger.queue).to be nil
+    expect(logger.url).to be nil
   end
 
   it 'creates multiple instances' do
@@ -78,6 +80,32 @@ describe HttpLogger do
     expect(agent.include?('\"')).to be false
     expect(agent.include?('\'')).to be false
     expect(HttpLogger.new.agent).to eql(agent)
+  end
+
+  it 'silently ignores unexpected option types' do
+    logger = HttpLogger.new([])
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
+
+    logger = HttpLogger.new(url: true)
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
+
+    logger = HttpLogger.new(url: [])
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
+
+    logger = HttpLogger.new(url: 23)
+    expect(logger.enableable?).to be false
+    expect(logger.enabled?).to be false
+    expect(logger.queue).to be(nil)
+    expect(logger.url).to be nil
   end
 
   it 'skips logging when disabled' do
