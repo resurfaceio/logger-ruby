@@ -100,11 +100,11 @@ testing vs production), then set the `USAGE_LOGGERS_URL` environment variable. T
 is specified when creating a logger.
 
 ```ruby
-# from command line
-export USAGE_LOGGERS_URL="https://..."
-
 # in config.ru
 ENV['USAGE_LOGGERS_URL']='https://...'
+
+# from command line
+export USAGE_LOGGERS_URL="https://..."
 
 # for Heroku app
 heroku config:set USAGE_LOGGERS_URL=https://...
@@ -130,11 +130,11 @@ loggers will never become enabled, even if `UsageLoggers.enable` is called by th
 done by automated tests to disable all logging even if other control logic exists. 
 
 ```ruby
-# from command line
-export USAGE_LOGGERS_DISABLE="true"
-
 # in config.ru
 ENV['USAGE_LOGGERS_DISABLE']='true'
+
+# from command line
+export USAGE_LOGGERS_DISABLE="true"
 
 # for Heroku app
 heroku config:set USAGE_LOGGERS_DISABLE=true
