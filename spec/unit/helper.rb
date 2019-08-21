@@ -167,7 +167,7 @@ def mock_response_with_html
 end
 
 def parseable?(msg)
-  return false if msg.nil? || msg.chars.first != '[' || msg.chars.last != ']'
+  return false if msg.nil? || msg.chars.first != '[' || msg.chars.last != ']' || msg.include?('[]') || msg.include?(',,')
   begin
     JSON.parse(msg)
     return true

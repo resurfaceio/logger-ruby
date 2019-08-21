@@ -8,7 +8,6 @@ require_relative 'helper'
 describe JSON do
 
   it 'detects good json' do
-    expect(parseable?('[]')).to be true
     expect(parseable?('[ ]')).to be true
     expect(parseable?("[\n]")).to be true
     expect(parseable?("[\n\t\n]")).to be true
@@ -24,6 +23,9 @@ describe JSON do
     expect(parseable?('1234')).to be false
     expect(parseable?('archer')).to be false
     expect(parseable?('\"sterling archer\"')).to be false
+    expect(parseable?(',,')).to be false
+    expect(parseable?('[]')).to be false
+    expect(parseable?('[,,]')).to be false
     expect(parseable?("[\"]")).to be false
     expect(parseable?('[:,]')).to be false
     expect(parseable?(',')).to be false
