@@ -166,10 +166,10 @@ def mock_response_with_html
   r
 end
 
-def parseable?(json)
-  return false if json.nil? || json.chars.first != '[' || json.chars.last != ']'
+def parseable?(msg)
+  return false if msg.nil? || msg.chars.first != '[' || msg.chars.last != ']'
   begin
-    JSON.parse(json)
+    JSON.parse(msg)
     return true
   rescue JSON::ParserError => e
     return false

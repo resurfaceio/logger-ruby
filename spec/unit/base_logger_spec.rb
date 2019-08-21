@@ -127,9 +127,9 @@ describe BaseLogger do
         ['now', MOCK_NOW],
         ['protocol', 'https']
     ]
-    json = JSON.generate(message)
-    expect(parseable?(json)).to be true
-    expect(logger.submit(json)).to be true
+    msg = JSON.generate(message)
+    expect(parseable?(msg)).to be true
+    expect(logger.submit(msg)).to be true
   end
 
   it 'submits to demo url via http' do
@@ -141,9 +141,9 @@ describe BaseLogger do
         ['now', MOCK_NOW],
         ['protocol', 'http']
     ]
-    json = JSON.generate(message)
-    expect(parseable?(json)).to be true
-    expect(logger.submit(json)).to be true
+    msg = JSON.generate(message)
+    expect(parseable?(msg)).to be true
+    expect(logger.submit(msg)).to be true
   end
 
   it 'submits to demo url without compression' do
@@ -157,9 +157,9 @@ describe BaseLogger do
         ['protocol', 'https'],
         ['skip_compression', 'true']
     ]
-    json = JSON.generate(message)
-    expect(parseable?(json)).to be true
-    expect(logger.submit(json)).to be true
+    msg = JSON.generate(message)
+    expect(parseable?(msg)).to be true
+    expect(logger.submit(msg)).to be true
   end
 
   it 'submits to denied url and fails' do

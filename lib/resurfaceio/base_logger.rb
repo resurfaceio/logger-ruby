@@ -94,11 +94,11 @@ class BaseLogger
     @skip_submission = value
   end
 
-  def submit(json)
-    if json.nil? || @skip_submission || !enabled?
+  def submit(msg)
+    if msg.nil? || @skip_submission || !enabled?
       true
     elsif @queue
-      @queue << json
+      @queue << msg
       true
     else
       begin
@@ -107,10 +107,10 @@ class BaseLogger
         @url_connection.use_ssl = @url.include?('https')
         request = Net::HTTP::Post.new(@url_parsed.path)
         if @skip_compression
-          request.body = json
+          request.body = msg
         else
           request.add_field('Content-Encoding', 'deflated')
-          request.body = Zlib::Deflate.deflate(json)
+          request.body = Zlib::Deflate.deflate(msg)
         end
         response = @url_connection.request(request)
         response.code.to_i == 204
