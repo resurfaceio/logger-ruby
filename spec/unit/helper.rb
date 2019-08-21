@@ -160,10 +160,9 @@ def mock_response
 end
 
 def mock_response_with_html
-  r = HttpResponseImpl.new
+  r = mock_response
   r.content_type = 'text/html; charset=utf-8'
   r.raw_body = MOCK_HTML
-  r.status = 200
   r
 end
 

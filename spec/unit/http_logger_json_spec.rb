@@ -22,13 +22,14 @@ describe HttpLogger do
   end
 
   it 'formats request with body' do
-    json = logger.format(mock_request_with_json, mock_response, nil, MOCK_JSON)
+    json = logger.format(mock_request_with_json, mock_response, nil, MOCK_HTML)
     expect(parseable?(json)).to be true
-    expect(json.include?("[\"request_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
+    expect(json.include?("[\"request_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(json.include?("[\"request_header:content-type\",\"Application/JSON\"]")).to be true
     expect(json.include?("[\"request_method\",\"POST\"]")).to be true
     expect(json.include?("[\"request_param:message\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(json.include?("[\"request_url\",\"#{MOCK_URL}?#{MOCK_QUERY_STRING}\"]")).to be true
+    expect(json.include?('request_param:foo')).to be false
   end
 
   it 'formats request with empty body' do
@@ -43,6 +44,7 @@ describe HttpLogger do
     expect(json.include?("[\"request_param:message\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(json.include?("[\"request_url\",\"#{MOCK_URL}?#{MOCK_QUERY_STRING}\"]")).to be true
     expect(json.include?('request_body')).to be false
+    expect(json.include?('request_param:foo')).to be false
   end
 
   it 'formats request with missing details' do
