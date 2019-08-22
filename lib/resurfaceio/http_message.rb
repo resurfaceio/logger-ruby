@@ -7,9 +7,9 @@ class HttpMessage
 
   def self.build(request, response, response_body = nil, request_body = nil)
     message = []
-    append_value message, 'request_method', request.request_method
-    append_value message, 'request_url', request.url
-    append_value message, 'response_code', response.status
+    append_value message, 'request_method', request.request_method unless request.request_method.nil?
+    append_value message, 'request_url', request.url unless request.url.nil?
+    append_value message, 'response_code', response.status unless response.status.nil?
     append_request_headers message, request
     append_request_params message, request
     append_response_headers message, response
