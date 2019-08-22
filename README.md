@@ -1,6 +1,8 @@
 # resurfaceio-logger-ruby
 Logging usage of Ruby-based services, with user privacy by design.
 
+Visit <a href="https://resurface.io">resurface.io</a> for general information on usage logging.
+
 [![Gem Version](https://badge.fury.io/rb/resurfaceio-logger.svg)](https://badge.fury.io/rb/resurfaceio-logger)
 
 ## Contents
