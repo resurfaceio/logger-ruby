@@ -79,12 +79,12 @@ class HttpRules
   protected
 
   def self.parse_regex(r, regex)
-    str = parse_string(r, regex)
-    raise RuntimeError.new("Invalid regex (#{regex}) in rule: #{r}") if '*' == str || '+' == str || '?' == str
-    str = "^#{str}" unless str.start_with?('^')
-    str = "#{str}$" unless str.end_with?('$')
+    s = parse_string(r, regex)
+    raise RuntimeError.new("Invalid regex (#{regex}) in rule: #{r}") if '*' == s || '+' == s || '?' == s
+    s = "^#{s}" unless s.start_with?('^')
+    s = "#{s}$" unless s.end_with?('$')
     begin
-      return Regexp.compile(str)
+      return Regexp.compile(s)
     rescue RegexpError
       raise RuntimeError.new("Invalid regex (#{regex}) in rule: #{r}")
     end
@@ -98,15 +98,15 @@ class HttpRules
     end
   end
 
-  def self.parse_string(r, str)
+  def self.parse_string(r, expr)
     %w(~ ! % | /).each do |sep|
-      if (m = str.match(/^[#{sep}](.*)[#{sep}]$/))
+      if (m = expr.match(/^[#{sep}](.*)[#{sep}]$/))
         m1 = m[1]
         raise RuntimeError.new("Unescaped separator (#{sep}) in rule: #{r}") if m1.match(/^[#{sep}].*|.*[^\\][#{sep}].*/)
         return m1.gsub("\\#{sep}", sep)
       end
     end
-    raise RuntimeError.new("Invalid expression (#{str}) in rule: #{r}")
+    raise RuntimeError.new("Invalid expression (#{expr}) in rule: #{r}")
   end
 
   REGEX_ALLOW_HTTP_URL = /^\s*allow_http_url\s*(#.*)?$/.freeze
