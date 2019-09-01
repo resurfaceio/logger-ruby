@@ -3,16 +3,16 @@
 
 class UsageLoggers
 
-  @@DISABLED = 'true'.eql?(ENV['USAGE_LOGGERS_DISABLE'])
+  @@BRICKED = 'true'.eql?(ENV['USAGE_LOGGERS_DISABLE'])
 
-  @@disabled = @@DISABLED
+  @@disabled = @@BRICKED
 
   def self.disable
     @@disabled = true
   end
 
   def self.enable
-    @@disabled = false unless @@DISABLED
+    @@disabled = false unless @@BRICKED
   end
 
   def self.enabled?
