@@ -57,13 +57,14 @@ request = HttpRequestImpl.new
 request.body = 'some json'
 request.content_type = 'application/json'
 request.headers['A'] = '123'
-request.request_method = 'GET'
-request.url = 'http://google.com'
+request.request_method = 'POST'
+request.form_hash['B'] = '234'  # POST param
+request.url = 'http://resurface.io'
 
 # define response to log
 response = HttpResponseImpl.new
 response.body = 'some html'
-response.content_type = 'text/html'
+response.content_type = 'text/html; charset=utf-8'
 response.headers['B'] = '234'
 response.status = 200
 
