@@ -66,7 +66,7 @@ describe BaseLogger do
     expect(version).not_to be nil
     expect(version).to be_kind_of String
     expect(version.length).to be > 0
-    expect(version).to start_with('1.9.')
+    expect(version).to start_with('1.10.')
     expect(version.include?('\\')).to be false
     expect(version.include?('\"')).to be false
     expect(version.include?('\'')).to be false
