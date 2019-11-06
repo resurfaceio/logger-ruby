@@ -12,6 +12,7 @@ describe HttpLogger do
     msg = logger.format(mock_request, mock_response, nil, nil, MOCK_NOW)
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"agent\",\"#{HttpLogger::AGENT}\"]")).to be true
+    expect(msg.include?("[\"host\",\"#{HttpLogger.host_lookup}\"]")).to be true
     expect(msg.include?("[\"version\",\"#{HttpLogger.version_lookup}\"]")).to be true
     expect(msg.include?("[\"now\",\"#{MOCK_NOW}\"]")).to be true
     expect(msg.include?("[\"request_method\",\"GET\"]")).to be true

@@ -52,6 +52,15 @@ describe BaseLogger do
     expect(logger3.enabled?).to be true
   end
 
+  it 'has valid host' do
+    host = BaseLogger.host_lookup
+    expect(host).not_to be nil
+    expect(host).to be_kind_of String
+    expect(host.length).to be > 0
+    expect(host).not_to eql('unknown')
+    expect(host).to eql(BaseLogger.new(MOCK_AGENT).host)
+  end
+
   it 'has valid version' do
     version = BaseLogger.version_lookup
     expect(version).not_to be nil

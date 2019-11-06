@@ -4,6 +4,7 @@
 require 'uri'
 require 'net/http'
 require 'net/https'
+require 'socket'
 require 'zlib'
 require 'resurfaceio/usage_loggers'
 
@@ -11,6 +12,7 @@ class BaseLogger
 
   def initialize(agent, options = {})
     @agent = agent
+    @host = BaseLogger.host_lookup
     @skip_compression = false
     @skip_submission = false
     @version = BaseLogger.version_lookup
@@ -74,6 +76,10 @@ class BaseLogger
     @enabled && UsageLoggers.enabled?
   end
 
+  def host
+    @host
+  end
+
   def queue
     @queue
   end
@@ -127,6 +133,16 @@ class BaseLogger
 
   def version
     @version
+  end
+
+  def self.host_lookup
+    dyno = ENV['DYNO']
+    return dyno unless dyno.nil?
+    begin
+      Socket.gethostname
+    rescue
+      'unknown'
+    end
   end
 
   def self.version_lookup

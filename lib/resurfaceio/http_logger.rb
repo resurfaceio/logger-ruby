@@ -116,6 +116,7 @@ class HttpLogger < BaseLogger
     # finish message
     details << ['now', now.nil? ? (Time.now.to_f * 1000).floor.to_s : now]
     details << ['agent', @agent]
+    details << ['host', @host]
     details << ['version', @version]
     JSON.generate details
   end
