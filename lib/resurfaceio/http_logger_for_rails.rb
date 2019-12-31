@@ -2,6 +2,7 @@
 # © 2016-2019 Resurface Labs Inc.
 
 require 'resurfaceio/http_logger'
+require 'resurfaceio/http_message'
 
 class HttpLoggerForRails
 
@@ -20,7 +21,7 @@ class HttpLoggerForRails
       response = controller.response
       status = response.status
       if (status < 300 || status == 302) && HttpLogger::string_content_type?(response.content_type)
-        @logger.submit(@logger.format(request, response))
+        HttpMessage.send(logger, request, response) # todo add timing details
       end
     end
   end

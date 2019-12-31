@@ -88,13 +88,13 @@ logger = HttpLogger.new(
 
 get '/' do
   response_body = '<html>Hello World</html>'
-  logger.log request, response, response_body
+  HttpMessage.send(logger, request, response, response_body)
   response_body
 end
 
 post '/' do
   status 401
-  logger.log request, response
+  HttpMessage.send(logger, request, response)
   ''
 end
 ```

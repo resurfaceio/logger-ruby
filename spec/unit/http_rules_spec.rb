@@ -5,58 +5,120 @@ require 'resurfaceio/all'
 
 describe HttpRules do
 
+  it 'changes default rules' do
+    expect(HttpRules.default_rules).to eql(HttpRules.strict_rules)
+    begin
+      HttpRules.default_rules = ''
+      expect(HttpRules.default_rules).to eql('')
+      expect(HttpRules.new(HttpRules.default_rules).length).to eql(0)
+
+      HttpRules.default_rules = ' include default'
+      expect(HttpRules.default_rules).to eql("")
+
+      HttpRules.default_rules = "include default\n"
+      expect(HttpRules.default_rules).to eql("")
+
+      HttpRules.default_rules = "include default\ninclude default\n"
+      expect(HttpRules.new(HttpRules.default_rules).length).to eql(0)
+
+      HttpRules.default_rules = "include default\ninclude default\nsample 42"
+      rules = HttpRules.new(HttpRules.default_rules)
+      expect(rules.length).to eql(1)
+      expect(rules.sample.length).to eql(1)
+    ensure
+      HttpRules.default_rules = HttpRules.strict_rules
+    end
+  end
+
   it 'includes debug rules' do
-    rules = HttpRules.parse('include debug')
+    rules = HttpRules.new('include debug')
     expect(rules.length).to eql(2)
-    expect(rules.select {|r| 'allow_http_url' == r.verb}.length).to eql(1)
-    expect(rules.select {|r| 'copy_session_field' == r.verb}.length).to eql(1)
+    expect(rules.allow_http_url).to be true
+    expect(rules.copy_session_field.length).to eql(1)
 
-    rules = HttpRules.parse("include debug\n")
+    rules = HttpRules.new("include debug\n")
     expect(rules.length).to eql(2)
-    rules = HttpRules.parse("include debug\nsample 50")
+    rules = HttpRules.new("include debug\nsample 50")
     expect(rules.length).to eql(3)
-    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
+    expect(rules.sample.length).to eql(1)
 
-    rules = HttpRules.parse(" include debug\ninclude debug\n")
+    rules = HttpRules.new(" include debug\ninclude debug\n")
     expect(rules.length).to eql(4)
-    rules = HttpRules.parse("include debug\nsample 50\ninclude debug")
+    rules = HttpRules.new("include debug\nsample 50\ninclude debug")
     expect(rules.length).to eql(5)
+
+    expect(HttpRules.default_rules).to eql(HttpRules.strict_rules)
+    begin
+      HttpRules.default_rules = 'include debug'
+      rules = HttpRules.new('')
+      expect(rules.length).to eql(2)
+      expect(rules.allow_http_url).to be true
+      expect(rules.copy_session_field.length).to eql(1)
+    ensure
+      HttpRules.default_rules = HttpRules.strict_rules
+    end
   end
 
   it 'includes standard rules' do
-    rules = HttpRules.parse('include standard')
+    rules = HttpRules.new('include standard')
     expect(rules.length).to eql(3)
-    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
-    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(2)
+    expect(rules.remove.length).to eql(1)
+    expect(rules.replace.length).to eql(2)
 
-    rules = HttpRules.parse("include standard\n")
+    rules = HttpRules.new("include standard\n")
     expect(rules.length).to eql(3)
-    rules = HttpRules.parse("include standard\nsample 50")
+    rules = HttpRules.new("include standard\nsample 50")
     expect(rules.length).to eql(4)
-    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
+    expect(rules.sample.length).to eql(1)
 
-    rules = HttpRules.parse(" include standard\ninclude standard\n")
+    rules = HttpRules.new(" include standard\ninclude standard\n")
     expect(rules.length).to eql(6)
-    rules = HttpRules.parse("include standard\nsample 50\ninclude standard")
+    rules = HttpRules.new("include standard\nsample 50\ninclude standard")
     expect(rules.length).to eql(7)
+
+    expect(HttpRules.default_rules).to eql(HttpRules.strict_rules)
+    begin
+      HttpRules.default_rules = 'include standard'
+      rules = HttpRules.new('')
+      expect(rules.length).to eql(3)
+      expect(rules.remove.length).to eql(1)
+      expect(rules.replace.length).to eql(2)
+    ensure
+      HttpRules.default_rules = HttpRules.strict_rules
+    end
   end
 
   it 'includes strict rules' do
-    rules = HttpRules.parse('include strict')
+    rules = HttpRules.new('include strict')
     expect(rules.length).to eql(2)
-    expect(rules.select {|r| 'remove' == r.verb}.length).to eql(1)
-    expect(rules.select {|r| 'replace' == r.verb}.length).to eql(1)
+    expect(rules.remove.length).to eql(1)
+    expect(rules.replace.length).to eql(1)
 
-    rules = HttpRules.parse("include strict\n")
+    rules = HttpRules.new("include strict\n")
     expect(rules.length).to eql(2)
-    rules = HttpRules.parse("include strict\nsample 50")
+    rules = HttpRules.new("include strict\nsample 50")
     expect(rules.length).to eql(3)
-    expect(rules.select {|r| 'sample' == r.verb}.length).to eql(1)
+    expect(rules.sample.length).to eql(1)
 
-    rules = HttpRules.parse(" include strict\ninclude strict\n")
+    rules = HttpRules.new(" include strict\ninclude strict\n")
     expect(rules.length).to eql(4)
-    rules = HttpRules.parse("include strict\nsample 50\ninclude strict")
+    rules = HttpRules.new("include strict\nsample 50\ninclude strict")
     expect(rules.length).to eql(5)
+
+    expect(HttpRules.default_rules).to eql(HttpRules.strict_rules)
+    begin
+      HttpRules.default_rules = 'include strict'
+      rules = HttpRules.new('')
+      expect(rules.length).to eql(2)
+      expect(rules.remove.length).to eql(1)
+      expect(rules.replace.length).to eql(1)
+    ensure
+      HttpRules.default_rules = HttpRules.strict_rules
+    end
+  end
+
+  it 'loads rules from file' do
+    # todo finish
   end
 
   def parse_fail(line)
@@ -77,11 +139,11 @@ describe HttpRules do
   end
 
   it 'parses empty rules' do
-    expect(HttpRules.parse(nil).size).to be 0
-    expect(HttpRules.parse("").size).to be 0
-    expect(HttpRules.parse(" ").size).to be 0
-    expect(HttpRules.parse("\t").size).to be 0
-    expect(HttpRules.parse("\n").size).to be 0
+    expect(HttpRules.new(nil).length).to be 2
+    expect(HttpRules.new("").length).to be 2
+    expect(HttpRules.new(" ").length).to be 2
+    expect(HttpRules.new("\t").length).to be 2
+    expect(HttpRules.new("\n").length).to be 2
 
     expect(HttpRules.parse_rule(nil)).to be nil
     expect(HttpRules.parse_rule("")).to be nil
@@ -751,36 +813,38 @@ describe HttpRules do
   end
 
   it 'raises expected errors' do
+    # todo test invalid file
+
     begin
-      HttpRules.parse("/*! stop")
+      HttpRules.new("/*! stop")
       expect(false).to be true
     rescue RuntimeError => e
       expect(e.message).to eql("Invalid expression (/*!) in rule: /*! stop")
     end
 
     begin
-      HttpRules.parse("/*/ stop")
+      HttpRules.new("/*/ stop")
       expect(false).to be true
     rescue RuntimeError => e
       expect(e.message).to eql("Invalid regex (/*/) in rule: /*/ stop")
     end
 
     begin
-      HttpRules.parse("/boo")
+      HttpRules.new("/boo")
       expect(false).to be true
     rescue RuntimeError => e
       expect(e.message).to eql("Invalid rule: /boo")
     end
 
     begin
-      HttpRules.parse("sample 123")
+      HttpRules.new("sample 123")
       expect(false).to be true
     rescue RuntimeError => e
       expect(e.message).to eql("Invalid sample percent: 123")
     end
 
     begin
-      HttpRules.parse("!!! stop")
+      HttpRules.new("!!! stop")
       expect(false).to be true
     rescue RuntimeError => e
       expect(e.message).to eql("Unescaped separator (!) in rule: !!! stop")

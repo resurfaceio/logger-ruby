@@ -5,6 +5,29 @@ require 'json'
 
 class HttpMessage
 
+  def self.send(logger, request, response, response_body = nil, request_body = nil, now = nil, interval = nil)
+    return unless logger.enabled?
+
+    # copy details from request & response
+    message = build(request, response, response_body, request_body)
+
+    # copy details from active session
+    unless logger.rules.copy_session_field.empty?
+      ssn = request.session
+      if !ssn.nil? && ssn.respond_to?(:keys)
+        logger.rules.copy_session_field.each do |r|
+          ssn.keys.each {|d| (message << ["session_field:#{d}", ssn[d].to_s]) if r.param1.match(d)}
+        end
+      end
+    end
+
+    # add timing details
+    message << ['now', now.nil? ? (Time.now.to_f * 1000).floor.to_s : now]
+    message << ['interval', interval] unless interval.nil?
+
+    logger.submit_if_passing(message)
+  end
+
   def self.build(request, response, response_body = nil, request_body = nil)
     message = []
     append_value message, 'request_method', request.request_method unless request.request_method.nil?
@@ -18,8 +41,6 @@ class HttpMessage
     append_value message, 'response_body', final_response_body unless final_response_body == ''
     return message
   end
-
-  protected
 
   def self.append_request_headers(message, request)
     respond_to_env = request.respond_to?(:env)
@@ -74,12 +95,12 @@ class HttpMessage
     unless key.nil?
       unless value.nil?
         case value
-          when Array
-            message << [key, value.join]
-          when String
-            message << [key, value]
-          else
-            message << [key, value.to_s]
+        when Array
+          message << [key, value.join]
+        when String
+          message << [key, value]
+        else
+          message << [key, value.to_s]
         end
       end
     end

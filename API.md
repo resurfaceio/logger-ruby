@@ -40,13 +40,13 @@ as response body and request body content when these are available.
 
 ```ruby
 # with standard objects
-logger.log request, response
+HttpMessage.send(logger, request, response)
 
 # with response body
-logger.log request, response, 'my-response-body'
+HttpMessage.send(logger, request, response, 'my-response-body')
 
 # with response and request body
-logger.log request, response, 'my-response-body', 'my-request-body'
+HttpMessage.send(logger, request, response, 'my-response-body', 'my-request-body')
 ```
 
 If standard request and response objects aren't available in your case, create mock implementations to pass instead.
@@ -69,7 +69,7 @@ response.headers['B'] = '234'
 response.status = 200
 
 # log objects defined above
-logger.log request, response
+HttpMessage.send(logger, request, response)
 ```
 
 <a name="setting_default_rules"/>
@@ -80,13 +80,13 @@ If no <a href="https://resurface.io/rules.html">rules</a> are provided when crea
 `include strict` will be applied. A different default value can be specified as shown below.
 
 ```ruby
-HttpLogger.default_rules = 'include debug'
+HttpRules.default_rules = 'include debug'
 ```
 
 When specifying multiple default rules, put each on a separate line. This is most easily done with a non-interpolated string.
 
 ```ruby
-HttpLogger.default_rules = %q(
+HttpRules.default_rules = %q(
   include debug
   sample 10
 )

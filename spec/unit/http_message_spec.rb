@@ -4,12 +4,14 @@
 require 'resurfaceio/all'
 require_relative 'helper'
 
-logger = HttpLogger.new(rules: 'include standard')
-
-describe HttpLogger do
+describe HttpMessage do
 
   it 'formats request' do
-    msg = logger.format(mock_request, mock_response, nil, nil, MOCK_NOW)
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, mock_request, mock_response, nil, nil, MOCK_NOW)
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"agent\",\"#{HttpLogger::AGENT}\"]")).to be true
     expect(msg.include?("[\"host\",\"#{HttpLogger.host_lookup}\"]")).to be true
@@ -20,10 +22,15 @@ describe HttpLogger do
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_header')).to be false
     expect(msg.include?('request_param')).to be false
+    expect(msg.include?('interval')).to be false
   end
 
   it 'formats request with body' do
-    msg = logger.format(mock_request_with_json, mock_response, nil, MOCK_HTML)
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, mock_request_with_json, mock_response, nil, MOCK_HTML)
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"request_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(msg.include?("[\"request_header:content-type\",\"Application/JSON\"]")).to be true
@@ -34,7 +41,11 @@ describe HttpLogger do
   end
 
   it 'formats request with empty body' do
-    msg = logger.format(mock_request_with_json2, mock_response, nil, '')
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, mock_request_with_json2, mock_response, nil, '')
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"request_header:a\",\"1, 2\"]")).to be true
     expect(msg.include?("[\"request_header:abc\",\"123\"]")).to be true
@@ -49,17 +60,26 @@ describe HttpLogger do
   end
 
   it 'formats request with missing details' do
-    msg = logger.format(HttpRequestImpl.new, mock_response)
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, HttpRequestImpl.new, mock_response, nil, nil, nil, nil)
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_header')).to be false
     expect(msg.include?('request_method')).to be false
     expect(msg.include?('request_param')).to be false
     expect(msg.include?('request_url')).to be false
+    expect(msg.include?('interval')).to be false
   end
 
   it 'formats response' do
-    msg = logger.format(mock_request, mock_response)
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, mock_request, mock_response)
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?('response_body')).to be false
@@ -67,7 +87,11 @@ describe HttpLogger do
   end
 
   it 'formats response with body' do
-    msg = logger.format(mock_request, mock_response_with_html, MOCK_HTML2)
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, mock_request, mock_response_with_html, MOCK_HTML2)
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"response_body\",\"#{MOCK_HTML2}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
@@ -75,7 +99,11 @@ describe HttpLogger do
   end
 
   it 'formats response with empty body' do
-    msg = logger.format(mock_request, mock_response_with_html, '')
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, mock_request, mock_response_with_html, '')
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"text/html; charset=utf-8\"]")).to be true
@@ -86,11 +114,17 @@ describe HttpLogger do
     # this is the default behavior with Sinatra, https://github.com/resurfaceio/logger-ruby/issues/18
     response = HttpResponseImpl.new
     response.content_type = nil
-    msg = logger.format(mock_request, response)
+
+    queue = []
+    logger = HttpLogger.new(queue: queue, rules: 'include debug')
+    HttpMessage.send(logger, mock_request, response, nil, nil, nil, nil)
+    expect(queue.length).to be 1
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?('response_body')).to be false
     expect(msg.include?('response_code')).to be false
     expect(msg.include?('response_header')).to be false
+    expect(msg.include?('interval')).to be false
   end
 
 end

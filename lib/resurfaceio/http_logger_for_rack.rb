@@ -3,6 +3,7 @@
 
 require 'rack'
 require 'resurfaceio/http_logger'
+require 'resurfaceio/http_message'
 
 class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
 
@@ -21,7 +22,7 @@ class HttpLoggerForRack # http://rack.rubyforge.org/doc/SPEC.html
       response = Rack::Response.new(body, status, headers)
       if HttpLogger::string_content_type?(response.content_type)
         request = Rack::Request.new(env)
-        @logger.submit(@logger.format(request, response))
+        HttpMessage.send(logger, request, response) # todo add timing details
       end
     end
     [status, headers, body]
