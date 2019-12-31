@@ -118,15 +118,6 @@ describe BaseLogger do
     expect(logger.enabled?).to be false
   end
 
-  it 'skips logging when disabled' do
-    MOCK_URLS_DENIED.each do |url|
-      logger = BaseLogger.new(MOCK_AGENT, url: url).disable
-      expect(logger.enableable?).to be true
-      expect(logger.enabled?).to be false
-      expect(logger.submit(nil)).to be true # would fail if enabled
-    end
-  end
-
   it 'submits to demo url' do
     logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL)
     expect(logger.url).to eql(DEMO_URL)
@@ -138,7 +129,9 @@ describe BaseLogger do
     ]
     msg = JSON.generate(message)
     expect(parseable?(msg)).to be true
-    expect(logger.submit(msg)).to be true
+    logger.submit(msg)
+    expect(logger.submit_failures).to eql(0)
+    expect(logger.submit_successes).to eql(1)
   end
 
   it 'submits to demo url via http' do
@@ -152,7 +145,9 @@ describe BaseLogger do
     ]
     msg = JSON.generate(message)
     expect(parseable?(msg)).to be true
-    expect(logger.submit(msg)).to be true
+    logger.submit(msg)
+    expect(logger.submit_failures).to eql(0)
+    expect(logger.submit_successes).to eql(1)
   end
 
   it 'submits to demo url without compression' do
@@ -168,15 +163,19 @@ describe BaseLogger do
     ]
     msg = JSON.generate(message)
     expect(parseable?(msg)).to be true
-    expect(logger.submit(msg)).to be true
+    logger.submit(msg)
+    expect(logger.submit_failures).to eql(0)
+    expect(logger.submit_successes).to eql(1)
   end
 
-  it 'submits to denied url and fails' do
+  it 'submits to denied url' do
     MOCK_URLS_DENIED.each do |url|
       logger = BaseLogger.new(MOCK_AGENT, url: url)
       expect(logger.enableable?).to be true
       expect(logger.enabled?).to be true
-      expect(logger.submit('{}')).to be false
+      logger.submit('{}')
+      expect(logger.submit_failures).to eql(1)
+      expect(logger.submit_successes).to eql(0)
     end
   end
 
@@ -188,10 +187,12 @@ describe BaseLogger do
     expect(logger.enableable?).to be true
     expect(logger.enabled?).to be true
     expect(queue.length).to be 0
-    expect(logger.submit('{}')).to be true
+    logger.submit('{}')
     expect(queue.length).to eql(1)
-    expect(logger.submit('{}')).to be true
+    logger.submit('{}')
     expect(queue.length).to eql(2)
+    expect(logger.submit_failures).to eql(0)
+    expect(logger.submit_successes).to eql(2)
   end
 
   it 'silently ignores unexpected option types' do

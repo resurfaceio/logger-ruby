@@ -51,7 +51,12 @@ class BaseLogger
       end
     end
 
+    # finalize internal properties
     @enableable = !@queue.nil? || !@url.nil?
+    @submit_failures = 0
+    @submit_failures_lock = Mutex.new
+    @submit_successes = 0
+    @submit_successes_lock = Mutex.new
   end
 
   def agent
@@ -102,10 +107,10 @@ class BaseLogger
 
   def submit(msg)
     if msg.nil? || @skip_submission || !enabled?
-      true
+      # do nothing
     elsif @queue
       @queue << msg
-      true
+      @submit_successes_lock.synchronize { @submit_successes += 1 }
     else
       begin
         @url_parsed ||= URI.parse(@url)
@@ -119,12 +124,24 @@ class BaseLogger
           request.body = Zlib::Deflate.deflate(msg)
         end
         response = @url_connection.request(request)
-        response.code.to_i == 204
+        if response.code.to_i == 204
+          @submit_successes_lock.synchronize { @submit_successes += 1 }
+        else
+          @submit_failures_lock.synchronize { @submit_failures += 1 }
+        end
       rescue SocketError
+        @submit_failures_lock.synchronize { @submit_failures += 1 }
         @url_connection = nil
-        false
       end
     end
+  end
+
+  def submit_failures
+    @submit_failures
+  end
+
+  def submit_successes
+    @submit_successes
   end
 
   def url
