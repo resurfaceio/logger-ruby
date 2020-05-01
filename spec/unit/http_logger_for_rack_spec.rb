@@ -20,7 +20,6 @@ describe HttpLoggerForRack do
     expect(msg.include?("[\"response_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?("[\"response_header:a\",\"1\"]")).to be true
-    expect(msg.include?("[\"response_header:content-length\",\"25\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"text/html; charset=utf-8\"]")).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_param')).to be false
@@ -39,7 +38,6 @@ describe HttpLoggerForRack do
     expect(msg.include?("[\"request_url\",\"#{MOCK_URL}?#{MOCK_QUERY_STRING}\"]")).to be true
     expect(msg.include?("[\"response_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
-    expect(msg.include?("[\"response_header:content-length\",\"21\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"application/json\"]")).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_param')).to be false
@@ -59,7 +57,6 @@ describe HttpLoggerForRack do
     expect(msg.include?("[\"request_url\",\"#{MOCK_URL}?#{MOCK_QUERY_STRING}\"]")).to be true
     expect(msg.include?("[\"response_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
-    expect(msg.include?("[\"response_header:content-length\",\"21\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"application/json\"]")).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_param')).to be false
