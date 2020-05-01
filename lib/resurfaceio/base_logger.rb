@@ -117,6 +117,7 @@ class BaseLogger
         @url_connection ||= Net::HTTP.new(@url_parsed.host, @url_parsed.port)
         @url_connection.use_ssl = @url.include?('https')
         request = Net::HTTP::Post.new(@url_parsed.path)
+        request.add_field('Content-Type', 'application/json; charset=UTF-8')
         if @skip_compression
           request.body = msg
         else
