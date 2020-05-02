@@ -112,7 +112,15 @@ class HttpRules
   def initialize(rules)
     rules = HttpRules.default_rules if rules.nil?
 
-    # todo load rules from external files
+    # load rules from external files
+    if rules.start_with?('file://')
+      rfile = rules[7..]
+      begin
+        rules = File.read(rfile)
+      rescue
+        raise RuntimeError.new("Failed to load rules: #{rfile}")
+      end
+    end
 
     # force default rules if necessary
     rules = rules.gsub(/^\s*include default\s*$/, HttpRules.default_rules)

@@ -118,7 +118,24 @@ describe HttpRules do
   end
 
   it 'loads rules from file' do
-    # todo finish
+    rules = HttpRules.new('file://./spec/rules1.txt')
+    expect(rules.length).to eql(1)
+    expect(rules.sample.length).to eql(1)
+    expect(rules.sample[0].param1).to eql(55)
+
+    rules = HttpRules.new('file://./spec/rules2.txt')
+    expect(rules.length).to eql(3)
+    expect(rules.allow_http_url).to be true
+    expect(rules.copy_session_field.length).to eql(1)
+    expect(rules.sample.length).to eql(1)
+    expect(rules.sample[0].param1).to eql(56)
+
+    rules = HttpRules.new('file://./spec/rules3.txt')
+    expect(rules.length).to eql(3)
+    expect(rules.remove.length).to eql(1)
+    expect(rules.replace.length).to eql(1)
+    expect(rules.sample.length).to eql(1)
+    expect(rules.sample[0].param1).to eql(57)
   end
 
   def parse_fail(line)
@@ -813,7 +830,12 @@ describe HttpRules do
   end
 
   it 'raises expected errors' do
-    # todo test invalid file
+    begin
+      HttpRules.new("file://~/bleepblorpbleepblorp12345")
+      expect(false).to be true
+    rescue RuntimeError => e
+      expect(e.message).to eql("Failed to load rules: ~/bleepblorpbleepblorp12345")
+    end
 
     begin
       HttpRules.new("/*! stop")
