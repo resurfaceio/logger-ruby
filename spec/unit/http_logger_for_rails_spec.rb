@@ -17,6 +17,7 @@ describe HttpLoggerForRails do
     expect(msg.include?("[\"response_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"text/html; charset=utf-8\"]")).to be true
+    expect(msg.include?("[\"interval\",")).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_header')).to be false
     expect(msg.include?('request_param')).to be false
@@ -35,6 +36,7 @@ describe HttpLoggerForRails do
     expect(msg.include?("[\"response_body\",\"#{MOCK_HTML}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"text/html; charset=utf-8\"]")).to be true
+    expect(msg.include?("[\"interval\",")).to be true
     expect(msg.include?('request_body')).to be false
   end
 

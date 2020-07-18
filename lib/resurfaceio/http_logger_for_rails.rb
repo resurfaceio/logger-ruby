@@ -3,6 +3,7 @@
 
 require 'resurfaceio/http_logger'
 require 'resurfaceio/http_message'
+require 'resurfaceio/timer'
 
 class HttpLoggerForRails
 
@@ -15,13 +16,14 @@ class HttpLoggerForRails
   end
 
   def around(controller)
+    timer = Timer.new
     yield
     if @logger.enabled?
       request = controller.request
       response = controller.response
       status = response.status
       if (status < 300 || status == 302) && HttpLogger::string_content_type?(response.content_type)
-        HttpMessage.send(logger, request, response) # todo add timing details
+        HttpMessage.send(logger, request, response, nil, nil, nil, timer.millis)
       end
     end
   end

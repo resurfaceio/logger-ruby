@@ -21,6 +21,7 @@ describe HttpLoggerForRack do
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?("[\"response_header:a\",\"1\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"text/html; charset=utf-8\"]")).to be true
+    expect(msg.include?("[\"interval\",")).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_param')).to be false
   end
@@ -39,6 +40,7 @@ describe HttpLoggerForRack do
     expect(msg.include?("[\"response_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"application/json\"]")).to be true
+    expect(msg.include?("[\"interval\",")).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_param')).to be false
   end
@@ -58,6 +60,7 @@ describe HttpLoggerForRack do
     expect(msg.include?("[\"response_body\",\"#{MOCK_JSON_ESCAPED}\"]")).to be true
     expect(msg.include?("[\"response_code\",\"200\"]")).to be true
     expect(msg.include?("[\"response_header:content-type\",\"application/json\"]")).to be true
+    expect(msg.include?("[\"interval\",")).to be true
     expect(msg.include?('request_body')).to be false
     expect(msg.include?('request_param')).to be false
   end
