@@ -44,9 +44,11 @@ class BaseLogger
     # validate url when present
     unless @url.nil?
       begin
-        raise Exception unless URI.parse(@url).scheme.include?('http')
+        @url_parsed = URI.parse(@url)
+        raise Exception unless @url_parsed.scheme.include?('http')
       rescue Exception
         @url = nil
+        @url_parsed = nil
         @enabled = false
       end
     end
@@ -113,9 +115,8 @@ class BaseLogger
       @submit_successes_lock.synchronize { @submit_successes += 1 }
     else
       begin
-        @url_parsed ||= URI.parse(@url)
-        @url_connection ||= Net::HTTP.new(@url_parsed.host, @url_parsed.port)
-        @url_connection.use_ssl = @url.include?('https')
+        url_connection = Net::HTTP.new(@url_parsed.host, @url_parsed.port)
+        url_connection.use_ssl = @url.include?('https')
         request = Net::HTTP::Post.new(@url_parsed.path)
         request.add_field('Content-Type', 'application/json; charset=UTF-8')
         if @skip_compression
@@ -124,15 +125,14 @@ class BaseLogger
           request.add_field('Content-Encoding', 'deflated')
           request.body = Zlib::Deflate.deflate(msg)
         end
-        response = @url_connection.request(request)
+        response = url_connection.request(request)
         if response.code.to_i == 204
           @submit_successes_lock.synchronize { @submit_successes += 1 }
         else
           @submit_failures_lock.synchronize { @submit_failures += 1 }
         end
-      rescue SocketError
+      rescue Exception
         @submit_failures_lock.synchronize { @submit_failures += 1 }
-        @url_connection = nil
       end
     end
   end
