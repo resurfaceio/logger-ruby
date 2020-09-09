@@ -28,6 +28,17 @@ class HttpLogger < BaseLogger
       @enableable = false
       @enabled = false
     end
+
+    # submit metadata message
+    if @enabled
+      message = []
+      message << %w[message_type metadata]
+      message << ['agent', @agent]
+      message << ['host', @host]
+      message << ['version', @version]
+      message << ['metadata_id', metadata_id]
+      submit(JSON.generate(message))
+    end
   end
 
   def rules
@@ -35,16 +46,9 @@ class HttpLogger < BaseLogger
   end
 
   def submit_if_passing(details)
-    # apply active rules
     details = @rules.apply(details)
     return nil if details.nil?
-
-    # finalize message
-    details << ['agent', @agent]
-    details << ['host', @host]
-    details << ['version', @version]
-
-    # let's do this thing
+    details << ['metadata_id', @metadata_id]
     submit(JSON.generate(details))
   end
 

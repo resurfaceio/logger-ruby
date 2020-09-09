@@ -4,6 +4,7 @@
 require 'uri'
 require 'net/http'
 require 'net/https'
+require 'securerandom'
 require 'socket'
 require 'zlib'
 require 'resurfaceio/usage_loggers'
@@ -13,6 +14,7 @@ class BaseLogger
   def initialize(agent, options = {})
     @agent = agent
     @host = BaseLogger.host_lookup
+    @metadata_id = SecureRandom.hex(10)
     @skip_compression = false
     @skip_submission = false
     @version = BaseLogger.version_lookup
@@ -85,6 +87,10 @@ class BaseLogger
 
   def host
     @host
+  end
+
+  def metadata_id
+    @metadata_id
   end
 
   def queue
