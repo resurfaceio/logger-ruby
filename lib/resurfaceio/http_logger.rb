@@ -31,13 +31,13 @@ class HttpLogger < BaseLogger
 
     # submit metadata message
     if @enabled
-      message = []
-      message << %w[message_type metadata]
-      message << ['agent', @agent]
-      message << ['host', @host]
-      message << ['version', @version]
-      message << ['metadata_id', metadata_id]
-      submit(JSON.generate(message))
+      details = []
+      details << %w[message_type metadata]
+      details << ['agent', @agent]
+      details << ['host', @host]
+      details << ['version', @version]
+      details << ['metadata_id', metadata_id]
+      submit(JSON.generate(details))
     end
   end
 

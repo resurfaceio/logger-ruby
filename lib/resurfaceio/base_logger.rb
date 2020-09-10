@@ -14,7 +14,7 @@ class BaseLogger
   def initialize(agent, options = {})
     @agent = agent
     @host = BaseLogger.host_lookup
-    @metadata_id = SecureRandom.hex(10)
+    @metadata_id = SecureRandom.hex(16)
     @skip_compression = false
     @skip_submission = false
     @version = BaseLogger.version_lookup

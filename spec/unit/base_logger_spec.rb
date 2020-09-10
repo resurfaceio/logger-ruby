@@ -65,7 +65,10 @@ describe BaseLogger do
     metadata_id = BaseLogger.new(MOCK_AGENT).metadata_id
     expect(metadata_id).not_to be nil
     expect(metadata_id).to be_kind_of String
-    expect(metadata_id.length).to eql(20)
+    expect(metadata_id.length).to eql(32)
+    expect(metadata_id.include?('\\')).to be false
+    expect(metadata_id.include?('\"')).to be false
+    expect(metadata_id.include?('\'')).to be false
   end
 
   it 'has valid version' do

@@ -16,7 +16,7 @@ describe HttpMessage do
     expect(msg.include?("[\"agent\",\"#{HttpLogger::AGENT}\"]")).to be true
     expect(msg.include?("[\"host\",\"#{HttpLogger.host_lookup}\"]")).to be true
     expect(msg.include?("[\"message_type\",\"metadata\"]")).to be true
-    expect(msg.include?("[\"metadata_id\",\"")).to be true
+    expect(msg.include?("[\"metadata_id\",\"#{logger.metadata_id}\"]")).to be true
     expect(msg.include?("[\"version\",\"#{HttpLogger.version_lookup}\"]")).to be true
     expect(msg.include?("[\"interval")).to be false
     expect(msg.include?("[\"now")).to be false
@@ -31,6 +31,7 @@ describe HttpMessage do
     expect(queue.length).to be 2
     msg = queue[1]
     expect(parseable?(msg)).to be true
+    expect(msg.include?("[\"metadata_id\",\"#{logger.metadata_id}\"]")).to be true
     expect(msg.include?("[\"now\",\"#{MOCK_NOW}\"]")).to be true
     expect(msg.include?("[\"request_method\",\"GET\"]")).to be true
     expect(msg.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
