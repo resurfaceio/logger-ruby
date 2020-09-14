@@ -29,6 +29,24 @@ class HttpLogger < BaseLogger
       @enabled = false
     end
 
+    # load schema if present
+    schema_exists = options.respond_to?(:has_key?) && options.has_key?(:schema)
+    if schema_exists
+      schema = options[:schema]
+      if schema.start_with?('file://')
+        rfile = schema[7..]
+        begin
+          @schema = File.read(rfile)
+        rescue
+          raise RuntimeError.new("Failed to load schema: #{rfile}")
+        end
+      else
+        @schema = schema
+      end
+    else
+      @schema = nil
+    end
+
     # submit metadata message
     if @enabled
       details = []
@@ -37,8 +55,13 @@ class HttpLogger < BaseLogger
       details << ['host', @host]
       details << ['version', @version]
       details << ['metadata_id', metadata_id]
+      details << ['graphql_schema', @schema] if schema_exists
       submit(JSON.generate(details))
     end
+  end
+
+  def schema
+    @schema
   end
 
   def rules
