@@ -18,6 +18,7 @@ describe HttpMessage do
     expect(msg.include?("[\"message_type\",\"metadata\"]")).to be true
     expect(msg.include?("[\"metadata_id\",\"#{logger.metadata_id}\"]")).to be true
     expect(msg.include?("[\"version\",\"#{HttpLogger.version_lookup}\"]")).to be true
+    expect(msg.include?("[\"graphql_schema")).to be false
     expect(msg.include?("[\"interval")).to be false
     expect(msg.include?("[\"now")).to be false
     expect(msg.include?("[\"request_")).to be false
