@@ -9,8 +9,8 @@ describe HttpLoggerForRack do
   it 'logs html' do
     queue = []
     HttpLoggerForRack.new(MockHtmlApp.new, queue: queue, rules: 'include standard').call(MOCK_ENV)
-    expect(queue.length).to eql(2)
-    msg = queue[1]
+    expect(queue.length).to eql(1)
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"request_header:cookie\",")).to be false
     expect(msg.include?("[\"request_header:host\",\"localhost:3000\"]")).to be true
@@ -29,8 +29,8 @@ describe HttpLoggerForRack do
   it 'logs json' do
     queue = []
     HttpLoggerForRack.new(MockJsonApp.new, queue: queue, rules: 'include standard').call(MOCK_ENV)
-    expect(queue.length).to eql(2)
-    msg = queue[1]
+    expect(queue.length).to eql(1)
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"request_header:cookie\",")).to be false
     expect(msg.include?("[\"request_header:host\",\"localhost:3000\"]")).to be true
@@ -48,8 +48,8 @@ describe HttpLoggerForRack do
   it 'logs json post' do
     queue = []
     HttpLoggerForRack.new(MockJsonApp.new, queue: queue, rules: 'include standard').call(MOCK_ENV_JSON)
-    expect(queue.length).to eql(2)
-    msg = queue[1]
+    expect(queue.length).to eql(1)
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"request_header:content-type\",\"application/json\"]")).to be true
     expect(msg.include?("[\"request_header:cookie\",")).to be false
@@ -70,7 +70,7 @@ describe HttpLoggerForRack do
     begin
       HttpLoggerForRack.new(MockExceptionApp.new, queue: queue).call(MOCK_ENV)
     rescue ZeroDivisionError
-      expect(queue.length).to eql(1)
+      expect(queue.length).to eql(0)
     end
   end
 
@@ -79,7 +79,7 @@ describe HttpLoggerForRack do
     apps.each do |app|
       queue = []
       HttpLoggerForRack.new(app, queue: queue).call(MOCK_ENV)
-      expect(queue.length).to eql(1)
+      expect(queue.length).to eql(0)
     end
   end
 

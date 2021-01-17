@@ -65,29 +65,29 @@ describe HttpLogger do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: 'copy_session_field /.*/')
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field:butterfly\",\"poison\"]")).to be true
-    expect(queue[1].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field:butterfly\",\"poison\"]")).to be true
+    expect(queue[0].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: 'copy_session_field /session_id/')
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field:butterfly\",")).to be false
-    expect(queue[1].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field:butterfly\",")).to be false
+    expect(queue[0].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: 'copy_session_field /blah/')
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field:")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field:")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field /butterfly/\ncopy_session_field /session_id/")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field:butterfly\",\"poison\"]")).to be true
-    expect(queue[1].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field:butterfly\",\"poison\"]")).to be true
+    expect(queue[0].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
   end
 
   it 'uses copy_session_field and remove rules' do
@@ -98,28 +98,28 @@ describe HttpLogger do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field !.*!\n!session_field:.*! remove")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field !.*!\n!session_field:butterfly! remove")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field:butterfly\",")).to be false
-    expect(queue[1].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field:butterfly\",")).to be false
+    expect(queue[0].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field !.*!\n!session_field:.*! remove_if !poi.*!")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field:butterfly\",")).to be false
-    expect(queue[1].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field:butterfly\",")).to be false
+    expect(queue[0].include?("[\"session_field:session_id\",\"asdf1234\"]")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field !.*!\n!session_field:.*! remove_unless !sugar!")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"session_field")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"session_field")).to be false
   end
 
   it 'uses copy_session_field and stop rules' do
@@ -130,303 +130,303 @@ describe HttpLogger do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field !.*!\n!session_field:butterfly! stop")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field !.*!\n!session_field:butterfly! stop_if !poi.*!")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "copy_session_field !.*!\n!session_field:butterfly! stop_unless !sugar!")
     HttpMessage.send(logger, request, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
   end
 
   it 'uses remove rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!.*! remove')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body! remove')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! remove')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body|response_body! remove')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_header:.*! remove')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"request_header:")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"request_header:")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "!request_header:abc! remove\n!response_body! remove")
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"request_header:")).to be true
-    expect(queue[1].include?("[\"request_header:abc\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"request_header:")).to be true
+    expect(queue[0].include?("[\"request_header:abc\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be false
   end
 
   it 'uses remove_if rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! remove_if !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!.*! remove_if !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body! remove_if !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! remove_if !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if !.*blahblahblah.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "!request_body! remove_if !.*!\n!response_body! remove_if !.*!")
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be false
   end
 
   it 'uses remove_if_found rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! remove_if_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!.*! remove_if_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body! remove_if_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! remove_if_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if_found !World!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if_found !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_if_found !blahblahblah!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be true
   end
 
   it 'uses remove_unless rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! remove_unless !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!.*! remove_unless !.*blahblahblah.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body! remove_unless !.*blahblahblah.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! remove_unless !.*blahblahblah.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "!response_body! remove_unless !.*!\n!request_body! remove_unless !.*!")
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be true
   end
 
   it 'uses remove_unless_found rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! remove_unless_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!.*! remove_unless_found !blahblahblah!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body! remove_unless_found !blahblahblah!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! remove_unless_found !blahblahblah!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless_found !World!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless_found !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be false
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be false
+    expect(queue[0].include?("[\"response_body\",")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body|request_body! remove_unless_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",")).to be true
-    expect(queue[1].include?("[\"response_body\",")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",")).to be true
+    expect(queue[0].include?("[\"response_body\",")).to be true
   end
 
   it 'uses replace rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !blahblahblah!, !ZZZZZ!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?('World')).to be true
-    expect(queue[1].include?('ZZZZZ')).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?('World')).to be true
+    expect(queue[0].include?('ZZZZZ')).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !World!, !Mundo!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>Hello Mundo!</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>Hello Mundo!</html>\"],")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body|response_body! replace !^.*!, !ZZZZZ!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",\"ZZZZZ\"")).to be true
-    expect(queue[1].include?("[\"response_body\",\"ZZZZZ\"")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",\"ZZZZZ\"")).to be true
+    expect(queue[0].include?("[\"response_body\",\"ZZZZZ\"")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "!request_body! replace !^.*!, !QQ!\n!response_body! replace !^.*!, !SS!")
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"request_body\",\"QQ\"")).to be true
-    expect(queue[1].include?("[\"response_body\",\"SS\"")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"request_body\",\"QQ\"")).to be true
+    expect(queue[0].include?("[\"response_body\",\"SS\"")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !World!, !!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>Hello !</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>Hello !</html>\"],")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !.*!, !!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",")).to be false
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",")).to be false
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !World!, !Z!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML3, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>1 Z 2 Z Red Z Blue Z!</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>1 Z 2 Z Red Z Blue Z!</html>\"],")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !World!, !Z!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML4, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>1 Z\\n2 Z\\nRed Z \\nBlue Z!\\n</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>1 Z\\n2 Z\\nRed Z \\nBlue Z!\\n</html>\"],")).to be true
   end
 
   it 'uses replace rules with complex expressions' do
@@ -436,32 +436,32 @@ describe HttpLogger do
         rules: %q(/response_body/ replace /[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)/, /x@y.com/)
     )
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML.gsub('World', 'rob@resurface.io'), MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>Hello x@y.com!</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>Hello x@y.com!</html>\"],")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: %q(/response_body/ replace /[0-9\.\-\/]{9,}/, /xyxy/))
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML.gsub('World', '123-45-1343'), MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>Hello xyxy!</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>Hello xyxy!</html>\"],")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !World!, !<b>\\0</b>!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>Hello <b>World</b>!</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>Hello <b>World</b>!</html>\"],")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! replace !(World)!, !<b>\\1</b>!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>Hello <b>World</b>!</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>Hello <b>World</b>!</html>\"],")).to be true
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "!response_body! replace !<input([^>]*)>([^<]*)</input>!, !<input\\1></input>!")
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML5, MOCK_JSON)
-    expect(queue.length).to be 2
-    expect(queue[1].include?("[\"response_body\",\"<html>\\n<input type=\\\"hidden\\\"></input>\\n<input class='foo' type=\\\"hidden\\\"></input>\\n</html>\"],")).to be true
+    expect(queue.length).to be 1
+    expect(queue[0].include?("[\"response_body\",\"<html>\\n<input type=\\\"hidden\\\"></input>\\n<input class='foo' type=\\\"hidden\\\"></input>\\n</html>\"],")).to be true
   end
 
   it 'uses sample rules' do
@@ -475,9 +475,9 @@ describe HttpLogger do
     end
 
     logger = HttpLogger.new(queue: queue, rules: 'sample 10')
-    (1..100).each { HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html) }
+    (1..100).each {HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html)}
     expect(queue.length).to be > 2
-    expect(queue.length).to be < 30
+    expect(queue.length).to be < 20
   end
 
   it 'uses skip_compression rules' do
@@ -502,125 +502,125 @@ describe HttpLogger do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!.*! stop')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!request_body! stop')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, nil, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: "!request_body! stop\n!response_body! stop")
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, nil, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
   end
 
   it 'uses stop_if rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop_if !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if !.*blahblahblah.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
   end
 
   it 'uses stop_if_found rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop_if_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !World!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_if_found !blahblahblah!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, MOCK_JSON)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
   end
 
   it 'uses stop_unless rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop_unless !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless !.*blahblahblah.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
   end
 
   it 'uses stop_unless_found rules' do
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_header:blahblahblah! stop_unless_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !World!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !.*World.*!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 2
+    expect(queue.length).to be 1
 
     queue = []
     logger = HttpLogger.new(queue: queue, rules: '!response_body! stop_unless_found !blahblahblah!')
     HttpMessage.send(logger, mock_request_with_json2, mock_response_with_html, MOCK_HTML, nil)
-    expect(queue.length).to be 1
+    expect(queue.length).to be 0
   end
 
 end

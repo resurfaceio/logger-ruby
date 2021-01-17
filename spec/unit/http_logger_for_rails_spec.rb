@@ -9,8 +9,8 @@ describe HttpLoggerForRails do
   it 'logs html response' do
     queue = []
     HttpLoggerForRails.new(queue: queue, rules: 'include standard').around(MockRailsHtmlController.new) {}
-    expect(queue.length).to eql(2)
-    msg = queue[1]
+    expect(queue.length).to eql(1)
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"request_method\",\"GET\"]")).to be true
     expect(msg.include?("[\"request_url\",\"#{MOCK_URL}\"]")).to be true
@@ -26,8 +26,8 @@ describe HttpLoggerForRails do
   it 'logs html response to json request' do
     queue = []
     HttpLoggerForRails.new(queue: queue, rules: 'include standard').around(MockRailsJsonController.new) {}
-    expect(queue.length).to eql(2)
-    msg = queue[1]
+    expect(queue.length).to eql(1)
+    msg = queue[0]
     expect(parseable?(msg)).to be true
     expect(msg.include?("[\"request_header:content-type\",\"Application/JSON\"]")).to be true
     expect(msg.include?("[\"request_method\",\"POST\"]")).to be true
@@ -45,7 +45,7 @@ describe HttpLoggerForRails do
     begin
       HttpLoggerForRails.new(queue: queue).around(MockRailsHtmlController.new) {raise ZeroDivisionError}
     rescue ZeroDivisionError
-      expect(queue.length).to eql(1)
+      expect(queue.length).to eql(0)
     end
   end
 

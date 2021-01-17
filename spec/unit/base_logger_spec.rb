@@ -61,22 +61,12 @@ describe BaseLogger do
     expect(host).to eql(BaseLogger.new(MOCK_AGENT).host)
   end
 
-  it 'has valid metadata id' do
-    metadata_id = BaseLogger.new(MOCK_AGENT).metadata_id
-    expect(metadata_id).not_to be nil
-    expect(metadata_id).to be_kind_of String
-    expect(metadata_id.length).to eql(32)
-    expect(metadata_id.include?('\\')).to be false
-    expect(metadata_id.include?('\"')).to be false
-    expect(metadata_id.include?('\'')).to be false
-  end
-
   it 'has valid version' do
     version = BaseLogger.version_lookup
     expect(version).not_to be nil
     expect(version).to be_kind_of String
     expect(version.length).to be > 0
-    expect(version).to start_with('2.1.')
+    expect(version).to start_with('2.0.')
     expect(version.include?('\\')).to be false
     expect(version.include?('\"')).to be false
     expect(version.include?('\'')).to be false
