@@ -119,6 +119,7 @@ class BaseLogger
         url_connection.use_ssl = @url.include?('https')
         request = Net::HTTP::Post.new(@url_parsed.path)
         request.add_field('Content-Type', 'application/json; charset=UTF-8')
+        request.add_field('User-Agent', "Resurface/#{@version} (Ruby)")
         if @skip_compression
           request.body = msg
         else
