@@ -47,8 +47,8 @@ require 'resurfaceio/all'
 class MyController < ApplicationController
   
   around_action HttpLoggerForRails.new(
-    url: 'https://...', 
-    rules: 'include strict'
+    url: 'http://localhost:4001/message', 
+    rules: 'include debug'
   )
 
 end
@@ -65,8 +65,8 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
 require 'resurfaceio/all'
 
 use HttpLoggerForRack,
-  url: 'https://...',
-  rules: 'include strict'
+  url: 'http://localhost:4001/message',
+  rules: 'include debug'
 
 run <...>
 ```
@@ -82,8 +82,8 @@ require 'sinatra'
 require 'resurfaceio/all'
 
 logger = HttpLogger.new(
-  url: 'https://...', 
-  rules: 'include strict'
+  url: 'http://localhost:4001/message', 
+  rules: 'include debug'
 )
 
 get '/' do
@@ -113,7 +113,7 @@ the options described above, but also offers the greatest flexibility and contro
 ## Protecting User Privacy
 
 Loggers always have an active set of <a href="https://resurface.io/rules.html">rules</a> that control what data is logged
-and how sensitive data is masked. All of the examples above apply a predefined set of rules (`include strict`),
+and how sensitive data is masked. All of the examples above apply a predefined set of rules (`include debug`),
 but logging rules are easily customized to meet the needs of any application.
 
 <a href="https://resurface.io/rules.html">Logging rules documentation</a>
