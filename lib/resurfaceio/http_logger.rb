@@ -48,7 +48,4 @@ class HttpLogger < BaseLogger
     submit(JSON.generate(details))
   end
 
-  def self.string_content_type?(s)
-    !s.nil? && !(s =~ /^(text\/(html|plain|xml))|(application\/(json|soap|xml|x-www-form-urlencoded))/i).nil?
-  end
 end

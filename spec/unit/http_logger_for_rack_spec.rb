@@ -74,13 +74,4 @@ describe HttpLoggerForRack do
     end
   end
 
-  it 'skips logging for 404s and unmatched content types' do
-    apps = [MockCustomApp.new, MockCustom404App.new, MockHtml404App.new, MockJson404App.new]
-    apps.each do |app|
-      queue = []
-      HttpLoggerForRack.new(app, queue: queue).call(MOCK_ENV)
-      expect(queue.length).to eql(0)
-    end
-  end
-
 end
