@@ -40,9 +40,7 @@ class HttpLogger < BaseLogger
     return nil if details.nil?
 
     # finalize message
-    details << ['agent', @agent]
     details << ['host', @host]
-    details << ['version', @version]
 
     # let's do this thing
     submit(JSON.generate(details))
