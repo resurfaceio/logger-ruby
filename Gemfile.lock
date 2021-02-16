@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    resurfaceio-logger (2.0.4)
+    resurfaceio-logger (2.1.0)
 
 GEM
   remote: https://rubygems.org/
