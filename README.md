@@ -1,9 +1,10 @@
 # resurfaceio-logger-ruby
-Logging usage of Ruby-based services, with user privacy by design.
+Easily log API requests and responses to your own <a href="https://resurface.io">system of record</a>.
 
-Visit <a href="https://resurface.io">resurface.io</a> for general information on usage logging.
-
-[![Gem Version](https://badge.fury.io/rb/resurfaceio-logger.svg)](https://badge.fury.io/rb/resurfaceio-logger)
+[![gem](https://badge.fury.io/rb/resurfaceio-logger.svg)](https://badge.fury.io/rb/resurfaceio-logger)
+[![CodeFactor](https://www.codefactor.io/repository/github/resurfaceio/logger-ruby/badge)](https://www.codefactor.io/repository/github/resurfaceio/logger-ruby)
+[![License](https://img.shields.io/github/license/resurfaceio/logger-ruby)](https://github.com/resurfaceio/logger-ruby/blob/master/LICENSE)
+[![Contributing](https://img.shields.io/badge/contributions-welcome-green.svg)](https://github.com/resurfaceio/logger-ruby/blob/master/CONTRIBUTING.md)
 
 ## Contents
 
