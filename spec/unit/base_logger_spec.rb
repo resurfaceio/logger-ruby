@@ -118,56 +118,6 @@ describe BaseLogger do
     expect(logger.enabled?).to be false
   end
 
-  it 'submits to demo url' do
-    logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL)
-    expect(logger.url).to eql(DEMO_URL)
-    message = [
-        ['agent', logger.agent],
-        ['version', logger.version],
-        ['now', MOCK_NOW],
-        ['protocol', 'https']
-    ]
-    msg = JSON.generate(message)
-    expect(parseable?(msg)).to be true
-    logger.submit(msg)
-    expect(logger.submit_failures).to eql(0)
-    expect(logger.submit_successes).to eql(1)
-  end
-
-  it 'submits to demo url via http' do
-    logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL.gsub('https://', 'http://'))
-    expect(logger.url.include?('http://')).to be true
-    message = [
-        ['agent', logger.agent],
-        ['version', logger.version],
-        ['now', MOCK_NOW],
-        ['protocol', 'http']
-    ]
-    msg = JSON.generate(message)
-    expect(parseable?(msg)).to be true
-    logger.submit(msg)
-    expect(logger.submit_failures).to eql(0)
-    expect(logger.submit_successes).to eql(1)
-  end
-
-  it 'submits to demo url without compression' do
-    logger = BaseLogger.new(MOCK_AGENT, url: DEMO_URL)
-    logger.skip_compression = true
-    expect(logger.skip_compression?).to be true
-    message = [
-        ['agent', logger.agent],
-        ['version', logger.version],
-        ['now', MOCK_NOW],
-        ['protocol', 'https'],
-        ['skip_compression', 'true']
-    ]
-    msg = JSON.generate(message)
-    expect(parseable?(msg)).to be true
-    logger.submit(msg)
-    expect(logger.submit_failures).to eql(0)
-    expect(logger.submit_successes).to eql(1)
-  end
-
   it 'submits to denied url' do
     MOCK_URLS_DENIED.each do |url|
       logger = BaseLogger.new(MOCK_AGENT, url: url)
