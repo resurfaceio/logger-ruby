@@ -48,7 +48,7 @@ require 'resurfaceio/all'
 class MyController < ApplicationController
   
   around_action HttpLoggerForRails.new(
-    url: 'http://localhost:4001/message', 
+    url: 'http://localhost:7701/message', 
     rules: 'include debug'
   )
 
@@ -66,7 +66,7 @@ After <a href="#installing_with_bundler">installing the gem</a>, add these lines
 require 'resurfaceio/all'
 
 use HttpLoggerForRack,
-  url: 'http://localhost:4001/message',
+  url: 'http://localhost:7701/message',
   rules: 'include debug'
 
 run <...>
@@ -83,7 +83,7 @@ require 'sinatra'
 require 'resurfaceio/all'
 
 logger = HttpLogger.new(
-  url: 'http://localhost:4001/message', 
+  url: 'http://localhost:7701/message', 
   rules: 'include debug'
 )
 
