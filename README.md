@@ -1,5 +1,5 @@
 # resurfaceio-logger-ruby
-Easily log API requests and responses to your own <a href="https://resurface.io">system of record</a>.
+Easily log API requests and responses to your own <a href="https://resurface.io">security data lake</a>.
 
 [![gem](https://badge.fury.io/rb/resurfaceio-logger.svg)](https://badge.fury.io/rb/resurfaceio-logger)
 [![CodeFactor](https://www.codefactor.io/repository/github/resurfaceio/logger-ruby/badge)](https://www.codefactor.io/repository/github/resurfaceio/logger-ruby)
